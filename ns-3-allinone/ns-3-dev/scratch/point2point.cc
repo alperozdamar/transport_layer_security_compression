@@ -38,7 +38,7 @@ main (int argc, char *argv[])
 
   // assign IP to nodes and generate interface from node and IP
   Ipv4AddressHelper address;
-  address.SetBase("10.1.1.0", "225.255.255.0");
+  address.SetBase("10.1.1.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaces = address.Assign (devices);
 
   // set server
