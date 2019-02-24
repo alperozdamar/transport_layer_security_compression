@@ -213,6 +213,12 @@ main (int argc, char *argv[])
   ///clientApps.Start(Seconds(2.0));
   ///clientApps.Stop(Seconds(10.0));
 
+  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
+  P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
+  P2PRouter1Router2.EnablePcapAll ("Router1Router2");
+  P2PRouter2Receiver.EnablePcapAll ("Router2Receiver");
+
   Simulator::Run ();
   Simulator::Destroy ();
   return 0;
