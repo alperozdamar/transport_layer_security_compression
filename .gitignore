@@ -1,0 +1,11 @@
+
+*.pyc
+
+*.i
+
+ns-3-allinone/bake/\.hg/cache/
+
+ns-3-allinone/bake/\.hg/
+
+*.d
+ns-3-allinone/ns-3-dev/build/
