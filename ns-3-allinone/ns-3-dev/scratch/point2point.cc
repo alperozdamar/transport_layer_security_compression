@@ -27,31 +27,27 @@ main (int argc, char *argv[])
   uint32_t maxPacketCount = 2;
   Time interPacketInterval = Seconds (0);
 
-
-
-
+  NS_LOG_INFO ("Report Timing!");
   Time::SetResolution (Time::NS);
   LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
   LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
 
-  // Create Node
+  NS_LOG_INFO ("Create Node!");
   NodeContainer nodes;
   nodes.Create(4);
 
   InternetStackHelper stack;
   stack.Install(nodes);
 
-  // Create link between nodes and set attribute
+  NS_LOG_INFO ("Create link between nodes and set attribute!");
   PointToPointHelper pointToPoint;
   /// pointToPoint.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   /// pointToPoint.SetChannelAttribute("Delay", StringValue("2ms"));
-
-  //pointToPoint.SetChannelAttribute ("DataRate", DataRateValue (DataRate (5000000)));
   pointToPoint.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   pointToPoint.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (2)));
   pointToPoint.SetDeviceAttribute ("Mtu", UintegerValue (1100));
 
-  // connect nodes using DeviceContainer
+  NS_LOG_INFO ("connect nodes using DeviceContainer!");
   NetDeviceContainer devices;
   devices = pointToPoint.Install(nodes);
 
@@ -59,8 +55,7 @@ main (int argc, char *argv[])
  // deviceNode1_2 = pointToPoint.Install(nodes);
 
 
-
-  NS_LOG_INFO ("Assign IP Addresses.");
+  NS_LOG_INFO ("Assign IP Addresses!");
   if (useV6 == false)
     {
       Ipv4AddressHelper ipv4Address;
@@ -81,26 +76,21 @@ main (int argc, char *argv[])
   ///address.SetBase("10.1.1.0", "255.255.255.0");
   ///Ipv4InterfaceContainer interfaces = address.Assign (devices);
 
-  NS_LOG_INFO ("Create Applications.");
-  
+  NS_LOG_INFO ("Create Server Applications!");
   UdpEchoServerHelper echoServer (port);
   echoServer.SetAttribute ("PacketSize", UintegerValue (responseSize));
   ApplicationContainer serverApps = echoServer.Install (nodes.Get (1));
   serverApps.Start (Seconds (1.0));
   serverApps.Stop (Seconds (10.0));
 
-
-
   // set server
   ///UdpEchoServerHelper echoServer(9);
-
   // create application on top of server
   ///ApplicationContainer serverApps = echoServer.Install(nodes.Get(1));
   ///serverApps.Start(Seconds(1.0));
   ///serverApps.Stop(Seconds(10.0));
 
-
-  
+  NS_LOG_INFO ("Create Server Applications!");
   UdpEchoClientHelper echoClient (serverAddress, port);
   echoClient.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
   echoClient.SetAttribute ("Interval", TimeValue (interPacketInterval));
