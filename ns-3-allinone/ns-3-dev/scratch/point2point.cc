@@ -42,10 +42,6 @@ main (int argc, char *argv[])
   stack.Install(nodes);
 
   NS_LOG_INFO ("Create link between nodes and set attribute!");
-  
-  /// PointToPointHelper pointToPoint;
-  /// pointToPoint.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
-  /// pointToPoint.SetChannelAttribute("Delay", StringValue("2ms"));
 
   /* Link btw Sender Router1 */
   PointToPointHelper P2PSenderRouter1;
@@ -67,8 +63,6 @@ main (int argc, char *argv[])
 
 
   NS_LOG_INFO ("connect nodes using DeviceContainer!");
-  ///NetDeviceContainer devices = pointToPoint.Install(nodes);
-
   /* Connect node Sender & Router1 */
   NetDeviceContainer deviceSenderRouter1; 
   deviceSenderRouter1 = P2PSenderRouter1.Install(nodes.Get(0),nodes.Get(1));
@@ -105,28 +99,6 @@ main (int argc, char *argv[])
   Address Router2ReceiverAddress;
   Router2ReceiverAddress = Address(interfaceRouter2Receiver.GetAddress (1));
 
-
-
-  ///if (useV6 == false)
-  ///{
-  ///   Ipv4AddressHelper ipv4Address;
-  ///   ipv4Address.SetBase ("10.1.1.0", "255.255.255.0");
-  ///   Ipv4InterfaceContainer interfaces = ipv4Address.Assign (devices);
-  ///   serverAddress = Address(interfaces.GetAddress (1));
-  ///}
-  ///else
-  ///{
-  ///  Ipv6AddressHelper ipv6Address;
-  ///    ipv6Address.SetBase ("2001:0000:f00d:cafe::", Ipv6Prefix (64));
-  ///    Ipv6InterfaceContainer interfaces = ipv6Address.Assign (devices);
-  ///    serverAddress = Address(interfaces.GetAddress (1,1));
-  ///  }
-
-  // assign IP to nodes and generate interface from node and IP
-  ///Ipv4AddressHelper address;
-  ///address.SetBase("10.1.1.0", "255.255.255.0");
-  ///Ipv4InterfaceContainer interfaces = address.Assign (devices);
-
   NS_LOG_INFO ("Create Server Applications!");
   /* Create Server on Router 1 */
   UdpEchoServerHelper echoRouter1Server (router1Port);
@@ -148,15 +120,6 @@ main (int argc, char *argv[])
   ApplicationContainer receiverServerApps = echoReceiverServer.Install (nodes.Get (3));
   receiverServerApps.Start (Seconds (1.0));
   receiverServerApps.Stop (Seconds (10.0));
-
-
-  //UdpEchoServerHelper echoServer (port);
-  //echoServer.SetAttribute ("PacketSize", UintegerValue (responseSize));
-  //ApplicationContainer serverApps = echoServer.Install (nodes.Get (1));
-  //serverApps.Start (Seconds (1.0));
-  //serverApps.Stop (Seconds (10.0));
-
-
 
   NS_LOG_INFO ("Create Client Applications!");
 
@@ -186,32 +149,6 @@ main (int argc, char *argv[])
   ApplicationContainer router2ClientApps = echoRouter2Client.Install(nodes.Get(2));
   router2ClientApps.Start (Seconds (2.0));
   router2ClientApps.Stop (Seconds (10.0));
-
-
-
-
-  //UdpEchoClientHelper echoClient (routerAddress, port);
-  //echoClient.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
-  //echoClient.SetAttribute ("Interval", TimeValue (interPacketInterval));
-  //echoClient.SetAttribute ("PacketSize", UintegerValue (packetSize));
- 
-  //ApplicationContainer clientApps = echoClient.Install(nodes.Get(0));
-  //clientApps.Start (Seconds (2.0));
-  //clientApps.Stop (Seconds (10.0));
-
-
-
-
-  // create interface btw client and server, set attribute
-  ///UdpEchoClientHelper echoClient(interfaces.GetAddress(1), 9);
-  ///echoClient.SetAttribute("MaxPackets", UintegerValue(1));
-  ///echoClient.SetAttribute("Interval", TimeValue(Seconds(1.0)));
-  ///echoClient.SetAttribute("PacketSize", UintegerValue(1024));
-
-  // create application on top of client
-  ///ApplicationContainer clientApps = echoClient.Install(nodes.Get(0));
-  ///clientApps.Start(Seconds(2.0));
-  ///clientApps.Stop(Seconds(10.0));
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
