@@ -534,18 +534,15 @@ PointToPointNetDevice::Send (
 
 
   //// RAR TEAM MODIFICATION START HERE!!!
-
   NS_LOG_UNCOND("Test.RAR.packet:"<<packet->GetSize());
-
-  bool m_is_router=true; //DELETE THIS  LINE LATER!!!
-  if(m_is_router){  
-
+  bool isRouter=true; //DELETE THIS  LINE LATER!!!
+  if(isRouter){  
   NS_LOG_UNCOND("Test.RAR.This is Router! Packet.Size:"<<packet->GetSize());  
 
   PppHeader header;
   packet-> RemoveHeader(header);
 
-  if(header.GetProtocol()==(int)0x0021){
+  if(header.GetProtocol()==(int)0x0021){ //0x0021
     NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol() );
 
     Ipv4Header ipHeader;
@@ -553,11 +550,9 @@ PointToPointNetDevice::Send (
     //std::cout<<"Packet size-IP:" <<packet->GetSize()<<std::endl;
     int ipSize=ipHeader.GetPayloadSize()-packet->GetSize();
 
-
     UdpHeader udpHeader;
     packet-> RemoveHeader(udpHeader);
     //std::cout<<"Packet size-UDP:" <<packet->GetSize()<<std::endl;
-
 
     //Get data buffer and add 0x0021 protocol to data
     //Size = size + 2 because old protocol at to data.
@@ -567,7 +562,7 @@ PointToPointNetDevice::Send (
     buffer[0]=0x00; 
     buffer[1]=0x21;
     packet->CopyData(&(buffer[2]),size);
-    std::cout<<"Compress Data:"<<size<<":";
+    std::cout<<"Packet:"<<size<<":";
     for(int i=0; (unsigned)i<size;++i){
         std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)buffer[i] << " ";
     }
@@ -579,24 +574,27 @@ PointToPointNetDevice::Send (
     //std:string compressed data = zlib compress string((char*)buffer);   
     //std::cout<<"Compres data: " <<compressed_data<<std::endl;
 
+    ////???? we may not need anymore!!! START!!!!
     std::string data;
     data.reserve(size); // prepare space for the buffer and extra termination character "\0"
     for(int i=0; (unsigned)i<size;++i){
       data +=buffer[i]; //typecast because string takes uint8_t as something else than character.
     } 
     std::cout<<data<<" . "<< data;
+    ////???? we may not need anymore!!! END!!!!
   
     uint8_t *compress_buffer =new uint8_t[size];
     uLongf new_size;
-
-    //compress(buffer,&size,compress_buffer,size);
+    compress2(compress_buffer,&new_size,buffer,size,9); 
+    //compress(buffer,&size,compress_buffer,size); Changed!!????
+    std::cout<<"Compressed: "<<new_size<<":"; 
     for(int i=0;(unsigned)i<size;++i ){
       std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compress_buffer[i] << " ";
     }
     std::cout<<std::endl;
     size = new_size;
     //update Packet
-    packet = new Packet(compress_buffer,size);
+    packet = new Packet(compress_buffer,size); 
     //Update udp size
     size = size+8;  
     UdpHeader.ForcePayloadSize(size);
