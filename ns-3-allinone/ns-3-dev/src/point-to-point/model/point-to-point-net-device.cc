@@ -335,6 +335,69 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   NS_LOG_FUNCTION (this << packet);
   uint16_t protocol = 0;
 
+        // START
+   packet -> RemoveHeader(ip_header);
+   int ip_size = ip_header.GetPayloadSize() - packet->GetSize();
+   std::cout<<"IP size: "<<ip_size<<std::endl;
+   std::cout<<"Payload size: "<<ip.header.GetPayloadSize()<<std::endl;
+   std::cout<<"Packet size - IP: "<<packet->GetSize()<<std::endl;
+
+   UdpHeader udp_header;
+   packet -> RemoveHeader(udp_header);
+   std::count<<"Packet size - IP:"<<packet->GetSize()<<std::endl;
+   // std::cout<<"Packet size - UDP: "<<packet->GetSize()<<std::endl;
+   
+   //Get data buffer and add 0x0021 protocol to data
+   //Size = size + 2 because old protocol at to data
+   uLongf size = packet->GetSize();
+   uint8_t *data_buffer = new uint8_t[size];
+   packet -> CopyData(data_buffer, size);
+   std::cout<<"Packet: ";
+   for (int i = 0; (unsigned)i < size, ++i)
+        std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)data_buffer[i] <<"";
+   std::cout << std::endl;
+  //Uncompress
+  std::cout<<"Uncompress:"<<(int)size<<":";
+  uint8_t *uncompress_buffer = new uint8_t[size];
+  uLongf new_size = number_of_bytes + 2; // Because we add old protocol to it
+  uncompress(uncompress_buffer, &new_size, data_buffer, size);
+  std::vector<uint8_t> vector_buffer(uncompress_buffer, uncompress_buffer + new_size);
+  size = new_size - 2;
+  uncompress_buffer = &uncompress_buffer[2];
+
+ //Update the packet
+ packet = new Packet(uncompress_buffer, size);
+
+ //Update UDP size
+ size = size + 8;
+ udp_header.ForcePayloadSize(size);
+ packet->AddHeader(udp_header);
+
+ //Update ip size
+ size = ip_size + size;
+ ip_header.SetPayLoadSize(size);
+ packet->AddHeader(ip_header);
+ 
+ //Update protocol to 0x0021
+ header.SetProtocol(0x0021);
+ }
+packet->AddHeader(header);
+}
+m_snifferTrace(packet);
+m_promiscSniffer(packet);
+m_phyRxEndTrace(packet);
+ 
+  
+
+
+
+
+
+
+
+
+        // END
+
   if (m_receiveErrorModel && m_receiveErrorModel->IsCorrupt (packet) ) 
     {
       // 
