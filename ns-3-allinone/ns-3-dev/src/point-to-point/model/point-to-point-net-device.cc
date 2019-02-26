@@ -335,7 +335,23 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   NS_LOG_FUNCTION (this << packet);
   uint16_t protocol = 0;
 
-        // START
+  // START
+  bool isRouter=true; //DELETE THIS  LINE LATER!!!
+
+
+  if(isRouter){
+  NS_LOG_UNCOND("Test.RAR.This is Router! Packet.Size:"<<packet->GetSize());  
+  PppHeader header;
+  packet-> RemoveHeader(header);
+
+  if(header.GetProtocol()==(int)0x4021){ //0x4021 //Check here again!
+  NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol() );
+
+   Ipv4Header ipHeader;
+   packet-> RemoveHeader(ipHeader);
+   //std::cout<<"Packet size-IP:" <<packet->GetSize()<<std::endl;
+   int ipSize=ipHeader.GetPayloadSize()-packet->GetSize();
+        
    packet -> RemoveHeader(ip_header);
    int ip_size = ip_header.GetPayloadSize() - packet->GetSize();
    std::cout<<"IP size: "<<ip_size<<std::endl;
@@ -344,7 +360,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
 
    UdpHeader udp_header;
    packet -> RemoveHeader(udp_header);
-   std::count<<"Packet size - IP:"<<packet->GetSize()<<std::endl;
+   std::cout<<"Packet size - IP:"<<packet->GetSize()<<std::endl;
    // std::cout<<"Packet size - UDP: "<<packet->GetSize()<<std::endl;
    
    //Get data buffer and add 0x0021 protocol to data
@@ -383,18 +399,11 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
  }
 packet->AddHeader(header);
 }
+
 m_snifferTrace(packet);
-m_promiscSniffer(packet);
+//m_promiscSniffer(packet); //?? Compile Error!! 
 m_phyRxEndTrace(packet);
  
-  
-
-
-
-
-
-
-
 
         // END
 
@@ -671,7 +680,7 @@ PointToPointNetDevice::Send (
 
     }
     packet->AddHeader(header);
-  }
+  } 
    //// RAR TEAM MODIFICATION ENDS HERE!!!
 
 
