@@ -24,6 +24,8 @@ main (int argc, char *argv[])
   // uint16_t router2Port = 10;
   // uint16_t receiverPort = 11;
   
+
+
  // uint32_t responseSize = 1100;
   uint32_t packetSize = 1100;
   uint32_t maxPacketCount = 1;
@@ -37,6 +39,7 @@ main (int argc, char *argv[])
   NS_LOG_INFO ("Create Node!");
   NodeContainer nodes;
   nodes.Create(4);
+  
 
   InternetStackHelper stack;
   stack.Install(nodes);
@@ -71,12 +74,27 @@ main (int argc, char *argv[])
   NetDeviceContainer deviceRouter1Router2; 
   deviceRouter1Router2 = P2PRouter1Router2.Install(nodes.Get(1),nodes.Get(2));
 
+  // RAR START ******************************
+
+  Ptr <PointToPointNetDevice> PpNdRouter1Router2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
+  //P2PRouter1Router2-> SetRoute(true); TODO: write SetRoute Method
+  //RAR TEAM START
+  Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
+
+
+  // ROZITA EEEENNNNNDDDDDDD ****
+
+
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
   deviceRouter2Receiver = P2PRouter2Receiver.Install(nodes.Get(2),nodes.Get(3));
 
-  NS_LOG_INFO ("Assign IP Addresses!");
   
+
+
+
+
+  NS_LOG_INFO ("Assign IP Addresses!");  
   Ipv4AddressHelper ipv4Address;
   /* Assign IP to SenderRouter1 */  
   ipv4Address.SetBase ("10.0.1.0", "255.255.255.0");

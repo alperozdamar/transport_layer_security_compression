@@ -28,6 +28,7 @@
 #include "point-to-point-net-device.h"
 #include "point-to-point-channel.h"
 #include "ppp-header.h"
+#include <iomanip>
 
 namespace ns3 {
 
@@ -513,6 +514,8 @@ PointToPointNetDevice::Send (
   NS_LOG_LOGIC ("p=" << packet << ", dest=" << &dest);
   NS_LOG_LOGIC ("UID is " << packet->GetUid ());
 
+  NS_LOG_UNCOND("Test.RAR.TEAM");
+ 
   //
   // If IsLinkUp() is false it means there is no channel to send any packet 
   // over so we just hit the drop trace on the packet and return an error.
@@ -528,6 +531,88 @@ PointToPointNetDevice::Send (
   // shoving it out the door.
   //
   AddHeader (packet, protocolNumber);
+
+
+  //// RAR TEAM MODIFICATION START HERE!!!
+
+  NS_LOG_UNCOND("Test.RAR.packet:"<<packet->GetSize());
+
+  bool m_is_router=true; //DELETE THIS  LINE LATER!!!
+  if(m_is_router){  
+
+  NS_LOG_UNCOND("Test.RAR.This is Router! Packet.Size:"<<packet->GetSize());  
+
+  PppHeader header;
+  packet-> RemoveHeader(header);
+
+  if(header.GetProtocol()==(int)0x0021){
+    NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol() );
+
+    Ipv4Header ipHeader;
+    packet-> RemoveHeader(ipHeader);
+    //std::cout<<"Packet size-IP:" <<packet->GetSize()<<std::endl;
+    int ipSize=ipHeader.GetPayloadSize()-packet->GetSize();
+
+
+    UdpHeader udpHeader;
+    packet-> RemoveHeader(udpHeader);
+    //std::cout<<"Packet size-UDP:" <<packet->GetSize()<<std::endl;
+
+
+    //Get data buffer and add 0x0021 protocol to data
+    //Size = size + 2 because old protocol at to data.
+    int dataSize = packet->GetSize();
+    uLongf size = dataSize+2;
+    uint8_t *buffer=new uint8_t[size];
+    buffer[0]=0x00; 
+    buffer[1]=0x21;
+    packet->CopyData(&(buffer[2]),size);
+    std::cout<<"Compress Data:"<<size<<":";
+    for(int i=0; (unsigned)i<size;++i){
+        std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)buffer[i] << " ";
+    }
+    std::cout<<std::endl;  
+    //TODO: Compress
+    //std::string data;
+    //data.assign(buffer[0],buffer[size]));
+
+    //std:string compressed data = zlib compress string((char*)buffer);   
+    //std::cout<<"Compres data: " <<compressed_data<<std::endl;
+
+    std::string data;
+    data.reserve(size); // prepare space for the buffer and extra termination character "\0"
+    for(int i=0; (unsigned)i<size;++i){
+      data +=buffer[i]; //typecast because string takes uint8_t as something else than character.
+    } 
+    std::cout<<data<<" . "<< data;
+  
+    uint8_t *compress_buffer =new uint8_t[size];
+    uLongf new_size;
+
+    //compress(buffer,&size,compress_buffer,size);
+    for(int i=0;(unsigned)i<size;++i ){
+      std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compress_buffer[i] << " ";
+    }
+    std::cout<<std::endl;
+    size = new_size;
+    //update Packet
+    packet = new Packet(compress_buffer,size);
+    //Update udp size
+    size = size+8;  
+    UdpHeader.ForcePayloadSize(size);
+    packet->AddHeader(UdpHeader);
+    //Update ip size
+    size = ipSize+size;
+    ipHeader.setPayloadSize(size);
+    packet->AddHeader(ipHeader)
+    //Update protocol to 0x4021
+    header.SetProtocol(0x4021);            
+
+    }
+    packet->AddHeader(header);
+  }
+   //// RAR TEAM MODIFICATION ENDS HERE!!!
+
 
   m_macTxTrace (packet);
 
