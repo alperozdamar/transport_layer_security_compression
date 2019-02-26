@@ -25,10 +25,14 @@
 #include "ns3/trace-source-accessor.h"
 #include "ns3/uinteger.h"
 #include "ns3/pointer.h"
+#include "ns3/lr-wpan-net-device.h" 
 #include "point-to-point-net-device.h"
 #include "point-to-point-channel.h"
-#include "ppp-header.h"
-#include <iomanip>
+#include "ppp-header.h" 
+#include "ns3/udp-header.h"
+#include "ns3/ipv4-header.h" 
+#include <zlib.h> 
+#include <iomanip> 
 
 namespace ns3 {
 
@@ -352,10 +356,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
    //std::cout<<"Packet size-IP:" <<packet->GetSize()<<std::endl;
    int ipSize=ipHeader.GetPayloadSize()-packet->GetSize();
         
-   packet -> RemoveHeader(ip_header);
-   int ip_size = ip_header.GetPayloadSize() - packet->GetSize();
-   std::cout<<"IP size: "<<ip_size<<std::endl;
-   std::cout<<"Payload size: "<<ip.header.GetPayloadSize()<<std::endl;
+   packet -> RemoveHeader(ipHeader);   
+   std::cout<<"IP size: "<<ipSize<<std::endl;
+   //std::cout<<"Payload size: "<<ip.header.GetPayloadSize()<<std::endl; //Look later!
    std::cout<<"Packet size - IP: "<<packet->GetSize()<<std::endl;
 
    UdpHeader udp_header;
@@ -369,13 +372,17 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
    uint8_t *data_buffer = new uint8_t[size];
    packet -> CopyData(data_buffer, size);
    std::cout<<"Packet: ";
-   for (int i = 0; (unsigned)i < size, ++i)
+   for (int i = 0; (unsigned)i < size; ++i){
         std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)data_buffer[i] <<"";
+   }
    std::cout << std::endl;
   //Uncompress
   std::cout<<"Uncompress:"<<(int)size<<":";
   uint8_t *uncompress_buffer = new uint8_t[size];
-  uLongf new_size = number_of_bytes + 2; // Because we add old protocol to it
+  
+  //uLongf new_size = number_of_bytes + 2; //TODO: bug fix. Because we add old protocol to it  
+  uLongf new_size = size + 2;
+  
   uncompress(uncompress_buffer, &new_size, data_buffer, size);
   std::vector<uint8_t> vector_buffer(uncompress_buffer, uncompress_buffer + new_size);
   size = new_size - 2;
@@ -390,9 +397,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
  packet->AddHeader(udp_header);
 
  //Update ip size
- size = ip_size + size;
- ip_header.SetPayLoadSize(size);
- packet->AddHeader(ip_header);
+ size = ipSize + size;
+ ipHeader.SetPayloadSize(size); 
+ packet->AddHeader(ipHeader); 
  
  //Update protocol to 0x0021
  header.SetProtocol(0x0021);
@@ -401,11 +408,11 @@ packet->AddHeader(header);
 }
 
 m_snifferTrace(packet);
-//m_promiscSniffer(packet); //?? Compile Error!! 
+//m_promiscSniffer(packet); //TODO:Should be! m_promiscSnifferTrace(packet)?? Double check!
 m_phyRxEndTrace(packet);
  
 
-        // END
+// END
 
   if (m_receiveErrorModel && m_receiveErrorModel->IsCorrupt (packet) ) 
     {
@@ -657,9 +664,16 @@ PointToPointNetDevice::Send (
   
     uint8_t *compress_buffer =new uint8_t[size];
     uLongf new_size;
-    compress2(compress_buffer,&new_size,buffer,size,9); 
-    //compress(buffer,&size,compress_buffer,size); Changed!!????
-    std::cout<<"Compressed: "<<new_size<<":"; 
+    //int returnValue = compress2((uint8_t*)compress_buffer,&new_size,(uint8_t*)buffer,(uLongf)size,9);  //Changed!!????
+    int returnValue = compress2((uint8_t*)compress_buffer,&new_size,(uint8_t*)buffer,(uLongf)size,Z_BEST_COMPRESSION);  //Changed!!????
+    //compress(buffer,&size,compress_buffer,size); //Changed!!????
+
+
+    std::cout<<"Hello! Destionation Buffer Size:"<<new_size;
+
+    std::cout<<"Compress2 out: "<< returnValue <<":"; 
+
+    std::cout<<"Compressed: "<< new_size <<":"; 
     for(int i=0;(unsigned)i<size;++i ){
       std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compress_buffer[i] << " ";
     }
@@ -669,16 +683,16 @@ PointToPointNetDevice::Send (
     packet = new Packet(compress_buffer,size); 
     //Update udp size
     size = size+8;  
-    UdpHeader.ForcePayloadSize(size);
-    packet->AddHeader(UdpHeader);
+    udpHeader.ForcePayloadSize(size);
+    packet->AddHeader(udpHeader);
     //Update ip size
     size = ipSize+size;
-    ipHeader.setPayloadSize(size);
-    packet->AddHeader(ipHeader)
+    ipHeader.SetPayloadSize(size); 
+    packet->AddHeader(ipHeader);
     //Update protocol to 0x4021
-    header.SetProtocol(0x4021);            
+    header.SetProtocol(0x4021);              
 
-    }
+    } 
     packet->AddHeader(header);
   } 
    //// RAR TEAM MODIFICATION ENDS HERE!!!
