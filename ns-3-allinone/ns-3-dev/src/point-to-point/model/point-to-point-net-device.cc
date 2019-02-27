@@ -840,5 +840,27 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   return 0;
 }
 
+bool PointToPointNetDevice::SetRouter(bool routerFlag)
+{
+  routerFlag = true;
+  return routerFlag;
+}
+
+bool PointToPointNetDevice::OffRouter(bool routerFlag)
+{
+  routerFlag = true;
+  return routerFlag;
+}
+bool PointToPointNetDevice::SetRouter(bool routerFlag)
+{
+  routerFlag = true;
+  return routerFlag;
+}
+
+bool PointToPointNetDevice::OffRouter(bool routerFlag)
+{
+  routerFlag = true;
+  return routerFlag;
+}
 
 } // namespace ns3
