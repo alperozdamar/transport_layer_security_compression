@@ -340,79 +340,59 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   uint16_t protocol = 0;
 
   // START
-  bool isRouter=true; //DELETE THIS  LINE LATER!!!
-
-
-  if(isRouter){
-  NS_LOG_UNCOND("Test.RAR.This is Router! Packet.Size:"<<packet->GetSize());  
-  PppHeader header;
-  packet-> RemoveHeader(header);
-
-  if(header.GetProtocol()==(int)0x4021){ //0x4021 //Check here again!
-  NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol() );
-
-   Ipv4Header ipHeader;
-   packet-> RemoveHeader(ipHeader);
-   //std::cout<<"Packet size-IP:" <<packet->GetSize()<<std::endl;
-   int ipSize=ipHeader.GetPayloadSize()-packet->GetSize();
-        
-   packet -> RemoveHeader(ipHeader);   
-   std::cout<<"IP size: "<<ipSize<<std::endl;
-   //std::cout<<"Payload size: "<<ip.header.GetPayloadSize()<<std::endl; //Look later!
-   std::cout<<"Packet size - IP: "<<packet->GetSize()<<std::endl;
-
-   UdpHeader udp_header;
-   packet -> RemoveHeader(udp_header);
-   std::cout<<"Packet size - IP:"<<packet->GetSize()<<std::endl;
-   // std::cout<<"Packet size - UDP: "<<packet->GetSize()<<std::endl;
-   
-   //Get data buffer and add 0x0021 protocol to data
-   //Size = size + 2 because old protocol at to data
-   uLongf size = packet->GetSize();
-   uint8_t *data_buffer = new uint8_t[size];
-   packet -> CopyData(data_buffer, size);
-   std::cout<<"Packet: ";
-   for (int i = 0; (unsigned)i < size; ++i){
-        std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)data_buffer[i] <<"";
-   }
-   std::cout << std::endl;
-  //Uncompress
-  std::cout<<"Uncompress:"<<(int)size<<":";
-  uint8_t *uncompress_buffer = new uint8_t[size];
+ // if bool isRouter=true; {} //DELETE THIS  LINE LATER!!! TODO
   
-  //uLongf new_size = number_of_bytes + 2; //TODO: bug fix. Because we add old protocol to it  
-  uLongf new_size = size + 2;
+  if(doDecompress){
+    NS_LOG_UNCOND("Packet.Size: "<<packet-> GetSize());  
+    PppHeader header;
+    packet-> RemoveHeader(header);
+
+    if(header.GetProtocol()==(int)0x4021){
+      NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol());
+      Ipv4Header ipHeader;
+      packet-> RemoveHeader(ipHeader);
+      int ipSize=ipHeader.GetPayloadSize() - packet-> GetSize();    
+      packet -> RemoveHeader(ipHeader);   
+      std::cout<<"IP size: "<<ipSize<<std::endl;
+      std::cout<<"Packet size - IP: "<< packet-> GetSize()<<std::endl;
+      UdpHeader udp_header;
+      packet -> RemoveHeader(udp_header);
+      std::cout<<"Packet size - IP:"<<packet->GetSize()<<std::endl;
+      uLongf size = packet-> GetSize();
+      uint8_t *compressData = new uint8_t[size];
+      packet -> CopyData(compressData, size);
+      std::cout<<"Packet: ";
+      for (int i = 0; (unsigned)i < size; ++i){
+        std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)compressData[i] <<"";
+      }
+      std::cout << std::endl;
+      std::cout<<"Uncompress:"<<(int)size<<":";
+      uint8_t *decompressData = new uint8_t[size];
+      int protocolSize = 2;
+      uLongf new_size = size + protocolSize;
   
-  uncompress(uncompress_buffer, &new_size, data_buffer, size);
-  std::vector<uint8_t> vector_buffer(uncompress_buffer, uncompress_buffer + new_size);
-  size = new_size - 2;
-  uncompress_buffer = &uncompress_buffer[2];
+      uncompress(decompressData, &new_size, compressData, size);
+      std::vector<uint8_t> vector_buffer(decompressData, decompressData + new_size);
+      size = new_size - 2;
+      decompressData = &decompressData[2];
+      packet = new Packet(decompressData, size);
+      size = size + 8;
+      udp_header.ForcePayloadSize(size);
+      packet->AddHeader(udp_header);
+      size = ipSize + size;
+      ipHeader.SetPayloadSize(size); 
+      packet->AddHeader(ipHeader); 
+      header.SetProtocol(0x0021);
+    }
+    packet->AddHeader(header);
+  }
 
- //Update the packet
- packet = new Packet(uncompress_buffer, size);
-
- //Update UDP size
- size = size + 8;
- udp_header.ForcePayloadSize(size);
- packet->AddHeader(udp_header);
-
- //Update ip size
- size = ipSize + size;
- ipHeader.SetPayloadSize(size); 
- packet->AddHeader(ipHeader); 
- 
- //Update protocol to 0x0021
- header.SetProtocol(0x0021);
- }
-packet->AddHeader(header);
-}
-
-m_snifferTrace(packet);
-//m_promiscSniffer(packet); //TODO:Should be! m_promiscSnifferTrace(packet)?? Double check!
-m_phyRxEndTrace(packet);
+  m_snifferTrace(packet);
+  //m_promiscSniffer(packet); TODO : Check
+  m_phyRxEndTrace(packet);
  
 
-// END
+  // END
 
   if (m_receiveErrorModel && m_receiveErrorModel->IsCorrupt (packet) ) 
     {
@@ -590,10 +570,8 @@ PointToPointNetDevice::Send (
   uint16_t protocolNumber)
 {
   NS_LOG_FUNCTION (this << packet << dest << protocolNumber);
-  NS_LOG_LOGIC ("p=" << packet << ", dest=" << &dest);
-  NS_LOG_LOGIC ("UID is " << packet->GetUid ());
-
-  NS_LOG_UNCOND("Test.RAR.TEAM");
+  NS_LOG_LOGIC ("Send packet = " << packet << ", dest = " << &dest);
+  NS_LOG_LOGIC ("UID = " << packet-> GetUid ());
  
   //
   // If IsLinkUp() is false it means there is no channel to send any packet 
@@ -611,45 +589,42 @@ PointToPointNetDevice::Send (
   //
   AddHeader (packet, protocolNumber);
 
-
-  //// RAR TEAM MODIFICATION START HERE!!!
-  NS_LOG_UNCOND("Test.RAR.packet:"<<packet->GetSize());
-  bool isRouter=true; //DELETE THIS  LINE LATER!!!
-  if(isRouter){  
-  NS_LOG_UNCOND("Test.RAR.This is Router! Packet.Size:"<<packet->GetSize());  
-
-  PppHeader header;
-  packet-> RemoveHeader(header);
-
-  if(header.GetProtocol()==(int)0x0021){ //0x0021
-    NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol() );
-
+  /* Send package design for comperssion */
+  NS_LOG_UNCOND("Sending packet process is started ...");
+  NS_LOG_UNCOND("packet header was added, size: " << packet->GetSize());
+ 
+  if(doCompress){  
+    NS_LOG_UNCOND("Start compressing with packet size : "<<packet->GetSize());  
+    PppHeader header;
+    packet-> RemoveHeader(header);
+    if(header.GetProtocol()==(int)0x0021){ 
+    NS_LOG_UNCOND("Router sent Protcol Number<"<< std::hex << header.GetProtocol());
+    
+    /* Remove IPV4 Header */
     Ipv4Header ipHeader;
     packet-> RemoveHeader(ipHeader);
-    //std::cout<<"Packet size-IP:" <<packet->GetSize()<<std::endl;
-    int ipSize=ipHeader.GetPayloadSize()-packet->GetSize();
-
+    int ipSize = ipHeader.GetPayloadSize() - packet-> GetSize();
+    
+    /* Remove UDP Header */
     UdpHeader udpHeader;
     packet-> RemoveHeader(udpHeader);
-    //std::cout<<"Packet size-UDP:" <<packet->GetSize()<<std::endl;
-
-    //Get data buffer and add 0x0021 protocol to data
-    //Size = size + 2 because old protocol at to data.
-    int dataSize = packet->GetSize();
-    uLongf size = dataSize+2;
-    uint8_t *buffer=new uint8_t[size];
-    buffer[0]=0x00; 
-    buffer[1]=0x21;
-    packet->CopyData(&(buffer[2]),size);
-    std::cout<<"Packet:"<<size<<":";
-    for(int i=0; (unsigned)i<size;++i){
-        std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)buffer[i] << " ";
+    
+    /* Add Data & protocol and copy to inData */
+    int protocolSize = 2;
+    int dataSize = packet-> GetSize();
+    uLongf size = dataSize + protocolSize; //data + protocol [2]
+    uint8_t *inData = new uint8_t[size];
+    inData[0]=0x00; 
+    inData[1]=0x21;
+    packet-> CopyData(&(inData[2]),size);
+    std::cout<<"Packet size after adding data + protocol : "<< size << ":";
+    for(int i=0; (unsigned)i < size;++i){
+        std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)inData[i] << " ";
     }
     std::cout<<std::endl;  
     //TODO: Compress
     //std::string data;
     //data.assign(buffer[0],buffer[size]));
-
     //std:string compressed data = zlib compress string((char*)buffer);   
     //std::cout<<"Compres data: " <<compressed_data<<std::endl;
 
@@ -657,47 +632,33 @@ PointToPointNetDevice::Send (
     std::string data;
     data.reserve(size); // prepare space for the buffer and extra termination character "\0"
     for(int i=0; (unsigned)i<size;++i){
-      data +=buffer[i]; //typecast because string takes uint8_t as something else than character.
+      data +=inData[i]; //typecast because string takes uint8_t as something else than character.
     } 
     std::cout<<data<<" . "<< data;
     ////???? we may not need anymore!!! END!!!!
   
-    uint8_t *compress_buffer =new uint8_t[size];
+    uint8_t *compressData = new uint8_t[size];
     uLongf new_size;
-    //int returnValue = compress2((uint8_t*)compress_buffer,&new_size,(uint8_t*)buffer,(uLongf)size,9);  //Changed!!????
-    int returnValue = compress2((uint8_t*)compress_buffer,&new_size,(uint8_t*)buffer,(uLongf)size,Z_BEST_COMPRESSION);  //Changed!!????
-    //compress(buffer,&size,compress_buffer,size); //Changed!!????
-
-
-    std::cout<<"Hello! Destionation Buffer Size:"<<new_size;
-
+    int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
+    std::cout << "Compressed packet size:" << new_size;
     std::cout<<"Compress2 out: "<< returnValue <<":"; 
-
     std::cout<<"Compressed: "<< new_size <<":"; 
     for(int i=0;(unsigned)i<size;++i ){
-      std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compress_buffer[i] << " ";
+      std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compressData[i] << " ";
     }
     std::cout<<std::endl;
     size = new_size;
-    //update Packet
-    packet = new Packet(compress_buffer,size); 
-    //Update udp size
-    size = size+8;  
+    packet = new Packet(compressData,size); 
+    size = size + 8;  // for UDP
     udpHeader.ForcePayloadSize(size);
-    packet->AddHeader(udpHeader);
-    //Update ip size
-    size = ipSize+size;
+    packet-> AddHeader(udpHeader);
+    size = ipSize + size;
     ipHeader.SetPayloadSize(size); 
-    packet->AddHeader(ipHeader);
-    //Update protocol to 0x4021
+    packet-> AddHeader(ipHeader);
     header.SetProtocol(0x4021);              
-
     } 
     packet->AddHeader(header);
   } 
-   //// RAR TEAM MODIFICATION ENDS HERE!!!
-
-
   m_macTxTrace (packet);
 
   //
@@ -840,27 +801,18 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   return 0;
 }
 
-bool PointToPointNetDevice::SetRouter(bool routerFlag)
-{
-  routerFlag = true;
-  return routerFlag;
-}
+  void
+  PointToPointNetDevice::SetCompressFlag(bool isRouter1){
+    NS_LOG_FUNCTION (this);
+    doCompress = isRouter1;
+  }
 
-bool PointToPointNetDevice::OffRouter(bool routerFlag)
-{
-  routerFlag = true;
-  return routerFlag;
-}
-bool PointToPointNetDevice::SetRouter(bool routerFlag)
-{
-  routerFlag = true;
-  return routerFlag;
-}
-
-bool PointToPointNetDevice::OffRouter(bool routerFlag)
-{
-  routerFlag = true;
-  return routerFlag;
-}
+  
+  void
+  PointToPointNetDevice::SetDecompressFlag(bool isRouter2)
+  {
+    NS_LOG_FUNCTION (this);
+    doDecompress = isRouter2;
+  }
 
 } // namespace ns3

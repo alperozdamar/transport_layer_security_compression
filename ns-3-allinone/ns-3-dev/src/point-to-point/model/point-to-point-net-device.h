@@ -181,6 +181,12 @@ public:
   virtual Ptr<Node> GetNode (void) const;
   virtual void SetNode (Ptr<Node> node);
 
+
+  bool doCompress = false;
+  bool doDecompress = false;
+  virtual void SetCompressFlag (bool routerFlag);
+  virtual void SetDecompressFlag (bool routerFlag);
+
   virtual bool NeedsArp (void) const;
 
   virtual void SetReceiveCallback (NetDevice::ReceiveCallback cb);
