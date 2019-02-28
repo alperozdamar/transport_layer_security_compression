@@ -3,9 +3,11 @@
 #include "ns3/internet-module.h"
 #include "ns3/point-to-point-module.h"
 #include "ns3/applications-module.h"
+#include "ns3/netanim-module.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip> 
+
 
 using namespace ns3;
 
@@ -118,27 +120,24 @@ int  protocolNumberInDecimal = readConfigurationFile();
  // cmd.Parse (argc, argv);
 
   NS_LOG_INFO ("Decleare variable!");
-  uint16_t router1Port = 9; 
+ uint16_t router1Port = 9;
+ uint32_t packetSize = 1100;
+ uint32_t maxPacketCount = 1;
+ Time interPacketInterval = Seconds (0);
 
- // uint32_t responseSize = 1100;
-  uint32_t packetSize = 1100;
-  uint32_t maxPacketCount = 1;
-  Time interPacketInterval = Seconds (0);
+ NS_LOG_INFO ("Report Timing!");
+ Time::SetResolution (Time::NS);
+ LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
+ LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
 
-  NS_LOG_INFO ("Report Timing!");
-  Time::SetResolution (Time::NS);
-  LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
-  LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
+NS_LOG_INFO ("Create Node!");
+NodeContainer nodes;
+ nodes.Create(4);
 
-  NS_LOG_INFO ("Create Node!");
-  NodeContainer nodes;
-  nodes.Create(4);
-  
+ InternetStackHelper stack;
+ stack.Install(nodes);
 
-  InternetStackHelper stack;
-  stack.Install(nodes);
-
-  NS_LOG_INFO ("Create link between nodes and set attribute!");
+ NS_LOG_INFO ("Create link between nodes and set attribute!");
 
   /* Link btw Sender Router1 */
   PointToPointHelper P2PSenderRouter1;
@@ -146,14 +145,9 @@ int  protocolNumberInDecimal = readConfigurationFile();
   P2PSenderRouter1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (1100));
   
-
-  std::string dataRateString = std::to_string(CompressionDataRate);
-  dataRateString = dataRateString +"Mbps";
-  NS_LOG_UNCOND("dataRateString:"<< dataRateString);
-
   /* Link btw Router1 Router2 */
   PointToPointHelper P2PRouter1Router2;
-  P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue(dataRateString)); 
+  P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue("8Mbps"));
   P2PRouter1Router2.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (1100));
 
@@ -233,6 +227,7 @@ int  protocolNumberInDecimal = readConfigurationFile();
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
+  #if 1
   AsciiTraceHelper ascii;
   P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
   P2PSenderRouter1.EnablePcap("Sender", deviceSenderRouter1.Get(0),false, false);
@@ -240,15 +235,22 @@ int  protocolNumberInDecimal = readConfigurationFile();
   P2PRouter1Router2.EnableAsciiAll(ascii.CreateFileStream("Router1.tr"));
   P2PRouter1Router2.EnablePcap("Router1", deviceRouter1Router2.Get(0),false, false);
 
-  P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Router2.tr"));
-  P2PRouter2Receiver.EnablePcap("Router2", deviceRouter2Receiver.Get(0),false, false);
+  P2PRouter1Router2.EnableAsciiAll(ascii.CreateFileStream("Router2.tr"));
+  P2PRouter1Router2.EnablePcap("Router2", deviceRouter1Router2.Get(1),false, false);
 
   P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Receiver.tr"));
   P2PRouter2Receiver.EnablePcap("Receiver", deviceRouter2Receiver.Get(1),false, false);
+  #elif
+  P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
+  P2PRouter1Router2.EnablePcapAll ("Router1Router2");
+  P2PRouter2Receiver.EnablePcapAll ("Router2Receiver");
+  #endif
 
-  //P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
-  //P2PRouter1Router2.EnablePcapAll ("Router1Router2");
-  //P2PRouter2Receiver.EnablePcapAll ("Receiver");
+  AnimationInterface anim("p2p.xml");
+  anim.SetConstantPosition(nodes.Get(0), 0.0, 0.0);
+  anim.SetConstantPosition(nodes.Get(1), 10.0, 10.0);
+  anim.SetConstantPosition(nodes.Get(2), 20.0, 20.0);
+  anim.SetConstantPosition(nodes.Get(3), 30.0, 30.0);
 
   Simulator::Run ();
   Simulator::Destroy ();

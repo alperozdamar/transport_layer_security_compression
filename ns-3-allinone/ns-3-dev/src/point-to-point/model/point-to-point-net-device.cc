@@ -338,6 +338,7 @@ PointToPointNetDevice::SetReceiveErrorModel (Ptr<ErrorModel> em)
 void
 PointToPointNetDevice::Receive (Ptr<Packet> packet)
 {
+  NS_LOG_UNCOND("\t\tRECEIVE PACKET");
   NS_LOG_FUNCTION (this << packet);
   uint16_t protocol = 0;  
   NS_LOG_UNCOND("Test doCompressin Receive: " << this -> doDecompress);
