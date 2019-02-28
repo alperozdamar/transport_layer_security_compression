@@ -340,7 +340,6 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   uint16_t protocol = 0;  
   NS_LOG_UNCOND("Test doCompressin Receive: " << this -> doDecompress);
   if(this -> doDecompress){
-  //if(1){
     NS_LOG_UNCOND("Packet.Size: "<<packet-> GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
@@ -568,9 +567,6 @@ PointToPointNetDevice::Send (
   NS_LOG_FUNCTION (this << packet << dest << protocolNumber);
   NS_LOG_LOGIC ("Send packet = " << packet << ", dest = " << &dest);
   NS_LOG_LOGIC ("UID = " << packet-> GetUid ());
-
-  NS_LOG_UNCOND("\t\tSEND PACKET");
-  NS_LOG_UNCOND(doCompress);
  
   //
   // If IsLinkUp() is false it means there is no channel to send any packet 
@@ -592,8 +588,7 @@ PointToPointNetDevice::Send (
   NS_LOG_UNCOND("Sending packet process is started ...");
   NS_LOG_UNCOND("packet header was added, size: " << packet->GetSize());
   NS_LOG_UNCOND("Test doCompressin Send: " << this -> doCompress);
-  if(this -> doCompress){  
-   // if(1){  
+  if(this -> doCompress){   
     NS_LOG_UNCOND("Start compressing with packet size : "<<packet->GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
