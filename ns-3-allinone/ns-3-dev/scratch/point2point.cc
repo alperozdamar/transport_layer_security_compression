@@ -13,6 +13,16 @@ int
 main (int argc, char *argv[])
 {
 
+uint32_t CompressionLinkDataRate = 8;
+CommandLine cmd;
+cmd.AddValue("CompressionLinkDataRate", "CompressionLinkDataRate [Mbps]", CompressionLinkDataRate);
+cmd.Parse (argc, argv);
+
+
+NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
+
+
+
  // NS_LOG_INFO ("Command Line Argument!");
  // CommandLine cmd;
  // cmd.AddValue ("useIpv6", "Use Ipv6", useV6);
@@ -52,9 +62,14 @@ main (int argc, char *argv[])
   P2PSenderRouter1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (1100));
   
+
+  std::string dataRateString = std::to_string(CompressionLinkDataRate);
+  dataRateString = dataRateString +"Mbps";
+  NS_LOG_UNCOND("dataRateString:"<< dataRateString);
+
   /* Link btw Router1 Router2 */
   PointToPointHelper P2PRouter1Router2;
-  P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue("8Mbps"));
+  P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue(dataRateString)); 
   P2PRouter1Router2.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (1100));
 
