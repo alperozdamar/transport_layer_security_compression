@@ -337,12 +337,10 @@ void
 PointToPointNetDevice::Receive (Ptr<Packet> packet)
 {
   NS_LOG_FUNCTION (this << packet);
-  uint16_t protocol = 0;
-
-  // START
- // if bool isRouter=true; {} //DELETE THIS  LINE LATER!!! TODO
-  
-  if(doDecompress){
+  uint16_t protocol = 0;  
+  NS_LOG_UNCOND("Test doCompressin Receive: " << this -> doDecompress);
+  if(this -> doDecompress){
+  //if(1){
     NS_LOG_UNCOND("Packet.Size: "<<packet-> GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
@@ -388,12 +386,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   }
 
   m_snifferTrace(packet);
-  //m_promiscSniffer(packet); TODO : Check
+  m_promiscSnifferTrace(packet);
   m_phyRxEndTrace(packet);
  
-
-  // END
-
   if (m_receiveErrorModel && m_receiveErrorModel->IsCorrupt (packet) ) 
     {
       // 
@@ -567,11 +562,15 @@ bool
 PointToPointNetDevice::Send (
   Ptr<Packet> packet, 
   const Address &dest, 
-  uint16_t protocolNumber)
+  uint16_t protocolNumber
+  )
 {
   NS_LOG_FUNCTION (this << packet << dest << protocolNumber);
   NS_LOG_LOGIC ("Send packet = " << packet << ", dest = " << &dest);
   NS_LOG_LOGIC ("UID = " << packet-> GetUid ());
+
+  NS_LOG_UNCOND("\t\tSEND PACKET");
+  NS_LOG_UNCOND(doCompress);
  
   //
   // If IsLinkUp() is false it means there is no channel to send any packet 
@@ -592,8 +591,9 @@ PointToPointNetDevice::Send (
   /* Send package design for comperssion */
   NS_LOG_UNCOND("Sending packet process is started ...");
   NS_LOG_UNCOND("packet header was added, size: " << packet->GetSize());
- 
-  if(doCompress){  
+  NS_LOG_UNCOND("Test doCompressin Send: " << this -> doCompress);
+  if(this -> doCompress){  
+   // if(1){  
     NS_LOG_UNCOND("Start compressing with packet size : "<<packet->GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
@@ -805,6 +805,7 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   PointToPointNetDevice::SetCompressFlag(bool isRouter1){
     NS_LOG_FUNCTION (this);
     doCompress = isRouter1;
+    NS_LOG_UNCOND("Test doCompressFunction: " << this -> doCompress);
   }
 
   
@@ -813,6 +814,7 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   {
     NS_LOG_FUNCTION (this);
     doDecompress = isRouter2;
+    NS_LOG_UNCOND("Test doDecompressFunction: " << this -> doDecompress);
   }
 
 } // namespace ns3

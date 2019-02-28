@@ -83,6 +83,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
   /* Connect node Router1 & Router2 */
   NetDeviceContainer deviceRouter1Router2; 
   deviceRouter1Router2 = P2PRouter1Router2.Install(nodes.Get(1),nodes.Get(2));
+  
   Ptr <PointToPointNetDevice> PpNdRouter1Router2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
   PpNdRouter1Router2 -> SetCompressFlag(true);
   Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
@@ -123,8 +124,8 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
   ApplicationContainer serverApps = echoReceiverServer.Install (nodes.Get (3));
   serverApps.Start (Seconds (1.0));
   serverApps.Stop (Seconds (100.0));
-
-  UdpEchoClientHelper echoSenderClient (SenderRouter1Address, router1Port);
+UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
+  //UdpEchoClientHelper echoSenderClient (SenderRouter2Address, router1Port);
   echoSenderClient.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
   echoSenderClient.SetAttribute ("Interval", TimeValue (interPacketInterval));
   echoSenderClient.SetAttribute ("PacketSize", UintegerValue (packetSize));
