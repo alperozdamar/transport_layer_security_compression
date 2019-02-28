@@ -120,7 +120,7 @@ Pre-processing should first take the matched packet then replace the original pr
 You should not worry about implementing Compression Control Protocol and its corresponding control packets, as you may assume the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, you should also not implement anything from the negotiation phase, and not worry about using the exact compression data format, specified in X3.241-1994.
 You may only need to modify PointToPointNetDevice to enable compression/decompression on point-to-point links. A good starting point to get familiar with, in addition to PointToPointNetDevice is the ns-3 point-to-point model overview.
 
-
+![Image](image.png)
    
 A good starting point for building ns-3 applications might be this ns-3 wiki article, How To Make and Use A New Application.
   
