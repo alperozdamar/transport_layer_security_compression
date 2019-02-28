@@ -180,11 +180,10 @@ public:
 
   virtual Ptr<Node> GetNode (void) const;
   virtual void SetNode (Ptr<Node> node);
-  
   bool doCompress = false;
   bool doDecompress = false;
-  void SetCompressFlag (bool isRouter1);
   void SetDecompressFlag (bool isRouter1);
+  void SetCompressFlag (bool isRouter1);
 
   virtual bool NeedsArp (void) const;
 
