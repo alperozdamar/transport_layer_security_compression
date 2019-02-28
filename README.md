@@ -51,6 +51,10 @@ Our project is running under Ubuntu, version 18.04.01.
       b) Install mercurial, by using the following command
       
         $ sudo apt-get install mercurial
+        
+      c) Add zlib library 
+      
+      d) Install waf
    
  # 5. Recommended tools
      
@@ -82,7 +86,7 @@ Our project is running under Ubuntu, version 18.04.01.
 
   # 6. Building project
       
-      In order to build the project run this command
+        In order to build the project run this command. For running these commands you need you need to be in: $  workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
       
       $ ./waf configure
       $ ./waf build
