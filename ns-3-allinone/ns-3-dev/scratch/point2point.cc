@@ -29,12 +29,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
  // cmd.Parse (argc, argv);
 
   NS_LOG_INFO ("Decleare variable!");
-  //bool useV6 = false;
   uint16_t router1Port = 9;
-  // uint16_t router2Port = 10;
-  // uint16_t receiverPort = 11;
-  
-
 
  // uint32_t responseSize = 1100;
   uint32_t packetSize = 1100;
@@ -93,6 +88,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
   Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
   PpNdRouter1Router2 -> SetDecompressFlag(true);
 
+
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
   deviceRouter2Receiver = P2PRouter2Receiver.Install(nodes.Get(2),nodes.Get(3));
@@ -137,15 +133,25 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
   senderClientApps.Start (Seconds (2.0));
   senderClientApps.Stop (Seconds (90.0));
 
-  
-  //PointToPointNetDevice::Receive (Ptr<Packet> packet);
-
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-  P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
-  P2PRouter1Router2.EnablePcapAll ("Router1Router2");
-  P2PRouter2Receiver.EnablePcapAll ("Receiver");
+  AsciiTraceHelper ascii;
+  P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
+  P2PSenderRouter1.EnablePcap("Sender", deviceSenderRouter1.Get(0),false, false);
+
+  P2PRouter1Router2.EnableAsciiAll(ascii.CreateFileStream("Router1.tr"));
+  P2PRouter1Router2.EnablePcap("Router1", deviceRouter1Router2.Get(0),false, false);
+
+  P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Router2.tr"));
+  P2PRouter2Receiver.EnablePcap("Router2", deviceRouter2Receiver.Get(0),false, false);
+
+  P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Receiver.tr"));
+  P2PRouter2Receiver.EnablePcap("Receiver", deviceRouter2Receiver.Get(1),false, false);
+
+  //P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
+  //P2PRouter1Router2.EnablePcapAll ("Router1Router2");
+  //P2PRouter2Receiver.EnablePcapAll ("Receiver");
 
   Simulator::Run ();
   Simulator::Destroy ();
