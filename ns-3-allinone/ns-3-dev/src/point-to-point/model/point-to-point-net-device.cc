@@ -592,7 +592,15 @@ PointToPointNetDevice::Send (
     NS_LOG_UNCOND("Start compressing with packet size : "<<packet->GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
-    if(header.GetProtocol()==(int)0x0021){ 
+
+    //Protocol Number Check!
+    //if(header.GetProtocol()==(int)0x0021){ 
+
+    NS_LOG_UNCOND("CompressProtocolNumber.Int:"<< compressProtocolNumber);
+    NS_LOG_UNCOND("CompressProtocolNumber.Hex:"<< std::hex << compressProtocolNumber);
+
+    if(header.GetProtocol()==this->compressProtocolNumber){  
+
     NS_LOG_UNCOND("Router sent Protcol Number<"<< std::hex << header.GetProtocol());
     
     /* Remove IPV4 Header */
@@ -800,7 +808,7 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   PointToPointNetDevice::SetCompressFlag(bool isRouter1){
     NS_LOG_FUNCTION (this);
     doCompress = isRouter1;
-    NS_LOG_UNCOND("Test doCompressFunction: " << this -> doCompress);
+    NS_LOG_UNCOND("Setting doCompressFunction: " << this -> doCompress);
   }
 
   
@@ -809,7 +817,16 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   {
     NS_LOG_FUNCTION (this);
     doDecompress = isRouter2;
-    NS_LOG_UNCOND("Test doDecompressFunction: " << this -> doDecompress);
+    NS_LOG_UNCOND("Setting doDecompressFunction: " << this -> doDecompress);
   }
+
+  void
+  PointToPointNetDevice::SetCompressProtocolNumber(int protocolNumberLocal)
+  {
+    NS_LOG_FUNCTION (this);
+    compressProtocolNumber = protocolNumberLocal; 
+    NS_LOG_UNCOND("Setting compressProtocolNumber: " << this -> compressProtocolNumber);  
+  }
+
 
 } // namespace ns3

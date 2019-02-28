@@ -186,6 +186,9 @@ public:
   virtual void SetDecompressFlag (bool isRouter1);
   virtual void SetCompressFlag (bool isRouter1);
 
+  int compressProtocolNumber=0;
+  virtual void SetCompressProtocolNumber (int protocolNumber);
+  
   virtual bool NeedsArp (void) const;
 
   virtual void SetReceiveCallback (NetDevice::ReceiveCallback cb);

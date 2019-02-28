@@ -3,7 +3,9 @@
 #include "ns3/internet-module.h"
 #include "ns3/point-to-point-module.h"
 #include "ns3/applications-module.h"
+#include <iostream>
 #include <fstream>
+#include <iomanip> 
 
 using namespace ns3;
 
@@ -13,6 +15,7 @@ int
 main (int argc, char *argv[])
 {
 
+/////// READ COMMAND LINE ARGUMENTS  ///////////
 uint32_t CompressionDataRate = 8;
 CommandLine cmd;
 cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
@@ -21,6 +24,37 @@ cmd.Parse (argc, argv);
 
 NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
 
+//protocolNumberInDecimal=33
+
+/////// READ CONFIGURATION FILE ///////////
+int  protocolNumberInDecimal=0;
+std::ifstream cFile ("config.txt");
+    if (cFile.is_open())
+    {
+        std::string line;
+        while(getline(cFile, line)){
+            line.erase(std::remove_if(line.begin(), line.end(), isspace),
+                                 line.end());
+            if(line[0] == '#' || line.empty())
+                continue;
+            auto delimiterPos = line.find("=");
+            std::string name = line.substr(0, delimiterPos);
+            std::string value = line.substr(delimiterPos + 1);            
+            std::cout << name << " " << value << '\n';
+
+            if(name.compare("protocolNumberInDecimal")==0 ){
+              int intValue = atoi(value.c_str());
+              protocolNumberInDecimal=intValue;              
+              std::cout << name << "=" << protocolNumberInDecimal << '\n';
+              //std::cout << "Alper.Hex:" << std::hex << protocolNumberInDecimal;
+            }else{
+              NS_LOG_UNCOND("protocolNumberInDecimal is not equal to "<< name);
+            }
+        }        
+    }
+    else {
+        std::cerr << "Couldn't open config file for reading.\n";
+    }
 
 
 
@@ -87,9 +121,10 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
   
   Ptr <PointToPointNetDevice> PpNdRouter1Router2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
   PpNdRouter1Router2 -> SetCompressFlag(true);
+  PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
   Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
   PpNdRouter1Router2 -> SetDecompressFlag(true);
-
+  PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
 
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
@@ -123,7 +158,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
   /* Create Server */
   UdpEchoServerHelper echoReceiverServer (router1Port);
   ApplicationContainer serverApps = echoReceiverServer.Install (nodes.Get (3));
-  serverApps.Start (Seconds (1.0));
+  serverApps.Start (Seconds (2.0));
   serverApps.Stop (Seconds (100.0));
 UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
   //UdpEchoClientHelper echoSenderClient (SenderRouter2Address, router1Port);
@@ -132,7 +167,7 @@ UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
   echoSenderClient.SetAttribute ("PacketSize", UintegerValue (packetSize));
   ApplicationContainer senderClientApps = echoSenderClient.Install(nodes.Get(0));
   echoSenderClient.SetFill(senderClientApps.Get(0),"We can send message from here");
-  senderClientApps.Start (Seconds (2.0));
+  senderClientApps.Start (Seconds (4.0));
   senderClientApps.Stop (Seconds (90.0));
 
 
