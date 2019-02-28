@@ -3,7 +3,7 @@
 #include "ns3/internet-module.h"
 #include "ns3/point-to-point-module.h"
 #include "ns3/applications-module.h"
-
+#include <fstream>
 
 using namespace ns3;
 
@@ -13,13 +13,14 @@ int
 main (int argc, char *argv[])
 {
 
-uint32_t CompressionLinkDataRate = 8;
+uint32_t CompressionDataRate = 8;
 CommandLine cmd;
-cmd.AddValue("CompressionLinkDataRate", "CompressionLinkDataRate [Mbps]", CompressionLinkDataRate);
+cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
 cmd.Parse (argc, argv);
 
 
-NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
+NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
+
 
 
 
@@ -29,7 +30,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
  // cmd.Parse (argc, argv);
 
   NS_LOG_INFO ("Decleare variable!");
-  uint16_t router1Port = 9;
+  uint16_t router1Port = 9; 
 
  // uint32_t responseSize = 1100;
   uint32_t packetSize = 1100;
@@ -58,7 +59,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionLinkDataRate);
   P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (1100));
   
 
-  std::string dataRateString = std::to_string(CompressionLinkDataRate);
+  std::string dataRateString = std::to_string(CompressionDataRate);
   dataRateString = dataRateString +"Mbps";
   NS_LOG_UNCOND("dataRateString:"<< dataRateString);
 
