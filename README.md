@@ -130,6 +130,37 @@ A good starting point for building ns-3 applications might be this ns-3 wiki art
    
   # (2) Compression Detection Application
 
-You will implement the network compression detection only in the cooperative environment as described here (Section IV). In summary, your network application is a client/server application where the sender sends two sets of 6000 UDP packets back-to-back (called packet train), and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the second packet train contains random sequence of bits. You can generate random sequence of bits using /dev/random. If the difference in arrival time between the first and last packets of the two trains (∆tH −∆tL) is more than a fixed threshold τ = 100 ms, the application reports <dt>Compression detected!</dt>, whereas when the time difference is less than τ there was probably no compression link on the path and the application should display No compression was detected.
+You will implement the network compression detection only in the cooperative environment as described here (Section IV). In summary, your network application is a client/server application where the sender sends two sets of 6000 UDP packets back-to-back (called packet train), and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the second packet train contains random sequence of bits. You can generate random sequence of bits using /dev/random. If the difference in arrival time between the first and last packets of the two trains (∆tH −∆tL) is more than a fixed threshold τ = 100 ms, the application reports *Compression detected!*, whereas when the time difference is less than τ there was probably no compression link on the path and the application should display *No compression was detected*.
 Your application is required to take in at least one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers.
+
+  # (3) Simulation Veriftcation and Validation
+
+Create a 4-node topology in ns-3 as illustrated in Figure 2. Nodes S and R are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. Your simulations should also be built using ns-3. You should include four logically separate simulations, each doing one of the following:
+
+Transmit low entropy data over a network topology without a compression link.
+
+
+
+
+
+Figure 2: A 4-node topology with a compression link.
+
+Transmit high entropy data over a network topology without a compression link.
+Transmit low entropy data over a network topology with a compression link.
+Transmit high entropy data over a network topology with a compression link.
+
+You will then vary the middle link (R1R2) capacity parameter from 1,2,3,...,10 Mbps, reporting each ∆tH − ∆tL. The link capacity of the two outer (non compression) links on your four node topology should be set persistently to 8 Mbps.
+Make sure you are careful to control for confounding variables across your four simulations, as you will ultimately be comparing time between these four simulation types so as to try and detect the compression link.
+
+
+
+
+
+
+
+
+
+
+
+
 
