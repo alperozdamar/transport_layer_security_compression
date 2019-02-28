@@ -107,7 +107,7 @@ Our project is running under Ubuntu, version 18.04.01.
    
    # Overview
     
-For this project you will implement a network level compression link. You will then implement a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries [https://lasr.cs.ucla.edu/vahab/resources/compression_detection.pdf], which is recommended that you read in detail up to Section VI.
+For this project you will implement a network level compression link. You will then implement a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries [https://lasr.cs.ucla.edu/vahab/resources/compression_detection.pd](https://lasr.cs.ucla.edu/vahab/resources/compression_detection.pd), which is recommended that you read in detail up to Section VI.
 Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation [https://www.nsnam.org/releases/ns-3-29/documentation/] are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
 
    # Components
