@@ -12,7 +12,10 @@ using namespace ns3;
 NS_LOG_COMPONENT_DEFINE("Point to point conection");
 
 static const std::string CONFIG_FILE = "config.txt";
- 
+static uint8_t* byteArray;
+static uint32_t PACKET_SIZE = 1100; 
+static int UDP_PACKET_COUNT = 1;  
+
 /**
  * 
  * Reading Configuration File...
@@ -51,6 +54,49 @@ int readConfigurationFile(){
       return protocolNumberInDecimal;
 }
 
+void returnarray(uint8_t* array, int size)
+{
+    for (int i = 0; i < size; i++)
+    {        
+        std::cout << array[i];
+    }
+    std::cout << "\n";
+}
+
+uint8_t* assignzero(int size)
+{
+    uint8_t* b = new uint8_t[size];
+    for (int i = 0; i < size; i++)
+    {
+        b[i] = false;
+    }
+    return b;
+}
+
+void generate()
+{    
+    int t = rand() % PACKET_SIZE;
+    byteArray = assignzero(PACKET_SIZE);
+    for (int x = 0; x < t; x++)
+    {
+        byteArray[rand() % PACKET_SIZE] = true;
+    }
+    //returnarray(byteArray, PACKET_SIZE);
+}
+
+
+void generateRandomUDPPayload(){
+  long inc=0; 
+  srand(time(0));       
+  while (inc < UDP_PACKET_COUNT)
+  {
+    generate();
+    inc += 1;
+    NS_LOG_UNCOND("Alper.Random.Packet:"); 
+    returnarray(byteArray,PACKET_SIZE);
+  } 
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -60,11 +106,8 @@ uint32_t CompressionDataRate = 8;
 CommandLine cmd;
 cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
 cmd.Parse (argc, argv);
-
-
 NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
-
-//protocolNumberInDecimal=33
+    
 
 /////// READ CONFIGURATION FILE ///////////
 int  protocolNumberInDecimal = readConfigurationFile();
@@ -171,15 +214,21 @@ int  protocolNumberInDecimal = readConfigurationFile();
   ApplicationContainer serverApps = echoReceiverServer.Install (nodes.Get (3));
   serverApps.Start (Seconds (2.0));
   serverApps.Stop (Seconds (100.0));
-UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
+  UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
   //UdpEchoClientHelper echoSenderClient (SenderRouter2Address, router1Port);
   echoSenderClient.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
   echoSenderClient.SetAttribute ("Interval", TimeValue (interPacketInterval));
   echoSenderClient.SetAttribute ("PacketSize", UintegerValue (packetSize));
   ApplicationContainer senderClientApps = echoSenderClient.Install(nodes.Get(0));
-  echoSenderClient.SetFill(senderClientApps.Get(0),"We can send message from here"); //1100
-  senderClientApps.Start (Seconds (4.0));
-  senderClientApps.Stop (Seconds (90.0));
+  
+  //GENERATE RANDOM PAYLOAD
+  generateRandomUDPPayload();
+
+  //void SetFill (Ptr<Application> app, uint8_t *fill, uint32_t fillLength, uint32_t dataLength);
+  //echoSenderClient.SetFill(senderClientApps.Get(0),"We can send message from here"); //1100    
+  echoSenderClient.SetFill(senderClientApps.Get(0),byteArray,PACKET_SIZE,PACKET_SIZE); //1100  
+  senderClientApps.Start (Seconds (4.0)); 
+  senderClientApps.Stop (Seconds (90.0)); 
 
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
