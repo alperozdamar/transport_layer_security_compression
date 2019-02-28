@@ -40,6 +40,8 @@ NS_LOG_COMPONENT_DEFINE ("PointToPointNetDevice");
 
 NS_OBJECT_ENSURE_REGISTERED (PointToPointNetDevice);
 
+static const int COMPRESSED_PROTOCOL_NUMBER = (int)0x4021;
+
 TypeId 
 PointToPointNetDevice::GetTypeId (void)
 {
@@ -344,7 +346,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
     PppHeader header;
     packet-> RemoveHeader(header);
 
-    if(header.GetProtocol()==(int)0x4021){
+    if(header.GetProtocol()==COMPRESSED_PROTOCOL_NUMBER){ //0x4021
       NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol());
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
@@ -658,7 +660,7 @@ PointToPointNetDevice::Send (
     size = ipSize + size;
     ipHeader.SetPayloadSize(size); 
     packet-> AddHeader(ipHeader);
-    header.SetProtocol(0x4021);              
+    header.SetProtocol(COMPRESSED_PROTOCOL_NUMBER);              //0x4021
     } 
     packet->AddHeader(header);
   } 

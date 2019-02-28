@@ -11,6 +11,46 @@ using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("Point to point conection");
 
+static const std::string CONFIG_FILE = "config.txt";
+ 
+/**
+ * 
+ * Reading Configuration File...
+ * 
+ * */
+int readConfigurationFile(){
+  int  protocolNumberInDecimal=0;
+  std::ifstream cFile (CONFIG_FILE);
+      if (cFile.is_open())
+      {
+          std::string line;
+          while(getline(cFile, line)){
+              line.erase(std::remove_if(line.begin(), line.end(), isspace),
+                                  line.end());
+              if(line[0] == '#' || line.empty())
+                  continue;
+              auto delimiterPos = line.find("=");
+              std::string name = line.substr(0, delimiterPos);
+              std::string value = line.substr(delimiterPos + 1);            
+              std::cout << name << " " << value << '\n';
+
+              if(name.compare("protocolNumberInDecimal")==0 ){
+                int intValue = atoi(value.c_str());
+                protocolNumberInDecimal=intValue;              
+                std::cout << name << "=" << protocolNumberInDecimal << '\n';
+                //std::cout << "Alper.Hex:" << std::hex << protocolNumberInDecimal;
+              }else{
+                NS_LOG_UNCOND("protocolNumberInDecimal is not equal to "<< name);
+              }
+          }        
+      }
+      else {
+          std::cerr << "Couldn't open config file for reading.\n";
+      }
+
+      return protocolNumberInDecimal;
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -27,36 +67,7 @@ NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
 //protocolNumberInDecimal=33
 
 /////// READ CONFIGURATION FILE ///////////
-int  protocolNumberInDecimal=0;
-std::ifstream cFile ("config.txt");
-    if (cFile.is_open())
-    {
-        std::string line;
-        while(getline(cFile, line)){
-            line.erase(std::remove_if(line.begin(), line.end(), isspace),
-                                 line.end());
-            if(line[0] == '#' || line.empty())
-                continue;
-            auto delimiterPos = line.find("=");
-            std::string name = line.substr(0, delimiterPos);
-            std::string value = line.substr(delimiterPos + 1);            
-            std::cout << name << " " << value << '\n';
-
-            if(name.compare("protocolNumberInDecimal")==0 ){
-              int intValue = atoi(value.c_str());
-              protocolNumberInDecimal=intValue;              
-              std::cout << name << "=" << protocolNumberInDecimal << '\n';
-              //std::cout << "Alper.Hex:" << std::hex << protocolNumberInDecimal;
-            }else{
-              NS_LOG_UNCOND("protocolNumberInDecimal is not equal to "<< name);
-            }
-        }        
-    }
-    else {
-        std::cerr << "Couldn't open config file for reading.\n";
-    }
-
-
+int  protocolNumberInDecimal = readConfigurationFile();
 
  // NS_LOG_INFO ("Command Line Argument!");
  // CommandLine cmd;
@@ -166,7 +177,7 @@ UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
   echoSenderClient.SetAttribute ("Interval", TimeValue (interPacketInterval));
   echoSenderClient.SetAttribute ("PacketSize", UintegerValue (packetSize));
   ApplicationContainer senderClientApps = echoSenderClient.Install(nodes.Get(0));
-  echoSenderClient.SetFill(senderClientApps.Get(0),"We can send message from here");
+  echoSenderClient.SetFill(senderClientApps.Get(0),"We can send message from here"); //1100
   senderClientApps.Start (Seconds (4.0));
   senderClientApps.Stop (Seconds (90.0));
 
@@ -194,16 +205,3 @@ UdpEchoClientHelper echoSenderClient (Router2ReceiverAddress, router1Port);
   Simulator::Destroy ();
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
- 
-
- 
