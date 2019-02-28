@@ -54,6 +54,9 @@ Our project is running under Ubuntu, version 18.04.01.
         
       c) Add zlib library 
       
+        sudo apt-get install zlib1g-dev
+        sudo apt-get install libpng-dev
+        
       d) Install waf
    
  # 5. Recommended tools
@@ -86,12 +89,13 @@ Our project is running under Ubuntu, version 18.04.01.
 
   # 6. Building project
       
-        In order to build the project run this command. For running these commands you need you need to be in: $  workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
+        In order to build the project run this command. 
+        xFor running these commands you need you need to be in: $  workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
       
       $ ./waf configure
       $ ./waf build
       $ ./waf -- run
-     
+      $ ./waf --run "scratch/point2point --CompressionDataRate=20"
    
    
    
