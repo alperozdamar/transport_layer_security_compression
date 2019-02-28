@@ -28,7 +28,7 @@ Our project is running under Ubuntu, version 18.04.01.
         $ cd
         $ mkdir workspace
         $ cd workspace
-        $ git clone https://gitlab.com/nsnam/ns-3-allinone.git
+        $ git clone [https://gitlab.com/nsnam/ns-3-allinone.git](https://gitlab.com/nsnam/ns-3-allinone.git)
         $ cd ns-3-allinone
         $ python download.py
         $ python download.py -n ns-3.29
@@ -90,7 +90,7 @@ Our project is running under Ubuntu, version 18.04.01.
   ## 6. Building project
       
         In order to build the project run this command. 
-        xFor running these commands you need you need to be in: $  workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
+        xFor running these commands you need you need to be in: $ workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
       
       $ ./waf configure
       $ ./waf build
@@ -108,7 +108,7 @@ Our project is running under Ubuntu, version 18.04.01.
    # Overview
     
 For this project you will implement a network level compression link. You will then implement a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries [https://lasr.cs.ucla.edu/vahab/resources/compression_detection.pdf](https://lasr.cs.ucla.edu/vahab/resources/compression_detection.pdf), which is recommended that you read in detail up to Section VI.
-Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation [https://www.nsnam.org/releases/ns-3-29/documentation/] are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
+Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation [https://www.nsnam.org/releases/ns-3-29/documentation/](https://www.nsnam.org/releases/ns-3-29/documentation/) are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
 
    # Components
    
@@ -121,10 +121,24 @@ You should not worry about implementing Compression Control Protocol and its cor
 You may only need to modify PointToPointNetDevice to enable compression/decompression on point-to-point links. A good starting point to get familiar with, in addition to PointToPointNetDevice is the ns-3 point-to-point model overview.
 
 ![Image](image.png)
-   
+
+   Figure 1: The specified method to implement for assembling compressed packets, as specificed in RFC 1974.
+
 A good starting point for building ns-3 applications might be this ns-3 wiki article, How To Make and Use A New Application.
   
    
+   
+  # (2) Compression Detection Application
+
+You will implement the network compression detection only in the cooperative environment as described here (Section IV). In summary, your network application is a client/server application where the sender sends two sets of 6000 UDP packets back-to-back (called packet train), and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the second packet train contains random sequence of bits. You can generate random sequence of bits using /dev/random. If the difference in arrival time between the first and last packets of the two trains (∆tH −∆tL) is more than a fixed threshold τ = 100 ms, the application reports <dl><dt>Compression detected!</dt></dl>, whereas when the time difference is less than τ there was probably no compression link on the path and the application should display No compression was detected.
+Your application is required to take in at least one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers.
+
+  <dd>Is something people use sometimes.</dd>
+
+  <dt>Markdown in HTML</dt>
+  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
+</dl>
+
      
      
 
