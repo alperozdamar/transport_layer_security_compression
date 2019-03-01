@@ -214,7 +214,8 @@ UdpClient::Send (void)
     int i=0;
     for (const auto& elem : v1)
     {
-        std::cout << elem; //Everything is perfect! We create 1000 byte long random number!
+        //LOG
+        //std::cout << elem; //Everything is perfect! We create 1000 byte long random number!
         if(elem==true){     //We converting into uint_8 because of packet constructor.
           byteArray[i]=1;   
         }else{
@@ -222,11 +223,13 @@ UdpClient::Send (void)
         }        
         i++;
     }
-  std::cout<<"\nPacket  : ";
-     for(int i=0; (unsigned)i < PACKET_SIZE;++i){         
-         std::cout << unsigned(byteArray[i]);
-  }
-  std::cout<<std::endl; 
+
+    //LOG...
+  // std::cout<<"\nPacket  : ";
+  //    for(int i=0; (unsigned)i < PACKET_SIZE;++i){         
+  //        std::cout << unsigned(byteArray[i]);
+  // } 
+  // std::cout<<std::endl; 
 
   //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");
   Ptr<Packet> p = Create<Packet> (byteArray, PACKET_SIZE+(8+4));   //Packet (uint8_t const*buffer, uint32_t size);

@@ -16,7 +16,7 @@ NS_LOG_COMPONENT_DEFINE("Point to point conection");
 static const std::string CONFIG_FILE = "config.txt";
 
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 6000;   
+uint32_t MAX_PACKET_COUNT = 2;       //Should be 6000.    
 static uint32_t PACKET_SIZE = 1100; 
 
 /**
