@@ -145,9 +145,13 @@ NodeContainer nodes;
   P2PSenderRouter1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (1100));
   
+  std::string dataRateString = std::to_string(CompressionDataRate);
+  dataRateString = dataRateString +"Mbps";
+  NS_LOG_UNCOND("dataRateString:"<< dataRateString);  
+
   /* Link btw Router1 Router2 */
-  PointToPointHelper P2PRouter1Router2;
-  P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue("8Mbps"));
+  PointToPointHelper P2PRouter1Router2; 
+  P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue(dataRateString)); 
   P2PRouter1Router2.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (1100));
 
