@@ -160,7 +160,7 @@ You may only need to modify PointToPointNetDevice to enable compression/decompre
 
 ![Image](lzs.png)
 
-   Figure 1: The specified method to implement for assembling compressed packets, as specificed in RFC 1974.
+       Figure 1: The specified method to implement for assembling compressed packets, as specificed in RFC 1974.
 
 A good starting point for building ns-3 applications might be this ns-3 wiki article, How To Make and Use A New Application.
   
@@ -181,7 +181,7 @@ Transmit low entropy data over a network topology without a compression link.
 
 ![Image](topology.png)
 
-Figure 2: A 4-node topology with a compression link.
+                              Figure 2: A 4-node topology with a compression link.
 
 Transmit high entropy data over a network topology without a compression link.
 Transmit low entropy data over a network topology with a compression link.
