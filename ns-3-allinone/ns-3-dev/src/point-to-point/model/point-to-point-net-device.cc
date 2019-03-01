@@ -623,11 +623,14 @@ PointToPointNetDevice::Send (
     inData[0]=0x00; 
     inData[1]=0x21;
     packet-> CopyData(&(inData[2]),size);
-    std::cout<<"Packet size after adding data + protocol : "<< size << ":";
-    for(int i=0; (unsigned)i < size;++i){
-        std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)inData[i] << " ";
-    }
-    std::cout<<std::endl;  
+    
+    //TODO: PUT DEBUG LEVEL CHECK
+    // std::cout<<"Packet size after adding data + protocol : "<< size << ":";
+    // for(int i=0; (unsigned)i < size;++i){
+    //     std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)inData[i] << " ";
+    // }
+    // std::cout<<std::endl;  
+    
     //TODO: Compress
     //std::string data;
     //data.assign(buffer[0],buffer[size]));
@@ -645,14 +648,17 @@ PointToPointNetDevice::Send (
   
     uint8_t *compressData = new uint8_t[size];
     uLongf new_size;
-    int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
-    std::cout << "Compressed packet size:" << new_size;
-    std::cout<<"Compress2 out: "<< returnValue <<":"; 
-    std::cout<<"Compressed: "<< new_size <<":"; 
-    for(int i=0;(unsigned)i<size;++i ){
-      std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compressData[i] << " ";
-    }
-    std::cout<<std::endl;
+    //int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
+    compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
+    //TODO: PUT DEBUG LEVEL CHECK
+    // std::cout << "Compressed packet size:" << new_size;
+    // std::cout<<"Compress2 out: "<< returnValue <<":"; 
+    // std::cout<<"Compressed: "<< new_size <<":"; 
+    // for(int i=0;(unsigned)i<size;++i ){
+    //   std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compressData[i] << " ";
+    // }
+    // std::cout<<std::endl;
+    
     size = new_size;
     packet = new Packet(compressData,size); 
     size = size + 8;  // for UDP
