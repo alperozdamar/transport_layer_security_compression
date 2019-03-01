@@ -33,36 +33,22 @@
 #include <cstdlib>
 #include <cstdio>
 
-// #include <iomanip> 
-// #include <vector>
-// #include <random>
-// #include <climits>
-// #include <algorithm>
-// #include <functional>
+#include <iomanip> 
+#include <vector>
+#include <random>
+#include <climits>
+#include <algorithm>
+#include <functional>
 
 
 namespace ns3 {
-
-
-// template <typename OutputIt, typename Engine = std::mt19937>
-// void generate(OutputIt first, OutputIt last)
-// {
-//     static Engine engine;
-//     std::bernoulli_distribution distribution;
-
-//     while (first != last)
-//     {
-//         *first++ = distribution(engine);
-//     }
-// }
-
 
 NS_LOG_COMPONENT_DEFINE ("UdpClient");
 
 NS_OBJECT_ENSURE_REGISTERED (UdpClient);
 
 //static uint8_t* byteArray;
-//static uint32_t PACKET_SIZE = 1100; 
+static uint32_t PACKET_SIZE = 1100; 
 
 TypeId
 UdpClient::GetTypeId (void)
@@ -195,6 +181,21 @@ UdpClient::StopApplication (void)
   Simulator::Cancel (m_sendEvent);
 }
 
+std::vector<bool> generateRandomSequence() 
+{
+    std::vector<bool> randomSequence;
+    randomSequence.resize(PACKET_SIZE);
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::bernoulli_distribution distribution(0.5); // your 50/50 chance
+
+    std::generate(randomSequence.begin(), randomSequence.end(),
+        [&generator, &distribution] { return distribution(generator); });
+
+    return randomSequence;
+}
+
 void
 UdpClient::Send (void)
 {
@@ -208,43 +209,28 @@ UdpClient::Send (void)
   //Packet (uint8_t const*buffer, uint32_t size);
 
   //8+4+packetSize
-  // std::vector<int> v1;
-  //   v1.resize(100);
-  //   generate(v1.begin(), v1.end());
-
-  //   for (const auto& elem : v1)
-  //   {
-  //       std::cout << elem << ' ';
-  //   }
-
-  //   std::cout<< '\n';        
-
-  //   std::vector<bool> v2;
-  //   v2.resize(100);
-  //   generate(v2.begin(), v2.end());
-
-  //   for (const auto& elem : v2)
-  //   {
-  //       std::cout << elem << ' ';
-  //   }
-
-//Karakter yaratiyor
-  // using random_bytes_engine = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned char>;
-  // random_bytes_engine rbe;
-  //   std::vector<unsigned char> data(1000);
-  //   std::generate(begin(data), end(data), std::ref(rbe));
-  
+    uint8_t* byteArray = new uint8_t[PACKET_SIZE];
+    std::vector<bool> v1 = generateRandomSequence();
+    int i=0;
+    for (const auto& elem : v1)
+    {
+        std::cout << elem; //Everything is perfect! We create 1000 byte long random number!
+        if(elem==true){     //We converting into uint_8 because of packet constructor.
+          byteArray[i]=1;   
+        }else{
+          byteArray[i]=0;
+        }        
+        i++;
+    }
+  std::cout<<"\nPacket  : ";
+     for(int i=0; (unsigned)i < PACKET_SIZE;++i){         
+         std::cout << unsigned(byteArray[i]);
+  }
+  std::cout<<std::endl; 
 
   //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");
-  //Ptr<Packet> p = Create<Packet> (v2, PACKET_SIZE+8+4);  
-  Ptr<Packet> p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header
-  
-  // std::cout<<"Packet size after adding data + protocol : "<< 1100 << ":";
-  //    for(int i=0; (unsigned)i < 1100;++i){
-  //        std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)v2[i] << " ";
-  //    }
-  //    std::cout<<std::endl; 
-  
+  Ptr<Packet> p = Create<Packet> (byteArray, PACKET_SIZE+(8+4));   //Packet (uint8_t const*buffer, uint32_t size);
+  //Ptr<Packet> p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
   
   p->AddHeader (seqTs);
 

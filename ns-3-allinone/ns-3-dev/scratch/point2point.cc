@@ -16,7 +16,7 @@ NS_LOG_COMPONENT_DEFINE("Point to point conection");
 static const std::string CONFIG_FILE = "config.txt";
 
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 2;   
+uint32_t MAX_PACKET_COUNT = 6000;   
 static uint32_t PACKET_SIZE = 1100; 
 
 /**
@@ -61,7 +61,7 @@ int main (int argc, char *argv[])
 {
 
 /////// READ COMMAND LINE ARGUMENTS  ///////////
-uint32_t CompressionDataRate = 8;
+uint32_t CompressionDataRate = 1;
 CommandLine cmd;
 cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
 cmd.Parse (argc, argv);
@@ -129,12 +129,11 @@ NodeContainer nodes;
   deviceRouter1Router2 = P2PRouter1Router2.Install(nodes.Get(1),nodes.Get(2));
   
   Ptr <PointToPointNetDevice> PpNdRouter1Router2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
+  Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
   PpNdRouter1Router2 -> SetCompressFlag(false);
   PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
-  Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
-  PpNdRouter1Router2 -> SetDecompressFlag(false); 
-  PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
-
+  PpNdRouter1Router2 -> SetDecompressFlag(false);
+     
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
   deviceRouter2Receiver = P2PRouter2Receiver.Install(nodes.Get(2),nodes.Get(3));
