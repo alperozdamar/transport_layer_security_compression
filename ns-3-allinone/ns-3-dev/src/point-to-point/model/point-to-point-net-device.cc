@@ -341,23 +341,20 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   NS_LOG_UNCOND("\t\tRECEIVE PACKET");
   NS_LOG_FUNCTION (this << packet);
   uint16_t protocol = 0;  
-  NS_LOG_UNCOND("Test doCompressin Receive: " << this -> doDecompress);
+
   if(this -> doDecompress){
     NS_LOG_UNCOND("Packet.Size: "<<packet-> GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
 
-    if(header.GetProtocol()==COMPRESSED_PROTOCOL_NUMBER){ //0x4021
+    if(header.GetProtocol() == COMPRESSED_PROTOCOL_NUMBER){ 
       NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol());
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
       int ipSize=ipHeader.GetPayloadSize() - packet-> GetSize();    
       packet -> RemoveHeader(ipHeader);   
-      std::cout<<"IP size: "<<ipSize<<std::endl;
-      std::cout<<"Packet size - IP: "<< packet-> GetSize()<<std::endl;
       UdpHeader udp_header;
       packet -> RemoveHeader(udp_header);
-      std::cout<<"Packet size - IP:"<<packet->GetSize()<<std::endl;
       uLongf size = packet-> GetSize();
       uint8_t *compressData = new uint8_t[size];
       packet -> CopyData(compressData, size);
@@ -382,7 +379,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       size = ipSize + size;
       ipHeader.SetPayloadSize(size); 
       packet->AddHeader(ipHeader); 
-      header.SetProtocol(0x0021);
+      header.SetProtocol(0x0021); // Alper to add parameter
     }
     packet->AddHeader(header);
   }
@@ -589,15 +586,11 @@ PointToPointNetDevice::Send (
 
   /* Send package design for comperssion */
   NS_LOG_UNCOND("Sending packet process is started ...");
-  NS_LOG_UNCOND("packet header was added, size: " << packet->GetSize());
-  NS_LOG_UNCOND("Test doCompressin Send: " << this -> doCompress);
+  NS_LOG_UNCOND("packet header was added, size: " << packet-> GetSize());
   if(this -> doCompress){   
-    NS_LOG_UNCOND("Start compressing with packet size : "<<packet->GetSize());  
+    NS_LOG_UNCOND("Start compressing with packet size : "<<packet-> GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
-
-    //Protocol Number Check!
-    //if(header.GetProtocol()==(int)0x0021){ 
 
     NS_LOG_UNCOND("CompressProtocolNumber.Int:"<< compressProtocolNumber);
     NS_LOG_UNCOND("CompressProtocolNumber.Hex:"<< std::hex << compressProtocolNumber);
@@ -817,7 +810,6 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   PointToPointNetDevice::SetCompressFlag(bool isRouter1){
     NS_LOG_FUNCTION (this);
     doCompress = isRouter1;
-    NS_LOG_UNCOND("Setting doCompressFunction: " << this -> doCompress);
   }
 
   
@@ -826,15 +818,13 @@ PointToPointNetDevice::EtherToPpp (uint16_t proto)
   {
     NS_LOG_FUNCTION (this);
     doDecompress = isRouter2;
-    NS_LOG_UNCOND("Setting doDecompressFunction: " << this -> doDecompress);
   }
 
   void
   PointToPointNetDevice::SetCompressProtocolNumber(int protocolNumberLocal)
   {
     NS_LOG_FUNCTION (this);
-    compressProtocolNumber = protocolNumberLocal; 
-    NS_LOG_UNCOND("Setting compressProtocolNumber: " << this -> compressProtocolNumber);  
+    compressProtocolNumber = protocolNumberLocal;   
   }
 
 

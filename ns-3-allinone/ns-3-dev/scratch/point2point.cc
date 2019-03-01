@@ -11,13 +11,11 @@
 
 using namespace ns3;
 
-NS_LOG_COMPONENT_DEFINE("Point to point conection");
-
 static const std::string CONFIG_FILE = "config.txt";
-
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 2;       //Should be 6000.    
+uint32_t MAX_PACKET_COUNT = 1;   
 static uint32_t PACKET_SIZE = 1100; 
+uint16_t serverPort = 9;
 
 /**
  * 
@@ -59,48 +57,34 @@ int readConfigurationFile(){
 
 int main (int argc, char *argv[])
 {
-
-/////// READ COMMAND LINE ARGUMENTS  ///////////
-uint32_t CompressionDataRate = 1;
-CommandLine cmd;
-cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
-cmd.Parse (argc, argv);
-NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
+  /* READ COMMAND LINE ARGUMENTS  */
+  uint32_t CompressionDataRate = 1;
+  CommandLine cmd;
+  cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
+  cmd.Parse (argc, argv);
+  NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
     
+  /* READ CONFIGURATION FILE */
+  int  protocolNumberInDecimal = readConfigurationFile();
+  
+  Time interPacketInterval = Seconds (0.1);
+  NS_LOG_INFO ("Report Timing!");
+  Time::SetResolution (Time::NS);
+  //LogComponentEnable("UdpClientApplication", LOG_LEVEL_INFO);
+  //LogComponentEnable("UdpServerApplication", LOG_LEVEL_INFO);
 
-/////// READ CONFIGURATION FILE ///////////
-int  protocolNumberInDecimal = readConfigurationFile();
-
- // NS_LOG_INFO ("Command Line Argument!");
- // CommandLine cmd;
- // cmd.AddValue ("useIpv6", "Use Ipv6", useV6);
- // cmd.Parse (argc, argv);
-
-  NS_LOG_INFO ("Decleare variable!");
- //uint16_t router1Port = 9;
- //uint32_t packetSize = 1100;
- 
- Time interPacketInterval = Seconds (0);
-
- NS_LOG_INFO ("Report Timing!");
- Time::SetResolution (Time::NS);
- LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
- LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
-
-NS_LOG_INFO ("Create Node!");
-NodeContainer nodes;
- nodes.Create(4);
-
- InternetStackHelper stack;
- stack.Install(nodes);
-
- NS_LOG_INFO ("Create link between nodes and set attribute!");
+  NS_LOG_INFO ("Create Node!");
+  NodeContainer nodes;
+  nodes.Create(4);
+  
+  InternetStackHelper stack;
+  stack.Install(nodes);
 
   /* Link btw Sender Router1 */
   PointToPointHelper P2PSenderRouter1;
-  P2PSenderRouter1.SetDeviceAttribute("DataRate", StringValue("8Mbps"));
+  P2PSenderRouter1.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   P2PSenderRouter1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
-  P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (1100));
+  P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (PACKET_SIZE));
   
   std::string dataRateString = std::to_string(CompressionDataRate);
   dataRateString = dataRateString +"Mbps";
@@ -110,16 +94,14 @@ NodeContainer nodes;
   PointToPointHelper P2PRouter1Router2; 
   P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue(dataRateString)); 
   P2PRouter1Router2.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
-  P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (1100));
+  P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (PACKET_SIZE));
 
   /* Link btw Router2 Receiver */
   PointToPointHelper P2PRouter2Receiver;
-  P2PRouter2Receiver.SetDeviceAttribute("DataRate", StringValue("8Mbps"));
+  P2PRouter2Receiver.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   P2PRouter2Receiver.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
-  P2PRouter2Receiver.SetDeviceAttribute ("Mtu", UintegerValue (1100));
+  P2PRouter2Receiver.SetDeviceAttribute ("Mtu", UintegerValue (PACKET_SIZE));
 
-
-  NS_LOG_INFO ("connect nodes using DeviceContainer!");
   /* Connect node Sender & Router1 */
   NetDeviceContainer deviceSenderRouter1; 
   deviceSenderRouter1 = P2PSenderRouter1.Install(nodes.Get(0),nodes.Get(1));
@@ -144,45 +126,36 @@ NodeContainer nodes;
   ipv4Address.SetBase ("10.0.1.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaceSenderRouter1;
   interfaceSenderRouter1 = ipv4Address.Assign (deviceSenderRouter1);
-  Address SenderRouter1Address;
-  SenderRouter1Address = Address(interfaceSenderRouter1.GetAddress (1));
+ 
 
   /* Assign IP to Router1Router2 */  
   ipv4Address.SetBase ("10.0.2.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaceRouter1Router2;
   interfaceRouter1Router2= ipv4Address.Assign (deviceRouter1Router2);
-  Address Router1Router2Address;
-  Router1Router2Address = Address(interfaceRouter1Router2.GetAddress (1));
-
+ 
   /* Assign IP to Router2Receiver */
   ipv4Address.SetBase ("10.0.3.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaceRouter2Receiver;
-  interfaceRouter2Receiver= ipv4Address.Assign (deviceRouter2Receiver);
+  interfaceRouter2Receiver= ipv4Address.Assign(deviceRouter2Receiver);
   Address serverAddress;
-  serverAddress = Address(interfaceRouter2Receiver.GetAddress (1));
+  serverAddress = Address(interfaceRouter2Receiver.GetAddress(1));
 
   NS_LOG_INFO ("Create Server Application!");
-  uint16_t serverPort = 9;
+
   /* Create Server */  
   UdpServerHelper server (serverPort);
-  ApplicationContainer serverApps = server.Install (nodes.Get (3));
-  serverApps.Start (Seconds (2.0));
-  serverApps.Stop (Seconds (3000.0));       
+  ApplicationContainer serverApps = server.Install (nodes.Get(3));
+  serverApps.Start (Seconds (1.0));
+  serverApps.Stop (Seconds (5000.0));       
 
-  //
-  // Create one UdpClient application to send UDP datagrams from node zero to
-  // node one.
-   //
-   //uint32_t MaxPacketSize = 1024;   
-   //uint32_t maxPacketCount = 320;
-   UdpClientHelper client (serverAddress, serverPort);
-   client.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); //6000
-   client.SetAttribute ("Interval", TimeValue (interPacketInterval));     //
-   client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));     //1100
-   ApplicationContainer clientApps = client.Install (nodes.Get (0));
-    //Start counter...
-   clientApps.Start (Seconds (4.0));
-   clientApps.Stop (Seconds (299.0));
+  UdpClientHelper client (serverAddress, serverPort);
+  client.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
+  client.SetAttribute ("Interval", TimeValue (interPacketInterval));   
+  client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));        
+  ApplicationContainer clientApps = client.Install (nodes.Get(0));
+  //Start counter...
+  clientApps.Start (Seconds (4.0));
+  clientApps.Stop (Seconds (4000.0));
     //End Counter
     //Calculate..... <100 Compression.
 
@@ -191,7 +164,7 @@ NodeContainer nodes;
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-  #if 0
+  #if 1
   AsciiTraceHelper ascii;
   P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
   P2PSenderRouter1.EnablePcap("Sender", deviceSenderRouter1.Get(0),false, false);
@@ -200,15 +173,15 @@ NodeContainer nodes;
   P2PRouter1Router2.EnablePcap("Router1", deviceRouter1Router2.Get(0),false, false);
 
   P2PRouter1Router2.EnableAsciiAll(ascii.CreateFileStream("Router2.tr"));
-  P2PRouter1Router2.EnablePcap("Router2", deviceRouter1Router2.Get(1),false, false);
+  P2PRouter1Router2.EnablePcap("Router2", deviceRouter2Receiver.Get(0),false, false);
 
   P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Receiver.tr"));
   P2PRouter2Receiver.EnablePcap("Receiver", deviceRouter2Receiver.Get(1),false, false);
-  #elif 1
+  #elif 
   P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
   P2PRouter1Router2.EnablePcapAll ("Router1Router2");
   P2PRouter2Receiver.EnablePcapAll ("Router2Receiver");
-  #endif
+  #endif 
 
   AnimationInterface anim("p2p.xml");
   anim.SetConstantPosition(nodes.Get(0), 0.0, 0.0);
