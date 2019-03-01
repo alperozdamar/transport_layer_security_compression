@@ -58,6 +58,44 @@ Our project is running under Ubuntu, version 18.04.01.
         sudo apt-get install libpng-dev
         
       d) Install waf
+      
+      e) Installing zlib
+      
+         In order to install zlib library run the following commands:
+         
+         - clone the following repository [https://github.com/vitaliipoliakov/ns3-dash-mptcp](https://github.com/vitaliipoliakov/ns3-dash-mptcp), by using git clone.
+         - after cloning the repository above, run the following commands:
+         
+           Pre-Requesits (Todo: cleanup)
+               sudo apt-get install libboost-all-dev
+               sudo apt-get install build-essential gccxml
+               sudo apt-get install git-core build-essential cmake libxml2-dev libcurl4-openssl-dev
+               sudo apt-get install cmake libxml2-dev libcurl4-openssl-dev
+               sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev 
+               
+         -  build zlib, by running this commands:
+               cd AMuSt-libdash/libdash
+               mkdir build
+               cd build
+               cmake ../
+               make
+               
+         - run following commands:
+         
+               sudo apt-get install zlib1g-dev
+               sudo apt-get install libpng-dev
+         
+      f) Visualizenode in netanim
+         
+         - go to folder ns-3-allinone and run commands:
+               cd netanim/
+               apt-get install qt5-default
+               make clean
+               qmake NetAnim.pro
+               make
+               ./NetAnim
+               
+      
    
  # 5. Recommended tools
      
