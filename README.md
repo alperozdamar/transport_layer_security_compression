@@ -158,7 +158,7 @@ Pre-processing should first take the matched packet then replace the original pr
 You should not worry about implementing Compression Control Protocol and its corresponding control packets, as you may assume the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, you should also not implement anything from the negotiation phase, and not worry about using the exact compression data format, specified in X3.241-1994.
 You may only need to modify PointToPointNetDevice to enable compression/decompression on point-to-point links. A good starting point to get familiar with, in addition to PointToPointNetDevice is the ns-3 point-to-point model overview.
 
-![Image](lzs.png)
+![Image](packet_construction.png)
 
        Figure 1: The specified method to implement for assembling compressed packets, as specificed in RFC 1974.
 
@@ -179,7 +179,7 @@ Transmit low entropy data over a network topology without a compression link.
 
 
 
-![Image](topology.png)
+![Image](link_diagram.png)
 
                               Figure 2: A 4-node topology with a compression link.
 
