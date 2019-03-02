@@ -11,6 +11,8 @@
 
 using namespace ns3;
 
+NS_LOG_COMPONENT_DEFINE("Point to point connection"); 
+
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
 uint32_t MAX_PACKET_COUNT = 1;   
