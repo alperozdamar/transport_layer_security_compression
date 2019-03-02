@@ -63,10 +63,16 @@ int main (int argc, char *argv[])
 {
   /* READ COMMAND LINE ARGUMENTS  */
   uint32_t CompressionDataRate = 1;
+  bool IsHighEntropy = 0; 
   CommandLine cmd;
   cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
+  cmd.AddValue("IsHighEntropy", "IsHighEntropy [0/1]", IsHighEntropy); 
   cmd.Parse (argc, argv);
   NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
+
+
+
+
     
   /* READ CONFIGURATION FILE */
   int  protocolNumberInDecimal = readConfigurationFile();
@@ -155,8 +161,8 @@ int main (int argc, char *argv[])
   UdpClientHelper client (serverAddress, serverPort);
   client.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
   client.SetAttribute ("Interval", TimeValue (interPacketInterval));   
-  client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));   
-
+  client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
+  
   ApplicationContainer clientApps = client.Install (nodes.Get(0));
   //Start counter...
   clientApps.Start (Seconds (4.0));

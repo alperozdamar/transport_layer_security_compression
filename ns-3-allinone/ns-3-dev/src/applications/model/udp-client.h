@@ -53,6 +53,9 @@ public:
 
   virtual ~UdpClient ();
 
+  bool isHighEntropy = true;
+  virtual void SetEntropy(bool isHighEntropy1); 
+
   /**
    * \brief set the remote address and port
    * \param ip remote IP address

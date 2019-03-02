@@ -50,6 +50,9 @@ NS_OBJECT_ENSURE_REGISTERED (UdpClient);
 //static uint8_t* byteArray;
 static uint32_t PACKET_SIZE = 1100; //if we give 1100 it fragment so we reduce packet size
 
+//TODO: Should be in Configuration Manager!!! (Because we are running our application 2 times.)
+bool highEntropy=true;
+
 TypeId
 UdpClient::GetTypeId (void)
 {
@@ -231,12 +234,15 @@ UdpClient::Send (void)
   // } 
   // std::cout<<std::endl; 
 
-  //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");
+  //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");  
 
-  
-  Ptr<Packet> p = Create<Packet> (byteArray, PACKET_SIZE);   //Packet (uint8_t const*buffer, uint32_t size);
-  //Ptr<Packet> p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
-  
+  Ptr<Packet> p;
+  if(highEntropy == true){ //Random....
+    p = Create<Packet> (byteArray, PACKET_SIZE-(8+4));   //Packet (uint8_t const*buffer, uint32_t size);
+  }else{
+    p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
+  }  
+
   p->AddHeader (seqTs);
 
   std::stringstream peerAddressStringStream;
@@ -269,5 +275,13 @@ UdpClient::Send (void)
       m_sendEvent = Simulator::Schedule (m_interval, &UdpClient::Send, this);
     }
 }
+
+void
+  UdpClient::SetEntropy(bool isHighEntropy1){
+    NS_LOG_FUNCTION (this);
+    isHighEntropy = isHighEntropy1; 
+  }
+
+
 
 } // Namespace ns3
