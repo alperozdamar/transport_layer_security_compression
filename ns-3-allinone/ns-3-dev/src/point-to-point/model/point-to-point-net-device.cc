@@ -338,21 +338,32 @@ PointToPointNetDevice::SetReceiveErrorModel (Ptr<ErrorModel> em)
 void
 PointToPointNetDevice::Receive (Ptr<Packet> packet)
 {
-  NS_LOG_UNCOND("\t\tRECEIVE PACKET");
   //NS_LOG_FUNCTION (this << packet); //TODO: Log issue.
   uint16_t protocol = 0;   
 
-  if(this -> doDecompress){
-    NS_LOG_UNCOND("Packet.Size: "<<packet-> GetSize());  
+  NS_LOG_UNCOND("I am here! <Receive.doDecompress:"<<this -> doDecompress);
+  NS_LOG_UNCOND("I am here! <Receive.doCompress:"<<this -> doCompress);  
+
+  
+
+
+  if(this -> doDecompress){ 
+    NS_LOG_UNCOND("I am here! <Receive>");  
     PppHeader header;
     packet-> RemoveHeader(header);
 
+    NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number<"<< std::hex<<header.GetProtocol());
     if(header.GetProtocol() == COMPRESSED_PROTOCOL_NUMBER){ 
-      NS_LOG_UNCOND("Router sent Protcol Number<"<< header.GetProtocol());
+      NS_LOG_UNCOND("Welcome to UnCompression!!!!");
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
-      int ipSize=ipHeader.GetPayloadSize() - packet-> GetSize();    
-      packet -> RemoveHeader(ipHeader);   
+      int ipSize=ipHeader.GetPayloadSize() - packet-> GetSize(); 
+
+      std::cout<<"IP size:" << ipSize <<std::endl;
+      std::cout<<"Payload size:" << ipHeader.GetPayloadSize() <<std::endl;
+      std::cout<<"Packet size IP:" << packet-> GetSize() <<std::endl;
+
+      //packet -> RemoveHeader(ipHeader);   
       UdpHeader udp_header;
       packet -> RemoveHeader(udp_header);
       uLongf size = packet-> GetSize();
@@ -585,19 +596,23 @@ PointToPointNetDevice::Send (
   AddHeader (packet, protocolNumber);
 
   /* Send package design for comperssion */
-  NS_LOG_UNCOND("Sending packet process is started ...");
-  NS_LOG_UNCOND("packet header was added, size: " << packet-> GetSize());
+  // NS_LOG_UNCOND("Sending packet process is started ...");
+  // NS_LOG_UNCOND("packet header was added, size: " << packet-> GetSize());
+
+  NS_LOG_UNCOND("I am here! <Send.doDecompress:"<<this -> doDecompress);
+  NS_LOG_UNCOND("I am here! <Send.doCompress:"<<this -> doCompress); 
+
   if(this -> doCompress){   
-    NS_LOG_UNCOND("Start compressing with packet size : "<<packet-> GetSize());  
+    //NS_LOG_UNCOND("Start compressing with packet size : "<<packet-> GetSize());  
     PppHeader header;
     packet-> RemoveHeader(header);
 
-    NS_LOG_UNCOND("CompressProtocolNumber.Int:"<< compressProtocolNumber);
-    NS_LOG_UNCOND("CompressProtocolNumber.Hex:"<< std::hex << compressProtocolNumber);
+    // NS_LOG_UNCOND("CompressProtocolNumber.Int:"<< compressProtocolNumber);
+    // NS_LOG_UNCOND("CompressProtocolNumber.Hex:"<< std::hex << compressProtocolNumber);
 
     if(header.GetProtocol()==this->compressProtocolNumber){  
 
-    NS_LOG_UNCOND("Router sent Protcol Number<"<< std::hex << header.GetProtocol());
+    //NS_LOG_UNCOND("Router sent Protcol Number<"<< std::hex << header.GetProtocol());
     
     /* Remove IPV4 Header */
     Ipv4Header ipHeader;

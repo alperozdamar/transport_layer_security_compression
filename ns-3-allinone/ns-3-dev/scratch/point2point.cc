@@ -7,17 +7,20 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip> 
-
+#include <chrono> 
 
 using namespace ns3;
+using namespace std::chrono;
 
 NS_LOG_COMPONENT_DEFINE("Point to point connection"); 
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 2;    
+uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
+static Time interPacketInterval = Seconds(0.0);  
+using namespace std::chrono;
 
 uint16_t serverPort = 9;
 
@@ -69,23 +72,15 @@ int main (int argc, char *argv[])
   cmd.AddValue("IsHighEntropy", "IsHighEntropy [0/1]", IsHighEntropy); 
   cmd.Parse (argc, argv);
   NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
-
-
-
-
-    
+      
   /* READ CONFIGURATION FILE */
   int  protocolNumberInDecimal = readConfigurationFile();
   
-  Time interPacketInterval = Seconds (0.1);
-  NS_LOG_INFO ("Report Timing!");
-  Time::SetResolution (Time::NS);
-  //LogComponentEnable("UdpClientApplication", LOG_LEVEL_INFO);
-  //LogComponentEnable("UdpServerApplication", LOG_LEVEL_INFO);
+   
 
   NS_LOG_INFO ("Create Node!");
   NodeContainer nodes;
-  nodes.Create(4);
+  nodes.Create(4);  
   
   InternetStackHelper stack;
   stack.Install(nodes);
@@ -120,11 +115,20 @@ int main (int argc, char *argv[])
   NetDeviceContainer deviceRouter1Router2; 
   deviceRouter1Router2 = P2PRouter1Router2.Install(nodes.Get(1),nodes.Get(2));
   
+
+  /// TODO: We can't set Router2's Flags.....
   Ptr <PointToPointNetDevice> PpNdRouter1Router2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
+  PpNdRouter1Router2 -> SetCompressFlag(true);
   Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
-  PpNdRouter1Router2 -> SetCompressFlag(false);
+  PpNdRouter1Router2 -> SetDecompressFlag(true);
   PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
-  PpNdRouter1Router2 -> SetDecompressFlag(false); 
+  
+  // TODO: Rozita%Alper..... Think !
+  //deviceRouter1Router2.Get(0)->set
+  //deviceRouter1Router2.Get(1)->set
+  
+
+  //PpNdRouter1Router2 -> SetDecompressFlag(true);  
      
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
@@ -164,18 +168,24 @@ int main (int argc, char *argv[])
   client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
   
   ApplicationContainer clientApps = client.Install (nodes.Get(0));
+  
+  
+  high_resolution_clock::time_point start = high_resolution_clock::now();
   //Start counter...
   clientApps.Start (Seconds (4.0));
-  clientApps.Stop (Seconds (4000.0));
-    //End Counter
-    //Calculate..... <100 Compression.
+  clientApps.Stop (Seconds (8000.0));  
+  high_resolution_clock::time_point end = high_resolution_clock::now();
 
-    //GENERATE RANDOM PAYLOAD
-    //generateRandomUDPPayload();
+  duration<double, std::milli> time_span = end - start;
 
+  std::cout << "It took me " << time_span.count() << " milliseconds.";
+  std::cout << std::endl;
+  
+
+  
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-  #if 1
+  #if 0
   AsciiTraceHelper ascii;
   P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
   P2PSenderRouter1.EnablePcap("Sender", deviceSenderRouter1.Get(0),false, false);
@@ -188,7 +198,7 @@ int main (int argc, char *argv[])
 
   P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Receiver.tr"));
   P2PRouter2Receiver.EnablePcap("Receiver", deviceRouter2Receiver.Get(1),false, false);
-  #elif 0 
+  #elif 1
   P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
   P2PRouter1Router2.EnablePcapAll ("Router1Router2");
   P2PRouter2Receiver.EnablePcapAll ("Router2Receiver");
@@ -202,5 +212,10 @@ int main (int argc, char *argv[])
 
   Simulator::Run ();
   Simulator::Destroy ();
+
+  //std::cout << "finished computation at " << std::ctime(&end_time)
+  //          << "elapsed time: " << elapsed_seconds.count() << "s\n";
+
+
   return 0;
 }
