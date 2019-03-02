@@ -15,8 +15,10 @@ NS_LOG_COMPONENT_DEFINE("Point to point connection");
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 1;   
-static uint32_t PACKET_SIZE = 1100; 
+uint32_t MAX_PACKET_COUNT = 2;    
+static uint32_t MTU_SIZE = 2000; 
+static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
+
 uint16_t serverPort = 9;
 
 /**
@@ -86,7 +88,7 @@ int main (int argc, char *argv[])
   PointToPointHelper P2PSenderRouter1;
   P2PSenderRouter1.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   P2PSenderRouter1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
-  P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (PACKET_SIZE));
+  P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (MTU_SIZE));
   
   std::string dataRateString = std::to_string(CompressionDataRate);
   dataRateString = dataRateString +"Mbps";
@@ -96,13 +98,13 @@ int main (int argc, char *argv[])
   PointToPointHelper P2PRouter1Router2; 
   P2PRouter1Router2.SetDeviceAttribute("DataRate", StringValue(dataRateString)); 
   P2PRouter1Router2.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
-  P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (PACKET_SIZE));
+  P2PRouter1Router2.SetDeviceAttribute ("Mtu", UintegerValue (MTU_SIZE));
 
   /* Link btw Router2 Receiver */
   PointToPointHelper P2PRouter2Receiver;
   P2PRouter2Receiver.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   P2PRouter2Receiver.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
-  P2PRouter2Receiver.SetDeviceAttribute ("Mtu", UintegerValue (PACKET_SIZE));
+  P2PRouter2Receiver.SetDeviceAttribute ("Mtu", UintegerValue (MTU_SIZE));
 
   /* Connect node Sender & Router1 */
   NetDeviceContainer deviceSenderRouter1; 
@@ -116,7 +118,7 @@ int main (int argc, char *argv[])
   Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
   PpNdRouter1Router2 -> SetCompressFlag(false);
   PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
-  PpNdRouter1Router2 -> SetDecompressFlag(false);
+  PpNdRouter1Router2 -> SetDecompressFlag(false); 
      
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
@@ -153,7 +155,8 @@ int main (int argc, char *argv[])
   UdpClientHelper client (serverAddress, serverPort);
   client.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
   client.SetAttribute ("Interval", TimeValue (interPacketInterval));   
-  client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));        
+  client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));   
+
   ApplicationContainer clientApps = client.Install (nodes.Get(0));
   //Start counter...
   clientApps.Start (Seconds (4.0));
@@ -179,7 +182,7 @@ int main (int argc, char *argv[])
 
   P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Receiver.tr"));
   P2PRouter2Receiver.EnablePcap("Receiver", deviceRouter2Receiver.Get(1),false, false);
-  #elif 
+  #elif 0 
   P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
   P2PRouter1Router2.EnablePcapAll ("Router1Router2");
   P2PRouter2Receiver.EnablePcapAll ("Router2Receiver");

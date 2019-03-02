@@ -339,8 +339,8 @@ void
 PointToPointNetDevice::Receive (Ptr<Packet> packet)
 {
   NS_LOG_UNCOND("\t\tRECEIVE PACKET");
-  NS_LOG_FUNCTION (this << packet);
-  uint16_t protocol = 0;  
+  //NS_LOG_FUNCTION (this << packet); //TODO: Log issue.
+  uint16_t protocol = 0;   
 
   if(this -> doDecompress){
     NS_LOG_UNCOND("Packet.Size: "<<packet-> GetSize());  
@@ -564,7 +564,7 @@ PointToPointNetDevice::Send (
   uint16_t protocolNumber
   )
 {
-  NS_LOG_FUNCTION (this << packet << dest << protocolNumber);
+  //NS_LOG_FUNCTION (this << packet << dest << protocolNumber);
   NS_LOG_LOGIC ("Send packet = " << packet << ", dest = " << &dest);
   NS_LOG_LOGIC ("UID = " << packet-> GetUid ());
  
@@ -787,7 +787,9 @@ PointToPointNetDevice::PppToEther (uint16_t proto)
   switch(proto)
     {
     case 0x0021: return 0x0800;   //IPv4
-    case 0x0057: return 0x86DD;   //IPv6
+    case 0x0057: return 0x86DD;   //IPv6    
+    case COMPRESSED_PROTOCOL_NUMBER: return COMPRESSED_PROTOCOL_NUMBER; //TODO:think about it! ask Vahap!
+
     default: NS_ASSERT_MSG (false, "PPP Protocol number not defined!");
     }
   return 0;
