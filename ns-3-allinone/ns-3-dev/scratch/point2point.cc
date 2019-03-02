@@ -19,7 +19,7 @@ static const std::string CONFIG_FILE = "config.txt";
 uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
-static Time interPacketInterval = Seconds(0.0);  
+static Time interPacketInterval = Seconds(0.1);  
 using namespace std::chrono;
 
 uint16_t serverPort = 9;
@@ -117,18 +117,12 @@ int main (int argc, char *argv[])
   
 
   /// TODO: We can't set Router2's Flags.....
-  Ptr <PointToPointNetDevice> PpNdRouter1Router2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
-  PpNdRouter1Router2 -> SetCompressFlag(true);
-  Ptr <PointToPointNetDevice> PpNdRouter2Sender = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
-  PpNdRouter1Router2 -> SetDecompressFlag(true);
-  PpNdRouter1Router2 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
-  
-  // TODO: Rozita%Alper..... Think !
-  //deviceRouter1Router2.Get(0)->set
-  //deviceRouter1Router2.Get(1)->set
-  
-
-  //PpNdRouter1Router2 -> SetDecompressFlag(true);  
+  Ptr <PointToPointNetDevice> PpNdRouter1 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
+  PpNdRouter1 -> SetCompressFlag(true);
+  PpNdRouter1 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
+  Ptr <PointToPointNetDevice> PpNdRouter2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
+  PpNdRouter2 -> SetDecompressFlag(true);
+  PpNdRouter2 -> SetCompressProtocolNumber(protocolNumberInDecimal);  
      
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 

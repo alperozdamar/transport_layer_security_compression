@@ -341,7 +341,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   //NS_LOG_FUNCTION (this << packet); //TODO: Log issue.
   uint16_t protocol = 0;   
 
-  NS_LOG_UNCOND("I am here! <Receive.doDecompress:"<<this -> doDecompress);
+  NS_LOG_UNCOND("\nI am here! <Receive.doDecompress:"<<this -> doDecompress);
   NS_LOG_UNCOND("I am here! <Receive.doCompress:"<<this -> doCompress);  
 
   
@@ -352,16 +352,16 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
     PppHeader header;
     packet-> RemoveHeader(header);
 
-    NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number<"<< std::hex<<header.GetProtocol());
+    NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number:"<< std::hex<<header.GetProtocol());
     if(header.GetProtocol() == COMPRESSED_PROTOCOL_NUMBER){ 
       NS_LOG_UNCOND("Welcome to UnCompression!!!!");
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
       int ipSize=ipHeader.GetPayloadSize() - packet-> GetSize(); 
 
-      std::cout<<"IP size:" << ipSize <<std::endl;
+      std::cout<<"\nIP size:" << ipSize <<std::endl;
       std::cout<<"Payload size:" << ipHeader.GetPayloadSize() <<std::endl;
-      std::cout<<"Packet size IP:" << packet-> GetSize() <<std::endl;
+      std::cout<<"Packet size(Before Uncompress):" << packet-> GetSize() <<std::endl;
 
       //packet -> RemoveHeader(ipHeader);   
       UdpHeader udp_header;
@@ -369,18 +369,23 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       uLongf size = packet-> GetSize();
       uint8_t *compressData = new uint8_t[size];
       packet -> CopyData(compressData, size);
-      std::cout<<"Packet: ";
-      for (int i = 0; (unsigned)i < size; ++i){
-        std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)compressData[i] <<"";
-      }
+      // std::cout<<"Packet: ";
+      // for (int i = 0; (unsigned)i < size; ++i){
+      //   std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)compressData[i] <<"";
+      // }
       std::cout << std::endl;
-      std::cout<<"Uncompress:"<<(int)size<<":";
-      uint8_t *decompressData = new uint8_t[size];
+      std::cout<<"Before Uncompress:"<<(int)size;
+      uint8_t *decompressData = new uint8_t[size]; //?? DecompressData should be bigger than size!!
       int protocolSize = 2;
-      uLongf new_size = size + protocolSize;
-  
-      uncompress(decompressData, &new_size, compressData, size);
+      uLongf new_size = size + protocolSize; //TODO: Probable Bug!!
+      new_size = 2000; //Alper:Fixing it.
+      //Upon entry, destLen is the total size
+      //of the destination buffer, which must be large enough to hold the entire
+      //uncompressed data.
+
+      uncompress(decompressData, &new_size, compressData, size);  //?? DecompressData should be bigger than size!!
       std::vector<uint8_t> vector_buffer(decompressData, decompressData + new_size);
+      std::cout<<"\nnew_size(After uncompress):" << (int)new_size <<std::endl;
       size = new_size - 2;
       decompressData = &decompressData[2];
       packet = new Packet(decompressData, size);
@@ -389,6 +394,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       packet->AddHeader(udp_header);
       size = ipSize + size;
       ipHeader.SetPayloadSize(size); 
+
+      std::cout<<"\nNew Payload size(After uncompress):" << (int)size <<std::endl;
+
       packet->AddHeader(ipHeader); 
       header.SetProtocol(0x0021); // Alper to add parameter
     }
