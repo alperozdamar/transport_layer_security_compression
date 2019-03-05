@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iomanip> 
 #include <chrono> 
+#include "ns3/udp-client.h"
 
 using namespace ns3;
 using namespace std::chrono;
@@ -16,10 +17,10 @@ NS_LOG_COMPONENT_DEFINE("Point to point connection");
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 1;     
+uint32_t MAX_PACKET_COUNT = 10;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
-static Time interPacketInterval = Seconds(0.1);  
+static Time interPacketInterval = Seconds(0.5);  
 using namespace std::chrono;
 
 uint16_t serverPort = 9;
@@ -156,27 +157,34 @@ int main (int argc, char *argv[])
   serverApps.Start (Seconds (1.0));
   serverApps.Stop (Seconds (5000.0));       
 
-  UdpClientHelper client (serverAddress, serverPort);
-  client.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
-  client.SetAttribute ("Interval", TimeValue (interPacketInterval));   
-  client.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
-  
-  ApplicationContainer clientApps = client.Install (nodes.Get(0));
-  
-  
-  high_resolution_clock::time_point start = high_resolution_clock::now();
-  //Start counter...
-  clientApps.Start (Seconds (4.0));
-  clientApps.Stop (Seconds (8000.0));  
-  high_resolution_clock::time_point end = high_resolution_clock::now();
+  UdpClientHelper clientHigh (serverAddress, serverPort);
+  clientHigh.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
+  clientHigh.SetAttribute ("Interval", TimeValue (interPacketInterval));   
+  clientHigh.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
+  clientHigh.SetAttribute ("Entropy", BooleanValue(true));      
 
-  duration<double, std::milli> time_span = end - start;
-
-  std::cout << "It took me " << time_span.count() << " milliseconds.";
-  std::cout << std::endl;
+  ApplicationContainer clientAppsHigh = clientHigh.Install (nodes.Get(0));
   
+  // UdpClientHelper clientLow (serverAddress, serverPort);
+  // clientLow.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
+  // clientLow.SetAttribute ("Interval", TimeValue (interPacketInterval));   
+  // clientLow.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
+  // clientLow.SetAttribute ("Entropy", BooleanValue(false));      
+
+  // ApplicationContainer clientAppsLow = clientLow.Install (nodes.Get(0));
 
   
+  //Start client High Entropy...
+  clientAppsHigh.Start (Seconds (4.0));
+  clientAppsHigh.Stop (Seconds (30.0));  
+  
+
+  //Start client Low Entropy...
+  //clientAppsLow.Start(Seconds (30.0));
+  //clientAppsHigh.Stop(Seconds (4999.0));  
+
+
+    
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
   #if 0

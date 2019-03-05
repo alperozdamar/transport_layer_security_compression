@@ -43,6 +43,8 @@ class Packet;
 class UdpClient : public Application
 {
 public:
+  bool m_entropy=false;
+  
   /**
    * \brief Get the type ID.
    * \return the object TypeId

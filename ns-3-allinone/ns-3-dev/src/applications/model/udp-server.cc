@@ -30,15 +30,22 @@
 #include "ns3/packet.h"
 #include "ns3/uinteger.h"
 #include "packet-loss-counter.h"
+#include "ns3/simulator.h" 
+#include "ns3/udp-client.h" 
 
 #include "seq-ts-header.h"
 #include "udp-server.h"
+#include <chrono>
 
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("UdpServer");
 
 NS_OBJECT_ENSURE_REGISTERED (UdpServer);
+
+static int totalPacketCount=0;
+uint32_t MAX_PACKET_COUNT = 6000;     
+auto start_time = std::chrono::high_resolution_clock::now();    
 
 
 TypeId
@@ -171,6 +178,35 @@ UdpServer::HandleRead (Ptr<Socket> socket)
   Address localAddress;
   while ((packet = socket->RecvFrom (from)))
     {
+      //TODO: RAR Calculation coding STarts      
+      Time startTime;
+      Time endTime;      
+      Time timeDiff;            
+
+      //time_t start;      
+      if(totalPacketCount==0){
+        //startTime = Simulator::Now(); 
+        start_time = std::chrono::high_resolution_clock::now();
+      }
+      totalPacketCount++;
+
+      //std::cout << "\ntotalPacketCount:" << totalPacketCount;
+      
+
+      if(totalPacketCount == (int)(MAX_PACKET_COUNT*0.98)){
+   
+
+      auto current_time = std::chrono::high_resolution_clock::now();
+      std::cout << "Program has been running for " << std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count() << " milliseconds" << std::endl;
+
+      
+      
+        //long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
+      
+
+
+      }
+
       socket->GetSockName (localAddress);
       m_rxTrace (packet);
       m_rxTraceWithAddresses (packet, from, localAddress);

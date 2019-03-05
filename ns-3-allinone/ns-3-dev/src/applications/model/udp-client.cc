@@ -39,6 +39,7 @@
 #include <climits>
 #include <algorithm>
 #include <functional>
+#include "ns3/boolean.h"
 
 
 namespace ns3 {
@@ -51,7 +52,7 @@ NS_OBJECT_ENSURE_REGISTERED (UdpClient);
 static uint32_t PACKET_SIZE = 1100; //if we give 1100 it fragment so we reduce packet size
 
 //TODO: Should be in Configuration Manager!!! (Because we are running our application 2 times.)
-bool highEntropy=true;
+//bool highEntropy=false;
 
 TypeId
 UdpClient::GetTypeId (void)
@@ -83,6 +84,11 @@ UdpClient::GetTypeId (void)
                    UintegerValue (1024),
                    MakeUintegerAccessor (&UdpClient::m_size),
                    MakeUintegerChecker<uint32_t> (12,65507))
+    .AddAttribute ("Entropy",
+                   "Boolean Value",
+                   BooleanValue(true),
+                   MakeBooleanAccessor(&UdpClient::m_entropy),
+                   MakeBooleanChecker()) 
   ;
   return tid;
 }
@@ -236,12 +242,17 @@ UdpClient::Send (void)
 
   //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");  
 
+  
+  std::cout << "Alper.delete.Entropy Value:" <<this->m_entropy;
+
+
   Ptr<Packet> p;
-  if(highEntropy == true){ //Random....
+  if(this->m_entropy == true){ //Random....
     p = Create<Packet> (byteArray, PACKET_SIZE-(8+4));   //Packet (uint8_t const*buffer, uint32_t size);
   }else{
     p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
   }  
+  
 
   p->AddHeader (seqTs);
 

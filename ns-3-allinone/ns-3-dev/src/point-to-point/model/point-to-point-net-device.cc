@@ -341,8 +341,8 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   //NS_LOG_FUNCTION (this << packet); //TODO: Log issue.
   uint16_t protocol = 0;   
 
-  NS_LOG_UNCOND("\nI am here! <Receive.doDecompress:"<<this -> doDecompress);
-  NS_LOG_UNCOND("I am here! <Receive.doCompress:"<<this -> doCompress);  
+  //NS_LOG_UNCOND("\nI am here! <Receive.doDecompress:"<<this -> doDecompress);
+  //NS_LOG_UNCOND("I am here! <Receive.doCompress:"<<this -> doCompress);  
 
   
 
@@ -376,9 +376,11 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       std::cout << std::endl;
       std::cout<<"Before Uncompress:"<<(int)size;
       uint8_t *decompressData = new uint8_t[size]; //?? DecompressData should be bigger than size!!
-      int protocolSize = 2;
-      uLongf new_size = size + protocolSize; //TODO: Probable Bug!!
-      new_size = 2000; //Alper:Fixing it.
+      //int protocolSize = 2;
+      //uLongf new_size = size + protocolSize; //TODO: Probable Bug!!
+      uLongf new_size = size; 
+      //new_size = 2000; //Alper:Fixing it.
+      new_size = compressBound(size); //Alper:Fixing it. 
       //Upon entry, destLen is the total size
       //of the destination buffer, which must be large enough to hold the entire
       //uncompressed data.
@@ -607,8 +609,8 @@ PointToPointNetDevice::Send (
   // NS_LOG_UNCOND("Sending packet process is started ...");
   // NS_LOG_UNCOND("packet header was added, size: " << packet-> GetSize());
 
-  NS_LOG_UNCOND("I am here! <Send.doDecompress:"<<this -> doDecompress);
-  NS_LOG_UNCOND("I am here! <Send.doCompress:"<<this -> doCompress); 
+  //NS_LOG_UNCOND("I am here! <Send.doDecompress:"<<this -> doDecompress);
+  //NS_LOG_UNCOND("I am here! <Send.doCompress:"<<this -> doCompress); 
 
   if(this -> doCompress){   
     //NS_LOG_UNCOND("Start compressing with packet size : "<<packet-> GetSize());  
@@ -645,30 +647,15 @@ PointToPointNetDevice::Send (
     // for(int i=0; (unsigned)i < size;++i){
     //     std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)inData[i] << " ";
     // }
-    // std::cout<<std::endl;  
-    
-    //TODO: Compress
-    //std::string data;
-    //data.assign(buffer[0],buffer[size]));
-    //std:string compressed data = zlib compress string((char*)buffer);   
-    //std::cout<<"Compres data: " <<compressed_data<<std::endl;
-
-    ////???? we may not need anymore!!! START!!!!
-    std::string data;
-    data.reserve(size); // prepare space for the buffer and extra termination character "\0"
-    for(int i=0; (unsigned)i<size;++i){
-      data +=inData[i]; //typecast because string takes uint8_t as something else than character.
-    } 
-    std::cout<<data<<" . "<< data;
-    ////???? we may not need anymore!!! END!!!!
+    // std::cout<<std::endl;          
   
     uint8_t *compressData = new uint8_t[size];
     uLongf new_size;
     //int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
-    compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
+    int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
     //TODO: PUT DEBUG LEVEL CHECK
     // std::cout << "Compressed packet size:" << new_size;
-    // std::cout<<"Compress2 out: "<< returnValue <<":"; 
+     std::cout<<"\nCompress2 out: "<< returnValue << " "<< Z_OK; 
     // std::cout<<"Compressed: "<< new_size <<":"; 
     // for(int i=0;(unsigned)i<size;++i ){
     //   std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compressData[i] << " ";
@@ -681,7 +668,7 @@ PointToPointNetDevice::Send (
     udpHeader.ForcePayloadSize(size);
     packet-> AddHeader(udpHeader);
     size = ipSize + size;
-    ipHeader.SetPayloadSize(size); 
+    ipHeader.SetPayloadSize(size); //??? 
     packet-> AddHeader(ipHeader);
     header.SetProtocol(COMPRESSED_PROTOCOL_NUMBER);              //0x4021
     } 
