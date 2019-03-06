@@ -352,12 +352,12 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
     NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number:"<< std::hex<<header.GetProtocol());
     if(header.GetProtocol() == COMPRESSED_PROTOCOL_NUMBER){ 
       NS_LOG_UNCOND("Welcome to UnCompression!!!!");
-      int packet_size = packet->GetSize();
+      // int packet_size = packet->GetSize();
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
-      int ipSize=packet_size - packet-> GetSize(); 
+      // int ipSize=packet_size - packet-> GetSize(); 
 
-      std::cout<<"\nIP size:" << ipSize <<std::endl;
+      // std::cout<<"\nIP size:" << ipSize <<std::endl;
       std::cout<<"Payload size:" << ipHeader.GetPayloadSize() <<std::endl;
       std::cout<<"Packet size(Before Uncompress):" << packet-> GetSize() <<std::endl;
 
@@ -378,7 +378,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       //uLongf new_size = size + protocolSize; //TODO: Probable Bug!!
       uLongf new_size = size; 
       //new_size = 2000; //Alper:Fixing it.
-      new_size = compressBound(size); //Alper:Fixing it. 
+      new_size = 1102; //Alper:Fixing it. 
       //Upon entry, destLen is the total size
       //of the destination buffer, which must be large enough to hold the entire
       //uncompressed data.
@@ -393,7 +393,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       size = size + 8;
       udp_header.ForcePayloadSize(size);
       packet->AddHeader(udp_header);
-      size = ipSize + size;
+      // size = ipSize + size;
       ipHeader.SetPayloadSize(size); 
 
       std::cout<<"\nNew Payload size(After uncompress):" << (int)size <<std::endl;
@@ -404,9 +404,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
     packet->AddHeader(header);
   }
 
-  m_snifferTrace(packet);
-  m_promiscSnifferTrace(packet);
-  m_phyRxEndTrace(packet);
+  // m_snifferTrace(packet);
+  // m_promiscSnifferTrace(packet);
+  // m_phyRxEndTrace(packet);
  
   if (m_receiveErrorModel && m_receiveErrorModel->IsCorrupt (packet) ) 
     {
@@ -626,7 +626,7 @@ PointToPointNetDevice::Send (
     /* Remove IPV4 Header */
     Ipv4Header ipHeader;
     packet-> RemoveHeader(ipHeader);
-    int ipSize = ipHeader.GetPayloadSize() - packet-> GetSize();
+    // int ipSize = ipHeader.GetPayloadSize() - packet-> GetSize();
     
     /* Remove UDP Header */
     UdpHeader udpHeader;
@@ -665,8 +665,8 @@ PointToPointNetDevice::Send (
     size = size + 8;  // for UDP
     udpHeader.ForcePayloadSize(size);
     packet-> AddHeader(udpHeader);
-    size = ipSize + size;
-    ipHeader.SetPayloadSize(1102); //??? 
+    // size = ipSize + size;
+    ipHeader.SetPayloadSize(size); //??? 
     packet-> AddHeader(ipHeader);
     header.SetProtocol(COMPRESSED_PROTOCOL_NUMBER);              //0x4021
     } 

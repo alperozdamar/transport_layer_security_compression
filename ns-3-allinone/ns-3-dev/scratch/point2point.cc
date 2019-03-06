@@ -17,7 +17,7 @@ NS_LOG_COMPONENT_DEFINE("Point to point connection");
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 1;     
+uint32_t MAX_PACKET_COUNT = 10;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
 static Time interPacketInterval = Seconds(0.5);  
