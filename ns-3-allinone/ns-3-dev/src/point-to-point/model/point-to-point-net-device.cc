@@ -21,7 +21,7 @@
 #include "ns3/simulator.h"
 #include "ns3/mac48-address.h"
 #include "ns3/llc-snap-header.h"
-#include "ns3/error-model.h"
+#include "ns3/error-model.h" 
 #include "ns3/trace-source-accessor.h"
 #include "ns3/uinteger.h"
 #include "ns3/pointer.h"
@@ -344,9 +344,6 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   //NS_LOG_UNCOND("\nI am here! <Receive.doDecompress:"<<this -> doDecompress);
   //NS_LOG_UNCOND("I am here! <Receive.doCompress:"<<this -> doCompress);  
 
-  
-
-
   if(this -> doDecompress){ 
     NS_LOG_UNCOND("I am here! <Receive>");  
     PppHeader header;
@@ -355,9 +352,10 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
     NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number:"<< std::hex<<header.GetProtocol());
     if(header.GetProtocol() == COMPRESSED_PROTOCOL_NUMBER){ 
       NS_LOG_UNCOND("Welcome to UnCompression!!!!");
+      int packet_size = packet->GetSize();
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
-      int ipSize=ipHeader.GetPayloadSize() - packet-> GetSize(); 
+      int ipSize=packet_size - packet-> GetSize(); 
 
       std::cout<<"\nIP size:" << ipSize <<std::endl;
       std::cout<<"Payload size:" << ipHeader.GetPayloadSize() <<std::endl;
@@ -375,7 +373,7 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       // }
       std::cout << std::endl;
       std::cout<<"Before Uncompress:"<<(int)size;
-      uint8_t *decompressData = new uint8_t[size]; //?? DecompressData should be bigger than size!!
+      uint8_t *decompressData = new uint8_t[1102]; //?? DecompressData should be bigger than size!!
       //int protocolSize = 2;
       //uLongf new_size = size + protocolSize; //TODO: Probable Bug!!
       uLongf new_size = size; 
@@ -384,8 +382,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       //Upon entry, destLen is the total size
       //of the destination buffer, which must be large enough to hold the entire
       //uncompressed data.
-
-      uncompress(decompressData, &new_size, compressData, size);  //?? DecompressData should be bigger than size!!
+      uncompress(decompressData, &new_size, compressData, size);
+   
+      //uncompress(decompressData, &new_size, compressData, size);  //?? DecompressData should be bigger than size!!
       std::vector<uint8_t> vector_buffer(decompressData, decompressData + new_size);
       std::cout<<"\nnew_size(After uncompress):" << (int)new_size <<std::endl;
       size = new_size - 2;
@@ -641,21 +640,20 @@ PointToPointNetDevice::Send (
     inData[0]=0x00; 
     inData[1]=0x21;
     packet-> CopyData(&(inData[2]),size);
-    
     //TODO: PUT DEBUG LEVEL CHECK
     // std::cout<<"Packet size after adding data + protocol : "<< size << ":";
     // for(int i=0; (unsigned)i < size;++i){
     //     std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)inData[i] << " ";
     // }
     // std::cout<<std::endl;          
-  
+    std::cout<<"Original size:"<<size<<std::endl;
     uint8_t *compressData = new uint8_t[size];
     uLongf new_size;
     //int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
     int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
     //TODO: PUT DEBUG LEVEL CHECK
     // std::cout << "Compressed packet size:" << new_size;
-     std::cout<<"\nCompress2 out: "<< returnValue << " "<< Z_OK; 
+     std::cout<<"\nCompressed Size: "<<new_size<<"\nCompress2 out: "<< returnValue << " "<< Z_OK; 
     // std::cout<<"Compressed: "<< new_size <<":"; 
     // for(int i=0;(unsigned)i<size;++i ){
     //   std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compressData[i] << " ";
@@ -668,7 +666,7 @@ PointToPointNetDevice::Send (
     udpHeader.ForcePayloadSize(size);
     packet-> AddHeader(udpHeader);
     size = ipSize + size;
-    ipHeader.SetPayloadSize(size); //??? 
+    ipHeader.SetPayloadSize(1102); //??? 
     packet-> AddHeader(ipHeader);
     header.SetProtocol(COMPRESSED_PROTOCOL_NUMBER);              //0x4021
     } 

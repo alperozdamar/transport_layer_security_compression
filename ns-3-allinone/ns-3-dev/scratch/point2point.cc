@@ -17,7 +17,7 @@ NS_LOG_COMPONENT_DEFINE("Point to point connection");
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 10;     
+uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
 static Time interPacketInterval = Seconds(0.5);  
@@ -176,7 +176,7 @@ int main (int argc, char *argv[])
   
   //Start client High Entropy...
   clientAppsHigh.Start (Seconds (4.0));
-  clientAppsHigh.Stop (Seconds (30.0));  
+  clientAppsHigh.Stop (Seconds (4999.0));  
   
 
   //Start client Low Entropy...
@@ -187,7 +187,7 @@ int main (int argc, char *argv[])
     
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-  #if 0
+  #if 1
   AsciiTraceHelper ascii;
   P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
   P2PSenderRouter1.EnablePcap("Sender", deviceSenderRouter1.Get(0),false, false);
@@ -200,7 +200,7 @@ int main (int argc, char *argv[])
 
   P2PRouter2Receiver.EnableAsciiAll(ascii.CreateFileStream("Receiver.tr"));
   P2PRouter2Receiver.EnablePcap("Receiver", deviceRouter2Receiver.Get(1),false, false);
-  #elif 1
+  #elif 0
   P2PSenderRouter1.EnablePcapAll ("SenderRouter1");
   P2PRouter1Router2.EnablePcapAll ("Router1Router2");
   P2PRouter2Receiver.EnablePcapAll ("Router2Receiver");
