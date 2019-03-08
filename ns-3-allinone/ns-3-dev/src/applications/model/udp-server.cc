@@ -184,8 +184,21 @@ UdpServer::StopApplication ()
 int writeFile (long mainDelta) 
 {
   ofstream myfile;  
-  myfile.open ("output_rar_team.txt",std::ios_base::app);
+  myfile.open ("output_main_delta.txt",std::ios_base::app);
   myfile << mainDelta;
+  myfile << "\n";     
+  myfile.close();  
+  return 0;
+} 
+
+
+int writeFile (long deltaLowEntropy,long deltaHighEntropy) 
+{
+  ofstream myfile;  
+  myfile.open ("output_deltaLowDeltaHigh.txt",std::ios_base::app);
+  myfile << deltaLowEntropy;
+  myfile << ",";     
+  myfile << deltaHighEntropy;
   myfile << "\n";     
   myfile.close();  
   return 0;
@@ -246,6 +259,7 @@ UdpServer::HandleRead (Ptr<Socket> socket)
 
 
             writeFile(mainDelta);  
+            writeFile(deltaLowEntropy,deltaHighEntropy);  
           }
           totalPacketCount=0;
         }

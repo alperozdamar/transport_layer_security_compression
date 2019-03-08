@@ -331,9 +331,9 @@ UdpClient::Send (void)
   // } 
   // std::cout<<std::endl;       
 
-  Ptr<Packet> p;
-  if(this->m_entropy == true){ //Random....    
-    uint8_t* byteArray = GetPayload();    
+  Ptr<Packet> p;  
+  if(this->m_entropy == true){ //Random....            
+    uint8_t* byteArray = GetPayload();
     p = Create<Packet> (byteArray, m_size-(8+4));   //Packet (uint8_t const*buffer, uint32_t size);  
   }else{
     p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
