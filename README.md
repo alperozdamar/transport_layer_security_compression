@@ -136,7 +136,7 @@ Our project is running under Ubuntu, version 18.04.01.
         
   $ sudo dpkg -i code_1.31.1-1549938243_amd64.deb
 
-## 6.Building project
+# 6. Building project
       
  In order to build the project run this command. 
  For running these commands you need you need to be in: 
@@ -147,7 +147,7 @@ Our project is running under Ubuntu, version 18.04.01.
  $ ./waf build
  $ ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
    
-## 7.Test cases
+# 7. Test cases
    
  Test Case -1 : ./waf --run "scratch/point2point --IsHighEntropy=0 --IsCompress=0 --MaxPacketCount=2" 
  Test Case -2 : ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=0 --MaxPacketCount=2" 
@@ -156,7 +156,7 @@ Our project is running under Ubuntu, version 18.04.01.
  
    
    
-## 8. Project description
+# 8. Project description
     
    # Project outcomes
     
