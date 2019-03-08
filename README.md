@@ -3,7 +3,7 @@ The Transport Layer Security (TLS) protocol includes features to negotiate selec
 
 # Project Requirements
 
-In oder to run this project you need install Virtual Box (Oracle), version 6.0. 
+In order to run this project you need install Virtual Box (Oracle), version 6.0. 
 
 ## Operating System
 
