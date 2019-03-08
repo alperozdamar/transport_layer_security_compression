@@ -162,9 +162,9 @@ $python download.py -n ns-3.29
     
    # Project outcomes
     
- ## 1. Enable network compression for point-to-point links in ns-3.
- ## 2. Implement the network application that detects the presence of network compression by end-hosts.
- ## 3. Verify and validate your simulated compression link and compression detection application
+   1. Enable network compression for point-to-point links in ns-3.
+   2. Implement the network application that detects the presence of network compression by end-hosts.
+   3. Verify and validate your simulated compression link and compression detection application
    
    # Overview
     
