@@ -40,7 +40,7 @@ Our project is running under Ubuntu, version 18.04.01.
     $ ./test.py
    
     You should see following message:
-     92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
+    92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
    
 # 4. Additional Setup
 
