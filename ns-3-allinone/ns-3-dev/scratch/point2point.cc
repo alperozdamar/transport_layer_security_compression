@@ -19,10 +19,9 @@ static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
 uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
-static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
+static uint32_t PACKET_SIZE = 1100; //This is for 0. Low enthropy. 
 static Time interPacketInterval = Seconds(0.01);  
 using namespace std::chrono;
-
 uint16_t serverPort = 9;
 
 /**
@@ -65,7 +64,7 @@ int readConfigurationFile(){
 
 int main (int argc, char *argv[])
 {
-  /* READ COMMAND LINE ARGUMENTS  */
+  /* Read command line argument  */
   uint32_t CompressionDataRate = 1;
   bool IsHighEntropy = 0; 
   bool IsCompress = 0;   
@@ -85,16 +84,13 @@ int main (int argc, char *argv[])
   /* READ CONFIGURATION FILE */
   int  protocolNumberInDecimal = readConfigurationFile();     
 
-  NS_LOG_INFO ("Create Node!");
+
   NodeContainer nodes;
   nodes.Create(4);  
-  
   NodeContainer nodes2;
   nodes2.Create(1);  
-
   InternetStackHelper stack;
   stack.Install(nodes);
-
   InternetStackHelper stack2;
   stack2.Install(nodes2);
 
@@ -103,7 +99,6 @@ int main (int argc, char *argv[])
   P2PSenderRouter1.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
   P2PSenderRouter1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
   P2PSenderRouter1.SetDeviceAttribute ("Mtu", UintegerValue (MTU_SIZE));
-  
   std::string dataRateString = std::to_string(CompressionDataRate);
   dataRateString = dataRateString +"Mbps";
   NS_LOG_UNCOND("dataRateString:"<< dataRateString);  
@@ -128,8 +123,6 @@ int main (int argc, char *argv[])
   NetDeviceContainer deviceRouter1Router2; 
   deviceRouter1Router2 = P2PRouter1Router2.Install(nodes.Get(1),nodes.Get(2));
   
-
-  /// TODO: We can't set Router2's Flags.....
   Ptr <PointToPointNetDevice> PpNdRouter1 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
   PpNdRouter1 -> SetCompressFlag(IsCompress);
   PpNdRouter1 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
@@ -140,15 +133,12 @@ int main (int argc, char *argv[])
   /* Connect node Router2 & Receiver */  
   NetDeviceContainer deviceRouter2Receiver; 
   deviceRouter2Receiver = P2PRouter2Receiver.Install(nodes.Get(2),nodes.Get(3));
-
-  NS_LOG_INFO ("Assign IP Addresses!");  
   Ipv4AddressHelper ipv4Address;
   /* Assign IP to SenderRouter1 */  
   ipv4Address.SetBase ("10.0.1.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaceSenderRouter1;
   interfaceSenderRouter1 = ipv4Address.Assign (deviceSenderRouter1);
  
-
   /* Assign IP to Router1Router2 */  
   ipv4Address.SetBase ("10.0.2.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaceRouter1Router2;
@@ -161,8 +151,6 @@ int main (int argc, char *argv[])
   Address serverAddress;
   serverAddress = Address(interfaceRouter2Receiver.GetAddress(1));
 
-  NS_LOG_INFO ("Create Server Application!");
-
   /* Create Server */  
   UdpServerHelper server (serverPort);
   ApplicationContainer serverApps = server.Install (nodes.Get(3));
@@ -174,9 +162,7 @@ int main (int argc, char *argv[])
   clientHigh.SetAttribute ("Interval", TimeValue (interPacketInterval));   
   clientHigh.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
   clientHigh.SetAttribute ("Entropy", BooleanValue(true));       
-
   ApplicationContainer clientAppsHigh = clientHigh.Install (nodes.Get(0));
-  
 
   /* Link btw Sender-2 Router1 */
   PointToPointHelper P2PSender2Router1;
@@ -200,19 +186,13 @@ int main (int argc, char *argv[])
   clientLow.SetAttribute ("Entropy", BooleanValue(false));      
 
   ApplicationContainer clientAppsLow = clientLow.Install (nodes2.Get(0));
-
-  
   //Start client High Entropy...
   clientAppsLow.Start (Seconds (5.0));
   clientAppsLow.Stop (Seconds (4999.0));  
-  
-
   //Start client Low Entropy...
   clientAppsHigh.Start(Seconds (700.0));
   clientAppsHigh.Stop(Seconds (4999.0));   
-
-
-    
+ 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
   #if 1
@@ -245,10 +225,6 @@ int main (int argc, char *argv[])
 
   Simulator::Run ();
   Simulator::Destroy ();
-
-  //std::cout << "finished computation at " << std::ctime(&end_time)
-  //          << "elapsed time: " << elapsed_seconds.count() << "s\n";
-
 
   return 0;
 }
