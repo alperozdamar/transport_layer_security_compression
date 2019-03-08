@@ -157,8 +157,14 @@ $python download.py -n ns-3.29
  Test Case -4 : ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
  
    
-   
-# 8. Project description
+# 8. Project Output
+
+Output for our project is saved in output_rar_team.txt file.
+
+
+
+
+# 9. Project description
     
    # Project outcomes
     
