@@ -20,7 +20,7 @@ static const std::string CONFIG_FILE = "config.txt";
 uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
-static Time interPacketInterval = Seconds(0.5);  
+static Time interPacketInterval = Seconds(0.01);  
 using namespace std::chrono;
 
 uint16_t serverPort = 9;
@@ -89,8 +89,14 @@ int main (int argc, char *argv[])
   NodeContainer nodes;
   nodes.Create(4);  
   
+  NodeContainer nodes2;
+  nodes2.Create(1);  
+
   InternetStackHelper stack;
   stack.Install(nodes);
+
+  InternetStackHelper stack2;
+  stack2.Install(nodes2);
 
   /* Link btw Sender Router1 */
   PointToPointHelper P2PSenderRouter1;
@@ -167,27 +173,43 @@ int main (int argc, char *argv[])
   clientHigh.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
   clientHigh.SetAttribute ("Interval", TimeValue (interPacketInterval));   
   clientHigh.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
-  clientHigh.SetAttribute ("Entropy", BooleanValue(IsHighEntropy));       
+  clientHigh.SetAttribute ("Entropy", BooleanValue(true));       
 
   ApplicationContainer clientAppsHigh = clientHigh.Install (nodes.Get(0));
   
-  // UdpClientHelper clientLow (serverAddress, serverPort);
-  // clientLow.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
-  // clientLow.SetAttribute ("Interval", TimeValue (interPacketInterval));   
-  // clientLow.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
-  // clientLow.SetAttribute ("Entropy", BooleanValue(false));      
 
-  // ApplicationContainer clientAppsLow = clientLow.Install (nodes.Get(0));
+  /* Link btw Sender-2 Router1 */
+  PointToPointHelper P2PSender2Router1;
+  P2PSender2Router1.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
+  P2PSender2Router1.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
+  P2PSender2Router1.SetDeviceAttribute ("Mtu", UintegerValue (MTU_SIZE));
+
+  /* Connect node Sender-2 & Router1 */
+  NetDeviceContainer deviceSender2Router1; 
+  deviceSender2Router1 = P2PSender2Router1.Install(nodes2.Get(0),nodes.Get(1));
+
+  /* Assign IP to Sender2Router1 */  
+  ipv4Address.SetBase ("10.0.8.0", "255.255.255.0");
+  Ipv4InterfaceContainer interfaceSender2Router1;
+  interfaceSender2Router1 = ipv4Address.Assign (deviceSender2Router1);
+
+  UdpClientHelper clientLow (serverAddress, serverPort);
+  clientLow.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
+  clientLow.SetAttribute ("Interval", TimeValue (interPacketInterval));   
+  clientLow.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
+  clientLow.SetAttribute ("Entropy", BooleanValue(false));      
+
+  ApplicationContainer clientAppsLow = clientLow.Install (nodes2.Get(0));
 
   
   //Start client High Entropy...
-  clientAppsHigh.Start (Seconds (5.0));
-  clientAppsHigh.Stop (Seconds (4999.0));  
+  clientAppsLow.Start (Seconds (5.0));
+  clientAppsLow.Stop (Seconds (4999.0));  
   
 
   //Start client Low Entropy...
-  //clientAppsLow.Start(Seconds (30.0));
-  //clientAppsHigh.Stop(Seconds (4999.0));  
+  clientAppsHigh.Start(Seconds (700.0));
+  clientAppsHigh.Stop(Seconds (4999.0));   
 
 
     
@@ -197,6 +219,9 @@ int main (int argc, char *argv[])
   AsciiTraceHelper ascii;
   P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
   P2PSenderRouter1.EnablePcap("Sender", deviceSenderRouter1.Get(0),false, false);
+
+  P2PSenderRouter1.EnableAsciiAll(ascii.CreateFileStream("Sender.tr"));
+  P2PSenderRouter1.EnablePcap("Sender", deviceSender2Router1.Get(0),false, false);
 
   P2PRouter1Router2.EnableAsciiAll(ascii.CreateFileStream("Router1.tr"));
   P2PRouter1Router2.EnablePcap("Router1", deviceRouter1Router2.Get(0),false, false);

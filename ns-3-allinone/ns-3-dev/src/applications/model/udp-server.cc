@@ -48,7 +48,14 @@ NS_LOG_COMPONENT_DEFINE ("UdpServer");
 NS_OBJECT_ENSURE_REGISTERED (UdpServer);
 
 static int totalPacketCount=0;
+static int globalTotalPacketCount=0;
+static long deltaHighEntropy=0;
+static long deltaLowEntropy=0; 
+
 uint32_t MAX_PACKET_COUNT = 6000;     
+
+static int COMPRESSION_THRESHOLD =  100;
+
 auto start_time = std::chrono::high_resolution_clock::now();    
 
 
@@ -174,12 +181,12 @@ UdpServer::StopApplication ()
 }
 
 
-int writeFile (long duration) 
+int writeFile (long mainDelta) 
 {
   ofstream myfile;
   myfile.open ("output_rar_team.txt");
-  myfile << duration;
-  myfile << "\n";    
+  myfile << deltaLowEntropy;
+  myfile << "\n";     
   myfile.close();
   return 0;
 }
@@ -203,24 +210,45 @@ UdpServer::HandleRead (Ptr<Socket> socket)
         start_time = std::chrono::high_resolution_clock::now();
       }
       totalPacketCount++;
+      globalTotalPacketCount++;
       //std::cout << "\ntotalPacketCount:" << totalPacketCount;       
 
 
 
-      if(totalPacketCount == (int)(MAX_PACKET_COUNT*0.98)){   
-      auto current_time = std::chrono::high_resolution_clock::now();
-      NS_LOG_UNCOND("*******************************************************");  
-      std::cout << "Program has been running for " << std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count() << " milliseconds" << std::endl;            
-        //long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();      
-      NS_LOG_UNCOND("****************************************************");  
-      
-      long duration = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
-      std::cout << "Duration :" << duration;      
+        if(totalPacketCount == (int)(MAX_PACKET_COUNT*0.98)){   
+          auto current_time = std::chrono::high_resolution_clock::now();
+          NS_LOG_UNCOND("*******************************************************");  
+          std::cout << "\nProgram has been running for " << std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count() << " milliseconds" << std::endl;            
+            //long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();      
+          NS_LOG_UNCOND("****************************************************");  
+          
+          long duration = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
+          std::cout << "\nDuration :" << duration;      
+          
 
-      writeFile(duration);
-      }
+          if(globalTotalPacketCount<6000){
+            deltaLowEntropy = duration;            
+          }else{ //All done!!            
+            deltaHighEntropy = duration;
 
-      
+            long mainDelta;
+
+            std::cout << "deltaHighEntropy :" << deltaHighEntropy;
+            std::cout << "deltaLowEntropy :" << deltaLowEntropy;
+            mainDelta = deltaHighEntropy-deltaLowEntropy;
+
+            if(mainDelta<COMPRESSION_THRESHOLD){
+              std::cout << "Compression Detected!";
+            }else{
+              std::cout << "No compression was detected.";
+            }
+
+
+            writeFile(mainDelta);  
+          }
+          totalPacketCount=0;
+        }
+         
 
       socket->GetSockName (localAddress);
       m_rxTrace (packet);
