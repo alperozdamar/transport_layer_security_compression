@@ -11,152 +11,160 @@ Our project is running under Ubuntu, version 18.04.01.
 
 ## Prerequisites
   
-#  1. NS-3 prerequsites
+# 1. NS-3 prerequsites
 
-   Install Git , Version : 2.17.1
-      $ sudo apt update
-      $ sudo apt install git
-   Install Phyton , Version : 3.7
+Install Git , Version : 2.17.1
+$sudo apt update
+$sudo apt install git
+Install Phyton , Version : 3.7
     
-#  2. Installing NS-3
+# 2. Installing NS-3
       
-   In order to install NS-3 you should follow link:
-   https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3
+In order to install NS-3 you should follow link:
+https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3
      
-   List of used commands:
+List of used commands:
     
-       $ cd
-       $ mkdir workspace
-       $ cd workspace
-       $ git clone [cloning repository](https://gitlab.com/nsnam/ns-3-allinone.git)
-       $ cd ns-3-allinone
-       $ python download.py
-       $ python download.py -n ns-3.29
+$cd
+$mkdir workspace
+$cd workspace
+$git clone [https://gitlab.com/nsnam/ns-3-allinone.git]
+$cd ns-3-allinone
+$python download.py
+$python download.py -n ns-3.29
       
  # 3. Testing NS-3
       
-   For testing NS-3, run the following command:
+ For testing NS-3, run the following command:
    
-        $ ./test.py
+ $./test.py
    
-   You should see following message:
-      92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
+ You should see following message:
+ 92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
    
 # 4. Additional Setup
 
-  a) Install cMake , version: 3.10.02, by using the following command
+ ## a) Install cMake , version: 3.10.02, by using the following command
  
-      $ sudo apt install cmake
+ $sudo apt install cmake
         
-  b) Install mercurial, by using the following command
+ ## b) Install mercurial, by using the following command
       
-      $ sudo apt-get install mercurial
+ $ sudo apt-get install mercurial
         
-  c) Add zlib library 
+ ## c) Add zlib library 
       
-      sudo apt-get install zlib1g-dev
-      sudo apt-get install libpng-dev
+ $sudo apt-get install zlib1g-dev
+ $sudo apt-get install libpng-dev
         
-  d) Install waf
       
-  e) Installing zlib
+ ## d) Installing zlib
       
   In order to install zlib library run the following commands:
          
-  - clone the following repository [https://github.com/ChristianKreuzberger/AMuSt-ns3](https://github.com/vitaliipoliakov/ns3-dash-mptcp), by using git clone.
-  - after cloning the repository above, run the following commands:
+ - clone the following repository [https://github.com/ChristianKreuzberger/AMuSt-ns3](https://github.com/vitaliipoliakov/ns3-dash-mptcp), by using git clone.
+ - after cloning the repository above, run the following commands:
          
-           Pre-Requesits (Todo: cleanup)
-               sudo apt-get install libboost-all-dev
-               sudo apt-get install build-essential gccxml
-               sudo apt-get install git-core build-essential cmake libxml2-dev libcurl4-openssl-dev
-               sudo apt-get install cmake libxml2-dev libcurl4-openssl-dev
-               sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev 
+ Pre-Requesits (Todo: cleanup)
+     
+ $sudo apt-get install libboost-all-dev
+ $sudo apt-get install build-essential gccxml
+ $sudo apt-get install git-core build-essential cmake libxml2-dev libcurl4-openssl-dev
+ $sudo apt-get install cmake libxml2-dev libcurl4-openssl-dev
+ $sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev 
+              
+ -  build zlib, by running this commands:
+ 
+ $cd AMuSt-libdash/libdash
+ $mkdir build
+ $cd build
+ $cmake ../
+ $make
                
-         -  build zlib, by running this commands:
-               cd AMuSt-libdash/libdash
-               mkdir build
-               cd build
-               cmake ../
-               make
+ - run following commands:
+         
+ $sudo apt-get install zlib1g-dev
+ $sudo apt-get install libpng-dev
+         
+ ## e) Visualize node in netanim
+         
+ - go to folder ns-3-allinone and run commands:
+ 
+  $cd netanim/
+  $sudo apt-get install qt5-default
+  $make clean
+  $qmake NetAnim.pro
+  $make
+  $./NetAnim
                
-         - run following commands:
-         
-               sudo apt-get install zlib1g-dev
-               sudo apt-get install libpng-dev
-         
-      f) Visualizenode in netanim
-         
-         - go to folder ns-3-allinone and run commands:
-               cd netanim/
-               sudo apt-get install qt5-default
-               make clean
-               qmake NetAnim.pro
-               make
-               ./NetAnim
-               
-      g) Data visualization
-        - install the following package:
+ ## f) Data visualization
+      
+ - install the following package:
         
-        python -m pip install -U pip
+  $python -m pip install -U pip
+        
+ ## g) Random generated numbers
+      
+  - run the following command:
+
+  $sudo apt-get install haveged
         
    
  # 5. Recommended tools
      
-     a) Install Wireshark, version 2.6.6, by using following commands.
+  ## a) Install Wireshark, version 2.6.6, by using following commands.
      
-        $ sudo add-apt-repository ppa:dreibh/ppa
-        $ sudo apt-get update
-        $ sudo apt-get install wire-shark
-        $ sudo apt-get –f install 
+  $sudo add-apt-repository ppa:dreibh/ppa
+  $sudo apt-get update
+  $sudo apt-get install wire-shark
+  $sudo apt-get –f install 
         
-     b) Install version control, GitKraken, by using these commands
+  ## b) Install version control, GitKraken, by using these commands
      
-        $ wget [https://release.gitkraken.com/linux/gitkraken-amd64.deb]([https://release.gitkraken.com/linux/gitkraken-amd64.deb)
-        $ dpkg -i gitkraken-amd64.deb
+  $wget[https://release.gitkraken.com/linux/gitkraken-amd64.deb]
+  $dpkg -i gitkraken-amd64.deb
         
-        If any problem occurred: Package gconf2 is not installed. In order to install that packet run this command:
+  If any problem occurred: Package gconf2 is not installed. In order to install that packet run this command:
        
-        $ sudo apt --fix-broken install
+  $sudo apt --fix-broken install
       
-        Run this command again:
+  Run this command again:
         
-        $ dpkg -i gitkraken-amd64.deb
+  $dpkg -i gitkraken-amd64.deb
 
-     c) IDE For C++
+  ## c) IDE For C++
       
-        Go to Visual Studio web site and download Visual studio for debian. 
+  Go to Visual Studio web site and download Visual studio for debian. 
         
-        $sudo dpkg -i code_1.31.1-1549938243_amd64.deb
+  $sudo dpkg -i code_1.31.1-1549938243_amd64.deb
 
-  ## 6. Building project
+## 6. Building project
       
-        In order to build the project run this command. 
-        xFor running these commands you need you need to be in: $ workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
+ In order to build the project run this command. 
+ For running these commands you need you need to be in: 
+ 
+ $workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev.
       
-      $ ./waf configure
-      $ ./waf build
-      $ ./waf -- run
-      $ ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
+ $./waf configure
+ $./waf build
+ $./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
    
-  ## 7. Test cases
+# 7. Test cases
    
-    Test Case -1 : ./waf --run "scratch/point2point --IsHighEntropy=0 --IsCompress=0" 
-    Test Case -2 : ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=0" 
-    Test Case -3 : ./waf --run "scratch/point2point --IsHighEntropy=0 --IsCompress=1" 
-    Test Case -4 : ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1"
-   
-   
+ Test Case -1 : ./waf --run "scratch/point2point --IsHighEntropy=0 --IsCompress=0 --MaxPacketCount=2" 
+ Test Case -2 : ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=0 --MaxPacketCount=2" 
+ Test Case -3 : ./waf --run "scratch/point2point --IsHighEntropy=0 --IsCompress=1 --MaxPacketCount=2" 
+ Test Case -4 : ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
+ 
    
    
-   
-  ## 8. Project description
+# 8. Project description
     
    # Project outcomes
     
-       1. Enable network compression for point-to-point links in ns-3.
-       2. Implement the network application that detects the presence of network compression by end-hosts.
-       3. Verify and validate your simulated compression link and compression detection application
+   1. Enable network compression for point-to-point links in ns-3.
+   2. Implement the network application that detects the presence of network compression by end-hosts.
+   3. Verify and validate your simulated compression link and compression detection application
    
    # Overview
     
