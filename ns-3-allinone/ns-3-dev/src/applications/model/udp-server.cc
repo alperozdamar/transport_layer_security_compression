@@ -185,7 +185,7 @@ int writeFile (long mainDelta)
 {
   ofstream myfile;
   myfile.open ("output_rar_team.txt");
-  myfile << deltaLowEntropy;
+  myfile << mainDelta;
   myfile << "\n";     
   myfile.close();
   return 0;
@@ -231,16 +231,17 @@ UdpServer::HandleRead (Ptr<Socket> socket)
           }else{ //All done!!            
             deltaHighEntropy = duration;
 
-            long mainDelta;
+            long mainDelta=0;
 
-            std::cout << "deltaHighEntropy :" << deltaHighEntropy;
-            std::cout << "deltaLowEntropy :" << deltaLowEntropy;
-            mainDelta = deltaHighEntropy-deltaLowEntropy;
+            std::cout << "\ndeltaHighEntropy :" << deltaHighEntropy;
+            std::cout << "\ndeltaLowEntropy :" << deltaLowEntropy;            
+            mainDelta = (long)deltaHighEntropy-deltaLowEntropy;
+            std::cout << "\nmainDelta :" << mainDelta;
 
-            if(mainDelta<COMPRESSION_THRESHOLD){
-              std::cout << "Compression Detected!";
+            if(mainDelta>COMPRESSION_THRESHOLD){
+              std::cout << "\nCompression Detected!\n";
             }else{
-              std::cout << "No compression was detected.";
+              std::cout << "\nNo compression was detected.\n";
             }
 
 
