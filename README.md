@@ -44,21 +44,21 @@ $python download.py -n ns-3.29
    
 # 4. Additional Setup
 
- # a) Install cMake , version: 3.10.02, by using the following command
+ ## a) Install cMake , version: 3.10.02, by using the following command
  
  $sudo apt install cmake
         
- # b) Install mercurial, by using the following command
+ ## b) Install mercurial, by using the following command
       
  $ sudo apt-get install mercurial
         
- # c) Add zlib library 
+ ## c) Add zlib library 
       
  $sudo apt-get install zlib1g-dev
  $sudo apt-get install libpng-dev
         
       
- # d) Installing zlib
+ ## d) Installing zlib
       
   In order to install zlib library run the following commands:
          
@@ -72,7 +72,7 @@ $python download.py -n ns-3.29
  $sudo apt-get install git-core build-essential cmake libxml2-dev libcurl4-openssl-dev
  $sudo apt-get install cmake libxml2-dev libcurl4-openssl-dev
  $sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev 
-               
+              
  -  build zlib, by running this commands:
  
  $cd AMuSt-libdash/libdash
@@ -86,7 +86,7 @@ $python download.py -n ns-3.29
  $sudo apt-get install zlib1g-dev
  $sudo apt-get install libpng-dev
          
- # e) Visualize node in netanim
+ ## e) Visualize node in netanim
          
  - go to folder ns-3-allinone and run commands:
  
@@ -97,13 +97,13 @@ $python download.py -n ns-3.29
   $make
   $./NetAnim
                
- # f) Data visualization
+ ## f) Data visualization
       
  - install the following package:
         
   $python -m pip install -U pip
         
- # g) Random generated numbers
+ ## g) Random generated numbers
       
   - run the following command:
 
@@ -112,14 +112,14 @@ $python download.py -n ns-3.29
    
  # 5. Recommended tools
      
-  # a) Install Wireshark, version 2.6.6, by using following commands.
+  ## a) Install Wireshark, version 2.6.6, by using following commands.
      
   $sudo add-apt-repository ppa:dreibh/ppa
   $sudo apt-get update
   $sudo apt-get install wire-shark
   $sudo apt-get –f install 
         
-  # b) Install version control, GitKraken, by using these commands
+  ## b) Install version control, GitKraken, by using these commands
      
   $wget[https://release.gitkraken.com/linux/gitkraken-amd64.deb]
   $dpkg -i gitkraken-amd64.deb
@@ -132,13 +132,13 @@ $python download.py -n ns-3.29
         
   $dpkg -i gitkraken-amd64.deb
 
-  # c) IDE For C++
+  ## c) IDE For C++
       
   Go to Visual Studio web site and download Visual studio for debian. 
         
   $sudo dpkg -i code_1.31.1-1549938243_amd64.deb
 
-# 6. Building project
+## 6. Building project
       
  In order to build the project run this command. 
  For running these commands you need you need to be in: 
@@ -162,9 +162,9 @@ $python download.py -n ns-3.29
     
    # Project outcomes
     
- # 1. Enable network compression for point-to-point links in ns-3.
- # 2. Implement the network application that detects the presence of network compression by end-hosts.
- # 3. Verify and validate your simulated compression link and compression detection application
+ ## 1. Enable network compression for point-to-point links in ns-3.
+ ## 2. Implement the network application that detects the presence of network compression by end-hosts.
+ ## 3. Verify and validate your simulated compression link and compression detection application
    
    # Overview
     
