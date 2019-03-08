@@ -40,6 +40,12 @@
 #include <algorithm>
 #include <functional>
 #include "ns3/boolean.h"
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h> 
+
 
 
 namespace ns3 {
@@ -190,21 +196,106 @@ UdpClient::StopApplication (void)
   Simulator::Cancel (m_sendEvent);
 }
 
-std::vector<bool> generateRandomSequence() 
-{
-    std::vector<bool> randomSequence;
-    randomSequence.resize(PACKET_SIZE);
+// OUR OLD RANDOM METHOD
+// std::vector<bool> generateRandomSequence() 
+// {
+//     std::vector<bool> randomSequence;
+//     randomSequence.resize(PACKET_SIZE);
 
-    std::random_device rd;
-    std::mt19937 generator(rd());
-    std::bernoulli_distribution distribution(0.5); // your 50/50 chance
+//     std::random_device rd;
+//     std::mt19937 generator(rd());
+//     std::bernoulli_distribution distribution(0.5); // your 50/50 chance
 
-    std::generate(randomSequence.begin(), randomSequence.end(),
-        [&generator, &distribution] { return distribution(generator); });
+//     std::generate(randomSequence.begin(), randomSequence.end(),
+//         [&generator, &distribution] { return distribution(generator); });
 
-    return randomSequence;
+//     return randomSequence;
+// }
+
+// uint8_t* UdpClient::GetRandomPayload(int m_size) 
+// {
+// 	int randomData = open("/dev/random",O_RDONLY); 
+//   NS_LOG_UNCOND("randomData:"+ randomData);  
+// 	uint32_t n= m_size-(8+4);
+// 	uint8_t *byte_array = new uint8_t[n]();
+// 		if(m_entropy){
+// 			size_t randomDataLen=0;
+// 			while(randomDataLen<n){
+// 				ssize_t result = read(randomData,byte_array+randomDataLen,n-randomDataLen);
+// 				randomDataLen += result;
+// 			}	
+// 		} 
+// 	close(randomData);
+// 	return byte_array;
+// }
+
+// uint8_t* UdpClient::GetPayload(void) 
+// {
+// 	int randomData = open("/dev/random",O_RDONLY);
+
+// 	uint32_t n= m_size-(8+4);  
+// 	uint8_t *byte_array = new uint8_t[n]();
+// 		if(m_entropy){
+// 			size_t randomDataLen=0;
+// 			while(randomDataLen<n){
+// 				ssize_t result = read(randomData,byte_array+randomDataLen,n-randomDataLen);				
+//         randomDataLen += result;
+// 			}
+//       NS_LOG_UNCOND("Random Data Len:"<<randomDataLen);	
+// 		}
+// 	close(randomData); 
+  
+// 	return byte_array; 
+// }
+
+void convertZeroPadedHexIntoByte(char *dataset,unsigned char *bytearray){
+	int i = strlen(dataset),j=0,counter=0;
+	char c[2];
+	unsigned int bytes[2];
+
+	for(j=0;j<i;j++){
+		if(0 == j%2){
+
+			c[0] = dataset[j];
+			c[1] = dataset[j+1];
+
+			sscanf(c, "%02x", &bytes[0]);
+
+			bytearray[counter] = bytes[0];
+
+			counter++;
+		}
+	}
+
 }
 
+uint8_t* GetPayload(void) {
+int randomData = open("/dev/random", O_RDONLY);
+  uint8_t *byte_array = new uint8_t[PACKET_SIZE]();
+  if (randomData < 0)
+  {
+      // something went wrong
+  }
+  else
+  {
+      char myRandomData[PACKET_SIZE];
+      size_t randomDataLen = 0;
+      while (randomDataLen < sizeof myRandomData)
+      {
+          ssize_t result = read(randomData, myRandomData + randomDataLen, (sizeof myRandomData) - randomDataLen);
+          if (result < 0)
+          {
+              // something went wrong
+          }
+          randomDataLen += result;
+      }
+      close(randomData);      
+      convertZeroPadedHexIntoByte(myRandomData,byte_array);      
+  }  
+  return byte_array;
+}
+
+ 
 void
 UdpClient::Send (void)
 {
@@ -218,20 +309,20 @@ UdpClient::Send (void)
   //Packet (uint8_t const*buffer, uint32_t size);
 
   //8+4+packetSize
-    uint8_t* byteArray = new uint8_t[PACKET_SIZE]; 
-    std::vector<bool> v1 = generateRandomSequence();
-    int i=0;
-    for (const auto& elem : v1)
-    {
-        //LOG
-        //std::cout << elem; //Everything is perfect! We create 1000 byte long random number!
-        if(elem==true){     //We converting into uint_8 because of packet constructor.
-          byteArray[i]=1;   
-        }else{
-          byteArray[i]=0;
-        }        
-        i++;
-    }
+    // uint8_t* byteArray = new uint8_t[PACKET_SIZE]; 
+    // std::vector<bool> v1 = generateRandomSequence();
+    // int i=0;
+    // for (const auto& elem : v1)
+    // {
+    //     //LOG
+    //     //std::cout << elem; //Everything is perfect! We create 1000 byte long random number!
+    //     if(elem==true){     //We converting into uint_8 because of packet constructor.
+    //       byteArray[i]=1;   
+    //     }else{
+    //       byteArray[i]=0;
+    //     }        
+    //     i++;
+    // }
 
     //LOG...
   // std::cout<<"\nPacket  : ";
@@ -241,18 +332,21 @@ UdpClient::Send (void)
   // std::cout<<std::endl; 
 
   //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");  
-
   
   std::cout << "Alper.delete.Entropy Value:" <<this->m_entropy;
 
-
   Ptr<Packet> p;
   if(this->m_entropy == true){ //Random....
-    p = Create<Packet> (byteArray, PACKET_SIZE-(8+4));   //Packet (uint8_t const*buffer, uint32_t size);
+    NS_LOG_UNCOND("HighEntropy.TRUE!");
+
+    uint8_t* byteArray = GetPayload();
+    
+    NS_LOG_UNCOND("HighEntropy.END!");    
+    p = Create<Packet> (byteArray, m_size-(8+4));   //Packet (uint8_t const*buffer, uint32_t size);  
   }else{
     p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
-  }  
-  
+  } 
+    NS_LOG_UNCOND("Udp.Client.Packet Size:"<<p->GetSize());         
 
   p->AddHeader (seqTs);
 

@@ -17,7 +17,7 @@ NS_LOG_COMPONENT_DEFINE("Point to point connection");
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 10;     
+uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //TODO: This is for 0. Low enthropy. 
 static Time interPacketInterval = Seconds(0.5);  
@@ -68,16 +68,22 @@ int main (int argc, char *argv[])
   /* READ COMMAND LINE ARGUMENTS  */
   uint32_t CompressionDataRate = 1;
   bool IsHighEntropy = 0; 
+  bool IsCompress = 0;   
   CommandLine cmd;
   cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
-  cmd.AddValue("IsHighEntropy", "IsHighEntropy [0/1]", IsHighEntropy); 
+  cmd.AddValue("IsHighEntropy", "IsHighEntropy [0/1]", IsHighEntropy);
+  cmd.AddValue("IsCompress", "IsCompress [0/1]", IsCompress); 
+  cmd.AddValue("MaxPacketCount", "MaxPacketCount", MAX_PACKET_COUNT); 
   cmd.Parse (argc, argv);
+  NS_LOG_UNCOND("********************Configuration Parameters**************");
   NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
+  NS_LOG_UNCOND("IsCompress:"<< IsCompress);
+  NS_LOG_UNCOND("IsHighEntropy:"<< IsHighEntropy);
+  NS_LOG_UNCOND("MaxPacketCount:"<< MAX_PACKET_COUNT);
+  NS_LOG_UNCOND("**********************************************************");
       
   /* READ CONFIGURATION FILE */
-  int  protocolNumberInDecimal = readConfigurationFile();
-  
-   
+  int  protocolNumberInDecimal = readConfigurationFile();     
 
   NS_LOG_INFO ("Create Node!");
   NodeContainer nodes;
@@ -119,10 +125,10 @@ int main (int argc, char *argv[])
 
   /// TODO: We can't set Router2's Flags.....
   Ptr <PointToPointNetDevice> PpNdRouter1 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(0));
-  PpNdRouter1 -> SetCompressFlag(true);
+  PpNdRouter1 -> SetCompressFlag(IsCompress);
   PpNdRouter1 -> SetCompressProtocolNumber(protocolNumberInDecimal); 
   Ptr <PointToPointNetDevice> PpNdRouter2 = DynamicCast<PointToPointNetDevice> (deviceRouter1Router2.Get(1));  
-  PpNdRouter2 -> SetDecompressFlag(true);
+  PpNdRouter2 -> SetDecompressFlag(IsCompress);
   PpNdRouter2 -> SetCompressProtocolNumber(protocolNumberInDecimal);  
      
   /* Connect node Router2 & Receiver */  
@@ -161,7 +167,7 @@ int main (int argc, char *argv[])
   clientHigh.SetAttribute ("MaxPackets", UintegerValue (MAX_PACKET_COUNT)); 
   clientHigh.SetAttribute ("Interval", TimeValue (interPacketInterval));   
   clientHigh.SetAttribute ("PacketSize", UintegerValue (PACKET_SIZE));
-  clientHigh.SetAttribute ("Entropy", BooleanValue(true));      
+  clientHigh.SetAttribute ("Entropy", BooleanValue(IsHighEntropy));       
 
   ApplicationContainer clientAppsHigh = clientHigh.Install (nodes.Get(0));
   
@@ -175,7 +181,7 @@ int main (int argc, char *argv[])
 
   
   //Start client High Entropy...
-  clientAppsHigh.Start (Seconds (4.0));
+  clientAppsHigh.Start (Seconds (5.0));
   clientAppsHigh.Stop (Seconds (4999.0));  
   
 
