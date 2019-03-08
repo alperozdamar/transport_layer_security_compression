@@ -65,8 +65,7 @@ int readConfigurationFile(){
 int main (int argc, char *argv[])
 {
   /* Read command line argument  */
-  uint32_t CompressionDataRate = 1;
-  bool IsHighEntropy = 0; 
+  uint32_t CompressionDataRate = 1;  
   bool IsCompress = 0;     
   uint32_t MaxPacketCount=6000;
   CommandLine cmd;
