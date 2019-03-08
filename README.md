@@ -179,7 +179,7 @@ You may only need to modify PointToPointNetDevice to enable compression/decompre
 
 ![Image](packet_construction.png)
 
-       Figure 1: The specified method to implement for assembling compressed packets, as specificed in RFC 1974.
+  Figure 1: The specified method to implement for assembling compressed packets, as specificed in RFC 1974.
 
 A good starting point for building ns-3 applications might be this ns-3 wiki article, How To Make and Use A New Application.
   
