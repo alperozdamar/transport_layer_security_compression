@@ -13,58 +13,58 @@ Our project is running under Ubuntu, version 18.04.01.
   
 #  1. NS-3 prerequsites
 
-      Install Git , Version : 2.17.1
-         $ sudo apt update
-         $ sudo apt install git
-      Install Phyton , Version : 3.7
+   Install Git , Version : 2.17.1
+      $ sudo apt update
+      $ sudo apt install git
+   Install Phyton , Version : 3.7
     
 #  2. Installing NS-3
       
-      In order to install NS-3 you should follow link:
-      https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3
+   In order to install NS-3 you should follow link:
+   https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3
      
-      List of used commands:
+   List of used commands:
     
-        $ cd
-        $ mkdir workspace
-        $ cd workspace
-        $ git clone [cloning repository](https://gitlab.com/nsnam/ns-3-allinone.git)
-        $ cd ns-3-allinone
-        $ python download.py
-        $ python download.py -n ns-3.29
+       $ cd
+       $ mkdir workspace
+       $ cd workspace
+       $ git clone [cloning repository](https://gitlab.com/nsnam/ns-3-allinone.git)
+       $ cd ns-3-allinone
+       $ python download.py
+       $ python download.py -n ns-3.29
       
  # 3. Testing NS-3
       
-      For testing NS-3, run the following command:
+   For testing NS-3, run the following command:
    
         $ ./test.py
    
-      You should see following message:
+   You should see following message:
       92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
    
 # 4. Additional Setup
 
-      a) Install cMake , version: 3.10.02, by using the following command
+  a) Install cMake , version: 3.10.02, by using the following command
  
-        $ sudo apt install cmake
+      $ sudo apt install cmake
         
-      b) Install mercurial, by using the following command
+  b) Install mercurial, by using the following command
       
-        $ sudo apt-get install mercurial
+      $ sudo apt-get install mercurial
         
-      c) Add zlib library 
+  c) Add zlib library 
       
-        sudo apt-get install zlib1g-dev
-        sudo apt-get install libpng-dev
+      sudo apt-get install zlib1g-dev
+      sudo apt-get install libpng-dev
         
-      d) Install waf
+  d) Install waf
       
-      e) Installing zlib
+  e) Installing zlib
       
-         In order to install zlib library run the following commands:
+  In order to install zlib library run the following commands:
          
-         - clone the following repository [https://github.com/vitaliipoliakov/ns3-dash-mptcp](https://github.com/vitaliipoliakov/ns3-dash-mptcp), by using git clone.
-         - after cloning the repository above, run the following commands:
+  - clone the following repository [https://github.com/ChristianKreuzberger/AMuSt-ns3](https://github.com/vitaliipoliakov/ns3-dash-mptcp), by using git clone.
+  - after cloning the repository above, run the following commands:
          
            Pre-Requesits (Todo: cleanup)
                sudo apt-get install libboost-all-dev
