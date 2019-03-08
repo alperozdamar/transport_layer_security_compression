@@ -183,13 +183,13 @@ UdpServer::StopApplication ()
 
 int writeFile (long mainDelta) 
 {
-  ofstream myfile;
-  myfile.open ("output_rar_team.txt");
+  ofstream myfile;  
+  myfile.open ("output_rar_team.txt",std::ios_base::app);
   myfile << mainDelta;
   myfile << "\n";     
-  myfile.close();
+  myfile.close();  
   return 0;
-}
+} 
 
 void
 UdpServer::HandleRead (Ptr<Socket> socket)

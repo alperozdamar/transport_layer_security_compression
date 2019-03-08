@@ -17,7 +17,7 @@ NS_LOG_COMPONENT_DEFINE("Point to point connection");
 
 static const std::string CONFIG_FILE = "config.txt";
 //static int UDP_PACKET_COUNT = 3;  
-uint32_t MAX_PACKET_COUNT = 1;     
+static uint32_t MAX_PACKET_COUNT = 1;     
 static uint32_t MTU_SIZE = 2000; 
 static uint32_t PACKET_SIZE = 1100; //This is for 0. Low enthropy. 
 static Time interPacketInterval = Seconds(0.01);  
@@ -49,7 +49,7 @@ int readConfigurationFile(){
                 int intValue = atoi(value.c_str());
                 protocolNumberInDecimal=intValue;              
                 //std::cout << name << "=" << protocolNumberInDecimal << '\n';
-                //std::cout << "Alper.Hex:" << std::hex << protocolNumberInDecimal;
+                std::cout << "Alper.Hex:" << std::hex << protocolNumberInDecimal;
               }else{
                 NS_LOG_UNCOND("protocolNumberInDecimal is not equal to "<< name);
               }
@@ -67,20 +67,24 @@ int main (int argc, char *argv[])
   /* Read command line argument  */
   uint32_t CompressionDataRate = 1;
   bool IsHighEntropy = 0; 
-  bool IsCompress = 0;   
+  bool IsCompress = 0;     
+  uint32_t MaxPacketCount=0;
   CommandLine cmd;
   cmd.AddValue("CompressionDataRate", "CompressionDataRate [Mbps]", CompressionDataRate);
   cmd.AddValue("IsHighEntropy", "IsHighEntropy [0/1]", IsHighEntropy);
   cmd.AddValue("IsCompress", "IsCompress [0/1]", IsCompress); 
-  cmd.AddValue("MaxPacketCount", "MaxPacketCount", MAX_PACKET_COUNT); 
+  cmd.AddValue("MaxPacketCount", "MaxPacketCount", MaxPacketCount); 
   cmd.Parse (argc, argv);
+  MAX_PACKET_COUNT=MaxPacketCount;
   NS_LOG_UNCOND("********************Configuration Parameters**************");
   NS_LOG_UNCOND("Compression Link Data Rate:"<< CompressionDataRate);
   NS_LOG_UNCOND("IsCompress:"<< IsCompress);
   NS_LOG_UNCOND("IsHighEntropy:"<< IsHighEntropy);
   NS_LOG_UNCOND("MaxPacketCount:"<< MAX_PACKET_COUNT);
-  NS_LOG_UNCOND("**********************************************************");
-      
+  NS_LOG_UNCOND("**********************************************************");  
+
+  
+
   /* READ CONFIGURATION FILE */
   int  protocolNumberInDecimal = readConfigurationFile();     
 
