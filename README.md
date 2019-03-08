@@ -95,7 +95,11 @@ Our project is running under Ubuntu, version 18.04.01.
                make
                ./NetAnim
                
-      
+      g) Data visualization
+        - install the following package:
+        
+        python -m pip install -U pip
+        
    
  # 5. Recommended tools
      
