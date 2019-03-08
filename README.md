@@ -137,11 +137,7 @@ Our project is running under Ubuntu, version 18.04.01.
       $ ./waf configure
       $ ./waf build
       $ ./waf -- run
-      $ ./waf --run "scratch/point2point --CompressionDataRate=20"
-    Command Line Parameters we have: 
-    IsHighEntropy 
-    CompressionDataRate
-    IsCompress
+      $ ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
    
   ## 7. Test cases
    
