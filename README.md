@@ -108,7 +108,7 @@ Our project is running under Ubuntu, version 18.04.01.
         $ sudo apt-get install haveged
         
    
- # 5.Recommended tools
+ # 5. Recommended tools
      
   a) Install Wireshark, version 2.6.6, by using following commands.
      
@@ -160,9 +160,9 @@ Our project is running under Ubuntu, version 18.04.01.
     
    # Project outcomes
     
-       1. Enable network compression for point-to-point links in ns-3.
-       2. Implement the network application that detects the presence of network compression by end-hosts.
-       3. Verify and validate your simulated compression link and compression detection application
+  1. Enable network compression for point-to-point links in ns-3.
+  2. Implement the network application that detects the presence of network compression by end-hosts.
+  3. Verify and validate your simulated compression link and compression detection application
    
    # Overview
     
