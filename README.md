@@ -85,7 +85,7 @@ Our project is running under Ubuntu, version 18.04.01.
                sudo apt-get install zlib1g-dev
                sudo apt-get install libpng-dev
          
-      f) Visualizenode in netanim
+      f) Visualize node in netanim
          
          - go to folder ns-3-allinone and run commands:
                cd netanim/
@@ -99,6 +99,11 @@ Our project is running under Ubuntu, version 18.04.01.
         - install the following package:
         
         python -m pip install -U pip
+        
+      h) Random generated numbers
+        - run the following command:
+
+        sudo apt-get install haveged
         
    
  # 5. Recommended tools
