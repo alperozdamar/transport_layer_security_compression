@@ -81,7 +81,7 @@ int main (int argc, char *argv[])
   NS_LOG_UNCOND("IsCompress:"<< IsCompress);
   NS_LOG_UNCOND("IsHighEntropy:"<< IsHighEntropy);
   NS_LOG_UNCOND("MaxPacketCount:"<< MAX_PACKET_COUNT);
-  NS_LOG_UNCOND("**********************************************************");  
+  NS_LOG_UNCOND("*************************************************************");  
 
   
 
