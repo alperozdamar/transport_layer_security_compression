@@ -21,7 +21,7 @@ Our project is running under Ubuntu, version 18.04.01.
 #  2. Installing NS-3
       
       In order to install NS-3 you should follow link:
-      [cloning][https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3]
+      https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3
      
       List of used commands:
     
