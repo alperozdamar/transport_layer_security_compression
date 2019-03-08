@@ -49,7 +49,7 @@ int readConfigurationFile(){
               if(name.compare("protocolNumberInDecimal")==0 ){
                 int intValue = atoi(value.c_str());
                 protocolNumberInDecimal=intValue;              
-                std::cout << name << "=" << protocolNumberInDecimal << '\n';
+                //std::cout << name << "=" << protocolNumberInDecimal << '\n';
                 //std::cout << "Alper.Hex:" << std::hex << protocolNumberInDecimal;
               }else{
                 NS_LOG_UNCOND("protocolNumberInDecimal is not equal to "<< name);

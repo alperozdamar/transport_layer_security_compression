@@ -37,6 +37,10 @@
 #include "udp-server.h"
 #include <chrono>
 
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("UdpServer");
@@ -169,6 +173,17 @@ UdpServer::StopApplication ()
     }
 }
 
+
+int writeFile (long duration) 
+{
+  ofstream myfile;
+  myfile.open ("output_rar_team.txt");
+  myfile << duration;
+  myfile << "\n";    
+  myfile.close();
+  return 0;
+}
+
 void
 UdpServer::HandleRead (Ptr<Socket> socket)
 {
@@ -182,30 +197,30 @@ UdpServer::HandleRead (Ptr<Socket> socket)
       Time startTime;
       Time endTime;      
       Time timeDiff;            
-
       //time_t start;      
       if(totalPacketCount==0){
         //startTime = Simulator::Now(); 
         start_time = std::chrono::high_resolution_clock::now();
       }
       totalPacketCount++;
+      //std::cout << "\ntotalPacketCount:" << totalPacketCount;       
 
-      //std::cout << "\ntotalPacketCount:" << totalPacketCount;
-      
 
-      if(totalPacketCount == (int)(MAX_PACKET_COUNT*0.98)){
-   
 
+      if(totalPacketCount == (int)(MAX_PACKET_COUNT*0.98)){   
       auto current_time = std::chrono::high_resolution_clock::now();
-      std::cout << "Program has been running for " << std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count() << " milliseconds" << std::endl;
-
+      NS_LOG_UNCOND("*******************************************************");  
+      std::cout << "Program has been running for " << std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count() << " milliseconds" << std::endl;            
+        //long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();      
+      NS_LOG_UNCOND("****************************************************");  
       
-      
-        //long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
-      
+      long duration = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
+      std::cout << "Duration :" << duration;      
 
-
+      writeFile(duration);
       }
+
+      
 
       socket->GetSockName (localAddress);
       m_rxTrace (packet);

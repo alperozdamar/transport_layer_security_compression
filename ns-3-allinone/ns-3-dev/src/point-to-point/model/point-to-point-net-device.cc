@@ -42,6 +42,8 @@ NS_OBJECT_ENSURE_REGISTERED (PointToPointNetDevice);
 
 static const int COMPRESSED_PROTOCOL_NUMBER = (int)0x4021;
 
+static bool DEBUG=0;
+
 TypeId 
 PointToPointNetDevice::GetTypeId (void)
 {
@@ -345,21 +347,26 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
   //NS_LOG_UNCOND("I am here! <Receive.doCompress:"<<this -> doCompress);  
 
   if(this -> doDecompress){ 
-    NS_LOG_UNCOND("I am here! <Receive>");  
+    //NS_LOG_UNCOND("I am here! <Receive>");  
     PppHeader header;
     packet-> RemoveHeader(header);
 
-    NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number:"<< std::hex<<header.GetProtocol());
+    //NS_LOG_UNCOND("Router:" << this->GetAddress() << ",Receive Protcol Number:"<< std::hex<<header.GetProtocol());
     if(header.GetProtocol() == COMPRESSED_PROTOCOL_NUMBER){ 
-      NS_LOG_UNCOND("Welcome to UnCompression!!!!");
+
+      if(DEBUG==1){
+        NS_LOG_UNCOND("Welcome to UnCompression!!!!");
+      }
       // int packet_size = packet->GetSize();
       Ipv4Header ipHeader;
       packet-> RemoveHeader(ipHeader);
       // int ipSize=packet_size - packet-> GetSize(); 
 
       // std::cout<<"\nIP size:" << ipSize <<std::endl;
-      std::cout<<"Payload size:" << ipHeader.GetPayloadSize() <<std::endl;
-      std::cout<<"Packet size(Before Uncompress):" << packet-> GetSize() <<std::endl;
+      if(DEBUG==1){
+        std::cout<<"Payload size:" << ipHeader.GetPayloadSize() <<std::endl;
+        std::cout<<"Packet size(Before Uncompress):" << packet-> GetSize() <<std::endl;
+      }
 
       //packet -> RemoveHeader(ipHeader);   
       UdpHeader udp_header;
@@ -371,8 +378,10 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       // for (int i = 0; (unsigned)i < size; ++i){
       //   std::cout << std::hex <<std::setfill('0') <<std::setw(2) << (int)compressData[i] <<"";
       // }
-      std::cout << std::endl;
-      std::cout<<"Before Uncompress:"<<(int)size;
+      if(DEBUG==1){
+        std::cout << std::endl;
+        std::cout<<"Before Uncompress:"<<(int)size;
+      }
       uint8_t *decompressData = new uint8_t[1102]; //?? DecompressData should be bigger than size!!
       //int protocolSize = 2;
       //uLongf new_size = size + protocolSize; //TODO: Probable Bug!!
@@ -385,8 +394,10 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       uncompress(decompressData, &new_size, compressData, size);
    
       //uncompress(decompressData, &new_size, compressData, size);  //?? DecompressData should be bigger than size!!
-      std::vector<uint8_t> vector_buffer(decompressData, decompressData + new_size);
-      std::cout<<"\nnew_size(After uncompress):" << (int)new_size <<std::endl;
+      std::vector<uint8_t> vector_buffer(decompressData, decompressData + new_size);            
+      if(DEBUG==1){
+        std::cout<<"\nnew_size(After uncompress):" << (int)new_size <<std::endl;
+      }      
       size = new_size - 2;
       decompressData = &decompressData[2];
       packet = new Packet(decompressData, size);
@@ -396,8 +407,9 @@ PointToPointNetDevice::Receive (Ptr<Packet> packet)
       // size = ipSize + size;
       ipHeader.SetPayloadSize(size); 
 
-      std::cout<<"\nNew Payload size(After uncompress):" << (int)size <<std::endl;
-
+      if(DEBUG==1){
+        std::cout<<"\nNew Payload size(After uncompress):" << (int)size <<std::endl;
+      }
       packet->AddHeader(ipHeader); 
       header.SetProtocol(0x0021); // Alper to add parameter
     }
@@ -646,14 +658,19 @@ PointToPointNetDevice::Send (
     //     std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)inData[i] << " ";
     // }
     // std::cout<<std::endl;          
-    std::cout<<"Original size:"<<size<<std::endl;
+    if(DEBUG==1){
+      std::cout<<"Original size:"<<size<<std::endl;
+    }
+    
     uint8_t *compressData = new uint8_t[size];
     uLongf new_size;
     //int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
     int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData,(uLongf)size,Z_BEST_COMPRESSION); 
     //TODO: PUT DEBUG LEVEL CHECK
     // std::cout << "Compressed packet size:" << new_size;
+    if(DEBUG==1){ 
      std::cout<<"\nCompressed Size: "<<new_size<<"\nCompress2 out: "<< returnValue << " "<< Z_OK; 
+    }
     // std::cout<<"Compressed: "<< new_size <<":"; 
     // for(int i=0;(unsigned)i<size;++i ){
     //   std::cout<< std::hex << std::setfill('0') << std::setw(2) << (int)compressData[i] << " ";

@@ -329,24 +329,17 @@ UdpClient::Send (void)
   //    for(int i=0; (unsigned)i < PACKET_SIZE;++i){         
   //        std::cout << unsigned(byteArray[i]);
   // } 
-  // std::cout<<std::endl; 
-
-  //NS_LOG_UNCOND("Alper.test.UDP.CLIENT.CPP!");  
-  
-  std::cout << "Alper.delete.Entropy Value:" <<this->m_entropy;
+  // std::cout<<std::endl;       
 
   Ptr<Packet> p;
-  if(this->m_entropy == true){ //Random....
-    NS_LOG_UNCOND("HighEntropy.TRUE!");
-
-    uint8_t* byteArray = GetPayload();
-    
-    NS_LOG_UNCOND("HighEntropy.END!");    
+  if(this->m_entropy == true){ //Random....    
+    uint8_t* byteArray = GetPayload();    
     p = Create<Packet> (byteArray, m_size-(8+4));   //Packet (uint8_t const*buffer, uint32_t size);  
   }else{
     p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header     
   } 
-    NS_LOG_UNCOND("Udp.Client.Packet Size:"<<p->GetSize());         
+    
+  //NS_LOG_UNCOND("Udp.Client.Packet Size:"<<p->GetSize());         
 
   p->AddHeader (seqTs);
 
