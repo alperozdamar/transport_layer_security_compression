@@ -89,7 +89,7 @@ Our project is running under Ubuntu, version 18.04.01.
          
          - go to folder ns-3-allinone and run commands:
                cd netanim/
-               apt-get install qt5-default
+               sudo apt-get install qt5-default
                make clean
                qmake NetAnim.pro
                make
