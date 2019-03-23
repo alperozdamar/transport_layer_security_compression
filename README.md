@@ -43,7 +43,7 @@ Transmit low entropy data over a network topology without a compression link.
 
 ![Image](link_diagram.png)
 
-                              Figure 2: A 4-node topology with a compression link.
+Figure 2: A 4-node topology with a compression link
 
 Transmit high entropy data over a network topology without a compression link.
 Transmit low entropy data over a network topology with a compression link.
@@ -94,18 +94,18 @@ $python build
       
 3. Testing NS-3:
       
- For testing NS-3, run the following command:
+For testing NS-3, run the following command:
  
  ```linux
  $./test.py
  ```
    
- You should see following message:
- 92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
+You should see following message:
+92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
    
 4. Additional Setup:
 
- Install cMake version: 3.10.02, mercurial, haveged for random data generation and zlib library for compression
+Install cMake version: 3.10.02, mercurial, haveged for random data generation and zlib library for compression
  
  ```linux
  $ sudo apt install cmake    
@@ -118,8 +118,8 @@ $python build
 
 Further setup for zlib is required.
      
- - clone the following repository [AMuSt-ns3](https://github.com/vitaliipoliakov/ns3-dash-mptcp)
- - run the following commands:
+- clone the following repository [AMuSt-ns3](https://github.com/vitaliipoliakov/ns3-dash-mptcp)
+- run the following commands:
       
  ```linux  
  $sudo apt-get install libboost-all-dev
@@ -129,7 +129,7 @@ Further setup for zlib is required.
  $sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev 
  ```
               
- -  build zlib:
+-  build zlib:
  ```linux  
  $cd AMuSt-libdash/libdash
  $mkdir build
@@ -138,8 +138,8 @@ Further setup for zlib is required.
  $make
  ```             
          
- ## Simulation 
- The project used "netanim" to visualize the nodes. In the directpry of go ns-3-allinone, run the following commands:
+## Simulation 
+The project used "netanim" to visualize the nodes. In the directpry of go ns-3-allinone, run the following commands:
  
  ```linux  
   $cd netanim/
@@ -150,9 +150,9 @@ Further setup for zlib is required.
   $./NetAnim
  ```          
  
- ## Recommended Tools
+## Recommended Tools
      
-  a) Install Wireshark, version 2.6.6.
+a) Install Wireshark, version 2.6.6.
    
   ```linux  
   $sudo add-apt-repository ppa:dreibh/ppa
@@ -161,23 +161,23 @@ Further setup for zlib is required.
   $sudo apt-get –f install 
   ```
         
-  b) Install version control, GitKraken.
+b) Install version control, GitKraken.
   
   ```linux   
   $ wget[https://release.gitkraken.com/linux/gitkraken-amd64.deb]
   $ dpkg -i gitkraken-amd64.deb
   ```
         
-  If any problem occurred and Package gconf2 is not installed, run the following command:  
+If any problem occurred and Package gconf2 is not installed, run the following command:  
   
   ```linux        
   $sudo apt --fix-broken install
   $ dpkg -i gitkraken-amd64.de
   ```
   
-  c) IDE For C++
+c) IDE For C++
       
-  Go to Visual Studio web site and download Visual studio for debian. 
+Go to Visual Studio web site and download Visual studio for debian. 
   
   ```linux        
   $sudo dpkg -i code_1.31.1-1549938243_amd64.deb
@@ -202,7 +202,6 @@ $ python buildProject.py
 
 ``` 
 ## Project Testing
-
 For testing the different feature implemented on the project the following command were used and the generated result were tested. 
 
  ```linux 
