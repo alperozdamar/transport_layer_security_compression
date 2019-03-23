@@ -1,22 +1,22 @@
 # Transport-Layer-Security-TLS-Protocol-Compression
 The Transport Layer Security (TLS) protocol includes features to negotiate selection of a lossless data compression method as part of the TLS Handshake Protocol and then to apply the algorithm associated with the selected method as part of the TLS Record Protocol. See [buildbot](http://buildbot.tools.ietf.org)
 
-## Project description
+## Project Description
     
-### Project outcomes
+### Project Outcomes:
     
    1. Enable network compression for point-to-point links in ns-3.
    2. Implement the network application that detects the presence of network compression by end-hosts.
    3. Verify and validate your simulated compression link and compression detection application
 
-### Overview
+### Overview:
     
 For this project implementation of a network level compression link is considered. We implement then a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries [PointToPoint](https://lasr.cs.ucla.edu/vahab/resources/compression_detection.pdf).
 Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation [nsnm](https://www.nsnam.org/releases/ns-3-29/documentation/) are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
 
-### Components
+### Components:
    
-#### (1) Compression Link
+(1) Compression Link
    
 The compression link application must be built using ns-3. It will be responsible for compression and decompression of incoming and outgoing packets. We will use the Lempel-Ziv-Stac algorithm for compression and decompression, for which you may find and use a library. Your compression link should follow some requirements in the RFC 1974: PPP Stac LZS Compression Protocol.
 Specifically, we implemented functionality that takes a PPP packet, and first checks the protocol number in the header. You should also have a configuration file that specifies packet types to compress. If we determine that the checked packet type matches one in the configuration file, we pre-process then compress it. For the purposes of this project, the configuration file will only have one protocol entered, IP, protocol number 0x0021.
@@ -31,12 +31,12 @@ A good starting point for building ns-3 applications might be this ns-3 wiki art
   
    
    
-#### (2) Compression Detection Application
+(2) Compression Detection Application
 
 We implemented the network compression detection only in the cooperative environment as described here (Section IV). In summary, your network application is a client/server application where the sender sends two sets of 6000 UDP packets back-to-back (called packet train), and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the second packet train contains random sequence of bits. You can generate random sequence of bits using /dev/random. If the difference in arrival time between the first and last packets of the two trains (∆tH −∆tL) is more than a fixed threshold τ = 100 ms, the application reports *Compression detected!*, whereas when the time difference is less than τ there was probably no compression link on the path and the application should display *No compression was detected*.
 Your application is required to take in at least one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers.
 
-#### (3) Simulation Veriftcation and Validation
+(3) Simulation Veriftcation and Validation
 
 Create a 4-node topology in ns-3 as illustrated in Figure 2. Nodes S and R are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. Your simulations should also be built using ns-3. You should include four logically separate simulations, each doing one of the following:
 Transmit low entropy data over a network topology without a compression link.
@@ -56,13 +56,13 @@ Make sure you are careful to control for confounding variables across your four 
 
 In order to run this project you need install Virtual Box (Oracle), version 6.0. 
 
-### Operating System
+### Operating System:
 
 The project is running under Ubuntu, version 18.04.01.
 
-### Prerequisites
+### Prerequisites:
   
-#### 1. NS-3 prerequsites
+1. NS-3 prerequsites:
 
 Install Git , Version : 2.17.1
 Install Phyton , Version : 3.7
@@ -73,7 +73,7 @@ $sudo apt install git
 ```
 
     
-#### 2. Installing NS-3
+2. Installing NS-3:
       
 In order to install NS-3 you should follow link:
 See [nsnam](https://www.nsnam.org/docs/tutorial/html/getting-started.html#building-ns-3)
@@ -92,7 +92,7 @@ $python build
 
 ```
       
- #### 3. Testing NS-3
+3. Testing NS-3:
       
  For testing NS-3, run the following command:
  
@@ -103,7 +103,7 @@ $python build
  You should see following message:
  92 of 92 tests passed (92 passed, 0 failed, 0 crashed, 0 valgrind errors)
    
-#### 4. Additional Setup
+4. Additional Setup:
 
  Install cMake version: 3.10.02, mercurial, haveged for random data generation and zlib library for compression
  
@@ -116,7 +116,7 @@ $python build
  $ sudo apt-get install haveged
  ```
 
-Further setup for zlib is required
+Further setup for zlib is required.
      
  - clone the following repository [AMuSt-ns3](https://github.com/vitaliipoliakov/ns3-dash-mptcp)
  - run the following commands:
@@ -150,7 +150,7 @@ Further setup for zlib is required
   $./NetAnim
  ```          
  
- ## Recommended tools
+ ## Recommended Tools
      
   a) Install Wireshark, version 2.6.6.
    
