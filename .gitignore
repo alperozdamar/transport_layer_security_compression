@@ -1,6 +1,22 @@
 
-ns-3-allinone/\.vscode/
+*.pyc
 
-ns-3-allinone/__pycache__/
+*.i
+
+ns-3-allinone/bake/\.hg/cache/
+
+ns-3-allinone/bake/\.hg/
+
+*.d
+ns-3-allinone/ns-3-dev/build/
+ns-3-allinone/\.vscode/c_cpp_properties\.json
+
+ns-3-allinone/\.vscode/launch\.json
+
+ns-3-allinone/bake/\.project
 
 ns-3-allinone/netanim/
+
+ns-3-allinone/ns-3-dev/p2p\.xml
+
+ns-3-allinone/\.vscode/
