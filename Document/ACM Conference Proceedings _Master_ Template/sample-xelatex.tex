@@ -218,13 +218,17 @@ author's own version, with {\itshape very} few changes to the source.
 
 \section{Design Review}
 High speed application become considerable especially when there is 
-a high network traffic. In order to generate high traffic, a single topology 
-with 4 nodes are designed and connected using point to point library in 
-NS3 environment. Figure ? shows the topology designed in this project. 
-The middle link was used to generate bottleneck link. To produce bottleneck 
+a high traffic in the network. In order to generate high traffic, a single topology 
+with 4 nodes is designed and connected using point to point protocol standard library in 
+the NS3 environment. Figure ? shows the topology designed in this project. 
+The middle link was used to generate bottleneck link. First node and the last 
+node act as client and server application where the sender sends two sets of 
+6000 UDP packets back-to-back as packet train, and the receiver records the 
+arrival time between the first and last packet in the train. The first packet train 
+consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the 
+second packet train contains random sequence of bits. 
 
 
-In summary, your network application is a client/server application where the sender sends two sets of 6000 UDP packets back-to-back (called packet train), and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the second packet train contains random sequence of bits. 
 
  achieve For this project implementation of a network level compression link is considered. We implement then a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries PointToPoint. Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation nsnm are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
 
