@@ -220,7 +220,7 @@ author's own version, with {\itshape very} few changes to the source.
 High speed application become considerable especially when there is 
 a high traffic in the network. In order to generate high traffic, a single topology 
 with 4 nodes is designed and connected using point to point protocol standard library in 
-the NS3 environment. Figure ? shows the topology designed in this project. 
+the ns-3 environment. Figure ? shows the topology designed in this project. 
 The middle link was used to generate bottleneck link. First node and the last 
 node act as client and server application where the sender sends two sets of 
 6000 UDP packets back-to-back as packet train, and the receiver records the 
@@ -233,9 +233,23 @@ data compression on top of the application.
 
 \subsection{Data Compression}
 
- In order to fully utilize the network path especially in the bottleneck of the network  
- data compression is introduced. In this project zLib external library was implemented to 
- compress data in pre-link path.   
+ In order to fully utilize the network path especially in the bottleneck of the network 
+ data compression is introduced. In this project zLib external library was implemented 
+ to compress data in pre-link path. zlib [?] is a software library used for data compression 
+ and is an abstraction of the DEFLATE compression algorithm used in their gzip file 
+ compression program. zlib is also a crucial component of many software platform as 
+ the compressed data format is itself portable across platforms.
+The compression link application was embedded and built using ns-3. 
+The implemented Lempel-Ziv-Stac [?] compression algorithm is  responsible for 
+compression and decompression of incoming and outgoing packets and follows 
+RFC 1974 PPP Stac LZS Compression Protocol [?] requirement.
+ 
+ 
+ 
+ Specifically, we implemented functionality that takes a PPP packet, and first checks the protocol number in the header. You should also have a configuration file that specifies packet types to compress. If we determine that the checked packet type matches one in the configuration file, we pre-process then compress it. For the purposes of this project, the configuration file will only have one protocol entered, IP, protocol number 0x0021. Pre-processing should first take the matched packet then replace the original protocol number with the LZS protocol number, 0x4021. It should then take the original protocol number and append it to the original data, and compress that whole bitstring and replace it with the original data section in the original packet, as illustrated in Figure 1. Decompressor, at the other side of the compression link, should then reverse all the pre-processing steps performed at the compressor, to retrieve the original incoming packet ((1) in Figure 1), before pushing it to the next interface. You should not worry about implementing Compression Control Protocol and its corresponding control packets, as you may assume the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, you should also not implement anything from the negotiation phase, and not worry about using the exact compression data format, specified in X3.241-1994. You may only need to modify PointToPointNetDevice to enable compression/decompression on point-to-point links. A good starting point to get familiar with, in addition to PointToPointNetDevice is the ns-3 point-to-point model overview.
+
+
+ 
  achieve For this project implementation of a network level compression link is considered. We implement then a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries PointToPoint. Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation nsnm are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
 
 
