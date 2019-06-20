@@ -226,29 +226,18 @@ node act as client and server application where the sender sends two sets of
 6000 UDP packets back-to-back as packet train, and the receiver records the 
 arrival time between the first and last packet in the train. The first packet train 
 consists of all packets of size 1100 bytes in payload, filled with all 0’s, while the 
-second packet train contains random sequence of bits. 
+second packet train contains random sequence of bits. This configuration generates 
+high traffic in the middle point to point link that makes it suitable environment to implement
+data compression on top of the application.
+ 
 
+\subsection{Data Compression}
 
-
+ In order to fully utilize the network path especially in the bottleneck of the network  
+ data compression is introduced. In this project zLib external library was implemented to 
+ compress data in pre-link path.   
  achieve For this project implementation of a network level compression link is considered. We implement then a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries PointToPoint. Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation nsnm are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
 
-
-
-
-As noted in the introduction, the ``\verb|acmart|'' document class can
-be used to prepare many different kinds of documentation --- a
-double-blind initial submission of a full-length technical paper, a
-two-page SIGGRAPH Emerging Technologies abstract, a ``camera-ready''
-journal article, a SIGCHI Extended Abstract, and more --- all by
-selecting the appropriate {\itshape template style} and {\itshape
-  template parameters}.
-
-This document will explain the major features of the document
-class. For further information, the {\itshape \LaTeX\ User's Guide} is
-available from
-\url{https://www.acm.org/publications/proceedings-template}.
-
-\subsection{Template Styles}
 
 The primary parameter given to the ``\verb|acmart|'' document class is
 the {\itshape template style} which corresponds to the kind of publication

@@ -22,3 +22,13 @@ ns-3-allinone/ns-3-dev/p2p\.xml
 ns-3-allinone/\.vscode/
 
 \.DS_Store
+
+*.pdf
+
+*.out
+
+*.log
+
+*.aux
+
+*.gz
