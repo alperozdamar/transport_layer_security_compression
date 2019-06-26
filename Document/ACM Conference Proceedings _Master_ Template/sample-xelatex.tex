@@ -134,13 +134,13 @@ A capsulated network data called packet is the main component for the
 traffic measurement and the network traffic shows a significant potential
 for the researchers to find a solution on the high speed communication 
 system\ [?].  Several research works were conducted to transfer packets 
-in high speed rate possibles and yet it is a challenging task. In this research 
+in high speed rate possibles and yet it is a challenging task.  In this research project, implementation of a network level compression link is considered. A network application to detect whether network compression is presented implemented. To validate the functionality, simulated compression link is designed and presented. In this research 
 work, the focus was taken on the data compression approach to fully utilize 
 the network when point to point network is a bottle neck. The design defined 
 under under Microsoft  point to point protocol standard and network simulation 
-(ns-3) environment were used for system design and implementation. 
+(NS-3) environment were used for system design and implementation. 
 A comprehensive data analysis and evaluation were conducted to observe 
-network efficiency when compression is applied. 
+network efficiency when compression is activated 
 \end{abstract}
 
 %%
@@ -239,36 +239,24 @@ data compression on top of the application.
  and is an abstraction of the DEFLATE compression algorithm used in their gzip file 
  compression program. zlib is also a crucial component of many software platform as 
  the compressed data format is itself portable across platforms.
-The compression link application was embedded and built using ns-3. 
+The compression link application was embedded and built using NS-3. 
 The implemented Lempel-Ziv-Stac [?] compression algorithm is  responsible for 
 compression and decompression of incoming and outgoing packets and follows 
 RFC 1974 PPP Stac LZS Compression Protocol [?] requirement.
  
  
  
-For the purposes of this project, the entire packets are inspected upon the arrival for the protocol number.  Matched protocol packet then is pushed for compression process. The pre-processing  finds the matched packet to replace the original protocol number with the LZS protocol number, 0x4021. Original protocol number is appended to the original data, and compress that whole bit-string and replace it with the original data section in the original packet, as illustrated in Figure 1. 
+For the purposes of this project, the entire packets are inspected upon the arrival for checking the protocol number.  Matched protocol packet then is pushed for compression process. The pre-processing  finds the matched packet to replace the original protocol number with the LZS protocol number, 0x4021. Original protocol number is appended to the original data, and compress that whole bit-string and replace it with the original data section in the original packet, as illustrated in Figure 1. 
 
 
 
-In the other hand, decompressor, at the other side of the compression link then reverse all the pre-processing steps performed at the compressor, to retrieve the original incoming packet, before pushing it to the next interface. The assumption is the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, there is no implementation from the negotiation phase specified in X3.241-1994. The compression and decompression algorithm is implemented in PointToPointNetDevice to enable compression/decompression on point-to-point links. in NS-3 environment. The higher level compression and decompression implementation model is shown below:
+In the other hand, decompressor, at the other side of the compression link then reverse all the pre-processing steps performed at the compressor, to retrieve the original incoming packet, before pushing it to the next interface. The assumption is the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, there is no implementation from the negotiation phase specified in X3.241-1994. The compression and decompression algorithm is implemented in PointToPointNetDevice to enable compression/decompression on point-to-point links in NS-3 environment. The higher level of compression and decompression implementation model is shown below:
 
 
+Figure ?: The specified method to implement for assembling compressed packets, as specificed in RFC 1974[?].
 
-
-
-
-
- 
- achieve For this project implementation of a network level compression link is considered. We implement then a network application to detect whether network compression is present to validate your simulated compression link. It is inspired by the work, End-to-End Detection of Compression of Traffic Flows by Intermediaries PointToPoint. Crucial to success in this project will be a deep and detailed reading and understanding of the ns-3 documentation, where it is relevant to your project. Among the ns-3 documentation nsnm are tutorials, a reference manual, a model library, and a full API reference. You should explore and make use of all of these resources.
-
-
-The primary parameter given to the ``\verb|acmart|'' document class is
-the {\itshape template style} which corresponds to the kind of publication
-or SIG publishing the work. This parameter is enclosed in square
-brackets and is a part of the {\verb|documentclass|} command:
-\begin{verbatim}
-  \documentclass[STYLE]{acmart}
-\end{verbatim}
+\subsection{Compression Detection Algorithm}
+The network compression detection is implemented only in the cooperative environment as described. The proposed network application is implemented as a client/server application where the sender sends two sets of 6000 UDP packets as packet train one zero payload and the other random generated payload. The random sequence generator is implemented using /dev/random. If the difference in arrival time between the first and last packets of the two trains (∆tH −∆tL) is more than a fixed threshold τ = 100 ms, the application reports Compression detected!, whereas when the time difference is less than τ there was probably no compression link on the path and the application should display No compression was detected. Your application is required to take in at least one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers.
 
 Journals use one of three template styles. All but three ACM journals
 use the {\verb|acmsmall|} template style:
