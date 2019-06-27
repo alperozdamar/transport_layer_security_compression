@@ -220,7 +220,7 @@ author's own version, with {\itshape very} few changes to the source.
 High speed application become considerable especially when there is 
 a high traffic in the network. In order to generate high traffic, a single topology 
 with 4 nodes is designed and connected using point to point protocol standard library in 
-the ns-3 environment. Figure ? shows the topology designed in this project. 
+the NS-3 environment. Figure ? shows the topology designed in this project. 
 The middle link was used to generate bottleneck link. First node and the last 
 node act as client and server application where the sender sends two sets of 
 6000 UDP packets back-to-back as packet train, and the receiver records the 
@@ -253,10 +253,28 @@ For the purposes of this project, the entire packets are inspected upon the arri
 In the other hand, decompressor, at the other side of the compression link then reverse all the pre-processing steps performed at the compressor, to retrieve the original incoming packet, before pushing it to the next interface. The assumption is the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, there is no implementation from the negotiation phase specified in X3.241-1994. The compression and decompression algorithm is implemented in PointToPointNetDevice to enable compression/decompression on point-to-point links in NS-3 environment. The higher level of compression and decompression implementation model is shown below:
 
 
-Figure ?: The specified method to implement for assembling compressed packets, as specificed in RFC 1974[?].
+Figure ?: The specified method to implement for assembling compressed packets, as specified in RFC 1974[?].
 
 \subsection{Compression Detection Algorithm}
-The network compression detection is implemented only in the cooperative environment as described. The proposed network application is implemented as a client/server application where the sender sends two sets of 6000 UDP packets as packet train one zero payload and the other random generated payload. The random sequence generator is implemented using /dev/random. If the difference in arrival time between the first and last packets of the two trains (∆tH −∆tL) is more than a fixed threshold τ = 100 ms, the application reports Compression detected!, whereas when the time difference is less than τ there was probably no compression link on the path and the application should display No compression was detected. Your application is required to take in at least one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers.
+The network compression detection is implemented only in the cooperative environment as described. The proposed network application is implemented as a client/server application where the sender sends two sets of 6000 UDP packets as packet train one zero payload and the other random generated payload. The random sequence generator is implemented using /dev/random library in Linux. In order to detect compression, a threshold value is introduced. If the difference in arrival time between the first and last packets of the two trains is more than a fixed threshold 100 ms, the application reports Compression detected!, whereas when the time difference is less than 100 there was probably no compression link on the path and the application should display No compression was detected. Equation (1). 
+
+The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency.
+
+\subsection{System Implementation}
+
+\subsection{Verification and Implementation}
+The proposed project was run under a 4-node topology in NS-3 environment. Nodes sender and receiver are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. The project topology was built under NS-3 environment using point to point link library. It includes four logically separate simulations, each doing one of the following: 
+\begin{itemize}
+\item Transmit low entropy data over a network topology without a compression link.
+\item Transmit high entropy data over a network topology without a compression link. 
+\item Transmit low entropy data over a network topology with a compression link. 
+\item Transmit high entropy data over a network topology with a compression link.
+\end{itemize}
+
+
+
+
+
 
 Journals use one of three template styles. All but three ACM journals
 use the {\verb|acmsmall|} template style:
