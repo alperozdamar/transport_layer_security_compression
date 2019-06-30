@@ -261,9 +261,13 @@ The network compression detection is implemented only in the cooperative environ
 The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency.
 
 \subsection{System Implementation}
+As discussed earlier, the network topology was implemented in the Point-to-Point Protocol (PPP – RFC 1661) [?] model library. The native PPP link is assumed to be stablished and authenticated at all the time. 
+
+
+
 
 \subsection{Verification and Implementation}
-The proposed project was run under a 4-node topology in NS-3 environment. Nodes sender and receiver are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. The project topology was built under NS-3 environment using point to point link library. It includes four logically separate simulations, each doing one of the following: 
+The proposed project was run under a 5-node topology in NS-3 environment as shown in Figure ?. Nodes sender and receiver are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. The project topology was built under NS-3 environment using point to point link library. It includes four logically separate simulations, each doing one of the following: 
 \begin{itemize}
 \item Transmit low entropy data over a network topology without a compression link.
 \item Transmit high entropy data over a network topology without a compression link. 
@@ -271,7 +275,7 @@ The proposed project was run under a 4-node topology in NS-3 environment. Nodes 
 \item Transmit high entropy data over a network topology with a compression link.
 \end{itemize}
 
-
+The middle capacity link (R1, R2) then varies and tuned with different capacity parameter from 1 to 10 Mbps, reporting each deltatH - deltatL. The link capacity of the two outer (non compression) links on the four node topology was set persistently to 5 Mbps.  Confounding variables across the four simulation nodes were controlled , as the timing between these four simulation types were ultimately comparing to detect the compression link. 
 
 
 
