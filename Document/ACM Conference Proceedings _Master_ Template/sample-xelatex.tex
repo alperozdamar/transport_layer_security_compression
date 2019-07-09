@@ -286,7 +286,25 @@ The middle capacity link (R1, R2) then varies and tuned with different capacity 
 
 protocol check, payload management, compression and decompression feature were hosted in the point-to-pont-net-device class library. The udp-client model class were modified to generate random payload in high entropy traffic and udp-server model class host the entire calculation and compression detection algorithm. The external zLib [?] - An abstract of the DEFLATE compression algorithm - was embed with project to perform compression task and as such output data length of compression link varied due to compression process.  
 In order to build the project ./waf build system was implemented. the following command build the project while compression system is enabled. 
-
+ 
+ waf command to build
+ 
+ In topology management, two UDP client and an UDP server and point to point net devices were initiazed. The Initialized class implementation is shown for low entropy UDP Client. The device attribute for the link between router 1 and router 2 was set for data rate, delay and maximum transmit unit (MTU). The compression and decompression flag was set while initializing the topology. The point to point net device library was modified to support the following features: 
+ 
+ 
+\begin{itemize}
+\item Protocol Checker
+\item Payload Management
+\item Compression and Decompression
+\end{itemize}
+ 
+ SEND method in point to point net device host compression design while RECEIVE method host Decompression design. The arriving PPP packets were parse to capture protocol and if protocol number matched with configuration management system. If checked packet type matches one in the configuration file, the payload will be taken and compressed based on zLib library. and the protocol will be replaced with LZS protocol number. and the newly generated packet will be sent to Decompression router through the link.  
+ In the other hand, RECEIVE function decompressed the packet payload data after removing all necessary header file.  The designed system is smart to detect and target only compressed packet for decompression process. Figure ? shows the headr file involve with the arriving packet and the compression process on the packet. 
+ 
+ Figure ?
+ 
+ Second UDP client is incharge to generate high entropy trained packet and run it through the network. The same process will take place for high entropy trained packet. 
+  
 
 Journals use one of three template styles. All but three ACM journals
 use the {\verb|acmsmall|} template style:
