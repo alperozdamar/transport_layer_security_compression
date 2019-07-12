@@ -299,11 +299,15 @@ In order to build the project ./waf build system was implemented. the following 
 \end{itemize}
  
  SEND method in point to point net device host compression design while RECEIVE method host Decompression design. The arriving PPP packets were parse to capture protocol and if protocol number matched with configuration management system. If checked packet type matches one in the configuration file, the payload will be taken and compressed based on zLib library. and the protocol will be replaced with LZS protocol number. and the newly generated packet will be sent to Decompression router through the link.  
- In the other hand, RECEIVE function decompressed the packet payload data after removing all necessary header file.  The designed system is smart to detect and target only compressed packet for decompression process. Figure ? shows the headr file involve with the arriving packet and the compression process on the packet. 
+ In the other hand, RECEIVE function decompressed the packet payload data after removing all necessary header file.  The designed system is smart to detect and to target only compressed packet for decompression process. Figure ? shows the header file involved with the arriving packet and the compression process on the packet. 
  
  Figure ?
  
- Second UDP client is incharge to generate high entropy trained packet and run it through the network. The same process will take place for high entropy trained packet. 
+Second UDP client is in-charge to generate high entropy trained packet and run it through the network. The same process will take place for high entropy trained packet. In the other hand, UDP server counts the incoming packets and calculates the delta high entropy and the delta low entropy based on the equation ?
+
+Equation ? delta t H - delta t L 
+
+ To detect the compression threshold value of 100 ms was defined.  The delta time difference more than the threshold value triggers the detection flag and vice a versa. Timing report of the delta is logged and store in the repository.  
   
 
 Journals use one of three template styles. All but three ACM journals
