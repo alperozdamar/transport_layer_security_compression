@@ -219,7 +219,7 @@ author's own version, with {\itshape very} few changes to the source.
 \section{Design Review}
 High speed application become considerable especially when there is 
 a high traffic in the network. In order to generate high traffic, a single topology 
-with 4 nodes is designed and connected using point to point protocol standard library in 
+with 5 nodes was designed and implemented using point to point protocol standard library in 
 the NS-3 environment. Figure ? shows the topology designed in this project. 
 The middle link was used to generate bottleneck link. First node and the last 
 node act as client and server application where the sender sends two sets of 
@@ -248,7 +248,12 @@ RFC 1974 PPP Stac LZS Compression Protocol [?] requirement.
  
 For the purposes of this project, the entire packets are inspected upon the arrival for checking the protocol number.  Matched protocol packet then is pushed for compression process. The pre-processing  finds the matched packet to replace the original protocol number with the LZS protocol number, 0x4021. Original protocol number is appended to the original data, and compress that whole bit-string and replace it with the original data section in the original packet, as illustrated in Figure 1. 
 
-
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{Topology}
+  \caption{Designed 5 nodes topology with point-to-point compression link }
+  \Description{The 1907 Franklin Model D roadster.}
+\end{figure}
 
 In the other hand, decompressor, at the other side of the compression link then reverse all the pre-processing steps performed at the compressor, to retrieve the original incoming packet, before pushing it to the next interface. The assumption is the two routers have already reached an Opened state and LZS has been negotiated as the primary compression algorithm. Similarly, there is no implementation from the negotiation phase specified in X3.241-1994. The compression and decompression algorithm is implemented in PointToPointNetDevice to enable compression/decompression on point-to-point links in NS-3 environment. The higher level of compression and decompression implementation model is shown below:
 
