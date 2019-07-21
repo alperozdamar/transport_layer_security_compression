@@ -259,13 +259,23 @@ In the other hand, decompressor, at the other side of the compression link then 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{compression}
-  \caption{he specified method to implement for assembling compressed packets, as specified in RFC 1974[?] }
+  \caption{The specified method to implement for assembling compressed packets, as specified in RFC 1974[?] }
 \end{figure}
 
 
 \subsection{Compression Detection Algorithm}
 The network compression detection is implemented only in the cooperative environment as described. The proposed network application is implemented as a client/server application where the sender sends two sets of 6000 UDP packets as packet train one zero payload and the other random generated payload. The random sequence generator is implemented using /dev/random library in Linux. In order to detect compression, a threshold value is introduced. If the difference in arrival time between the first and last packets of the two trains is more than a fixed threshold 100 ms, the application reports Compression detected!, whereas when the time difference is less than 100 there was probably no compression link on the path and the application should display No compression was detected. Equation (1). 
 
+
+\begin{displaymath}
+	\Delta tH_{HighEntropy}  = T_{FirstPktArrival} - T_{LastPktArrival} 
+\end{displaymath}
+\begin{displaymath}
+	\Delta tL_{LowEntropy}  = T_{FirstPktArrival} - T_{LastPktArrival} 
+\end{displaymath}
+\begin{equation}
+ 	DetectionFactor = \Delta tH - \Delta tL
+\end{equation}
 
 
 The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency.
