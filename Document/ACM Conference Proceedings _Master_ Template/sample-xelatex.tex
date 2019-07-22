@@ -210,13 +210,13 @@ network efficiency when compression is activated
 %% A "teaser" image appears between the author and affiliation
 %% information and the body of the document, and typically spans the
 %% page.
-\begin{teaserfigure}
-  \includegraphics[width=\textwidth]{sampleteaser}
-  \caption{Seattle Mariners at Spring Training, 2010.}
-  \Description{Enjoying the baseball game from the third-base
-  seats. Ichiro Suzuki preparing to bat.}
-  \label{fig:teaser}
-\end{teaserfigure}
+
+
+%% \begin{teaserfigure}
+%%  \includegraphics[width=\textwidth]{topology}
+%%  \caption{5-nodes topology implemented}
+%%  \label{fig:topology}
+%% \end{teaserfigure}
 
 %%
 %% This command processes the author and affiliation and title
@@ -309,7 +309,7 @@ The proposed project was run under a 5-node topology in NS-3 environment as show
 \item Transmit high entropy data over a network topology with a compression link.
 \end{itemize}
 
-The middle capacity link (R1, R2) then varies and tuned with different capacity parameter from 1 to 10 Mbps, reporting each deltatH - deltatL. The link capacity of the two outer (non compression) links on the four node topology was set persistently to 5 Mbps.  Confounding variables across the four simulation nodes were controlled , as the timing between these four simulation types were ultimately comparing to detect the compression link. Proposed two senders in the topology supports low and high entropy respectively. Sender and receiver nodes are UDP server and clients. Receiver nodes records the arrival time between the first and last packet in the simulation. There are three main components designed and implemented in this architecture.  
+The middle capacity link (router A, router B) then varies and tuned with different capacity parameter from 1 to 10 Mbps, reporting each \Delta tH - \Delta tL. The link capacity of the two outer (non compression) links on the four node topology was set persistently to 5 Mbps.  Confounding variables across the four simulation nodes were controlled , as the timing between these four simulation types were ultimately comparing to detect the compression link. Proposed two senders in the topology supports low and high entropy respectively. Sender and receiver nodes are UDP server and clients. Receiver nodes records the arrival time between the first and last packet in the simulation. There are three main components designed and implemented in this architecture.  
 
 \begin{itemize}
 \item Configuration Management System
@@ -321,9 +321,19 @@ The middle capacity link (R1, R2) then varies and tuned with different capacity 
 protocol check, payload management, compression and decompression feature were hosted in the point-to-pont-net-device class library. The udp-client model class were modified to generate random payload in high entropy traffic and udp-server model class host the entire calculation and compression detection algorithm. The external zLib [?] - An abstract of the DEFLATE compression algorithm - was embed with project to perform compression task and as such output data length of compression link varied due to compression process.  
 In order to build the project ./waf build system was implemented. the following command build the project while compression system is enabled. 
  
- waf command to build
+ \begin{lstlisting}
+/*
+* To compile and build the project
+*/
+ $ cd workspace/Transport-Layer-Security/ns-3-allinone/ns-3-dev    
+ $ ./waf configure
+ $ ./waf build
+ $ ./waf --run "scratch/point2point --IsHighEntropy=1 --IsCompress=1 --MaxPacketCount=2"
+
+\end{lstlisting}
+
  
- In topology management, two UDP client and an UDP server and point to point net devices were initiazed. The Initialized class implementation is shown for low entropy UDP Client. The device attribute for the link between router 1 and router 2 was set for data rate, delay and maximum transmit unit (MTU). The compression and decompression flag was set while initializing the topology. The point to point net device library was modified to support the following features: 
+In topology management, two UDP client and an UDP server and point to point net devices were initiazed. The Initialized class implementation is shown for low entropy UDP Client. The device attribute for the link between router 1 and router 2 was set for data rate, delay and maximum transmit unit (MTU). The compression and decompression flag was set while initializing the topology. The point to point net device library was modified to support the following features: 
  
  
 \begin{itemize}
