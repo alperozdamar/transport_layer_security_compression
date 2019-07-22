@@ -70,6 +70,31 @@
 
 %%
 %% end of the preamble, start of the body of the document source.
+\usepackage{listings}
+\usepackage{color}
+\pagecolor{white}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=c++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
 \begin{document}
 
 %%
@@ -199,22 +224,11 @@ network efficiency when compression is activated
 \maketitle
 
 \section{Introduction}
-ACM's consolidated article template, introduced in 2017, provides a
-consistent \LaTeX\ style for use across ACM publications, and
-incorporates accessibility and metadata-extraction functionality
-necessary for future Digital Library endeavors. Numerous ACM and
-SIG-specific \LaTeX\ templates have been examined, and their unique
-features incorporated into this single new template.
+Based on hypothesis that the advanced relay nodes are located inside the network, and they have computational, storage and network resources, Shimamura et al. proposed on 2010 a compression strategy meant to reduce the packages lost between the network nodes\cite{shimamura2010compressing}. 
 
-If you are new to publishing with ACM, this document is a valuable
-guide to the process of preparing your work for publication. If you
-have published with ACM before, this document provides insight and
-instruction into more recent changes to the article template.
+In 2016 Shamieh et al. introduced a an adaptive and distributed compression/decompression scheme. The new adaptive scheme was needed because of the unexpected growth of the traffic which triggered a set of incentive/challenges such as: high congestion in the networks, high loss rates of the packets and latency. The previous mentioned challenges have a higher impact over the performance of the network and in the same time has a negative impact on Quality of Service (QoS) \cite{shamieh2016adaptive}. Shamieh et al. suggested an adaptive and distributed compression/decompression model for reducing the congestion in network and in the same time support/maintain the QoS.
 
-The ``\verb|acmart|'' document class can be used to prepare articles
-for any ACM publication --- conference or journal, and for any stage
-of publication, from review to final ``camera-ready'' copy, to the
-author's own version, with {\itshape very} few changes to the source.
+Although there is a lot of work related to compressing and sending data through a network \cite{tanenbaum2011chapter}\cite{larry2007foundation}\cite{shimamura2010compressing} \cite{deng2012online}\cite{bertsekas1987chapter}\cite{serfozo1999little}\cite{tan2010enhanced} this become day by a complex and challenging topic as a result of traffic growth.
 
 \section{Design Review}
 High speed application become considerable especially when there is 
