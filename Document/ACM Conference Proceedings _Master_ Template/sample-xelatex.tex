@@ -333,7 +333,7 @@ In order to build the project ./waf build system was implemented. the following 
 \end{lstlisting}
 
  
-In topology management, two UDP client and an UDP server and point to point net devices were initiazed. The Initialized class implementation is shown for low entropy UDP Client. The device attribute for the link between router 1 and router 2 was set for data rate, delay and maximum transmit unit (MTU). The compression and decompression flag was set while initializing the topology. The point to point net device library was modified to support the following features: 
+In the topology management, two UDP client and an UDP server and point to point net devices were initiated. The Initialized class implementation is shown for low entropy UDP Client. The device attribute for the link between router 1 and router 2 was set for data rate, delay and maximum transmit unit (MTU). The compression and decompression flag was set while initializing the topology. The point to point net device library was modified to support the following features: 
  
  
 \begin{itemize}
@@ -343,7 +343,7 @@ In topology management, two UDP client and an UDP server and point to point net 
 \end{itemize}
  
  SEND method in point to point net device host compression design while RECEIVE method host Decompression design. The arriving PPP packets were parse to capture protocol and if protocol number matched with configuration management system. If checked packet type matches one in the configuration file, the payload will be taken and compressed based on zLib library. and the protocol will be replaced with LZS protocol number. and the newly generated packet will be sent to Decompression router through the link.  
- In the other hand, RECEIVE function decompressed the packet payload data after removing all necessary header file.  The designed system is smart to detect and to target only compressed packet for decompression process. Figure ? shows the header file involved with the arriving packet and the compression process on the packet. 
+In the other hand, RECEIVE function decompressed the packet payload data after removing all necessary header file.  The designed system is smart to detect and to target only compressed packet for decompression process. Figure ? shows the header file involved with the arriving packet and the compression process on the packet. 
  
  Figure ?
  
