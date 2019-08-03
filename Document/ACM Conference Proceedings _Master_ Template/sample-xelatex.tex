@@ -366,12 +366,25 @@ Second UDP client is in-charge to generate high entropy trained packet and run i
 The same process will take place for high entropy trained packet. In the other hand, UDP server counts the incoming packets and calculates the delta high entropy and the delta low entropy based on the equation \ref{eq:2}.\\
 To detect the compression threshold value of 100 ms was defined.  The delta time difference more than the threshold value triggers the detection flag and vice a versa. Timing report of the delta is logged and store in the repository.  
  
-Client and server application where the senders send 6000 UDP packets and the receiver records the arrival time between the first and the last packet in the train . the first packet train consists of all packets of size 1100 bytes in their payload, filled with zeros while the second packet trains contains random sequence of bits. If the difference in arrival time between the first and last packets of the two trains is more than the fixed threshold of 100 ms, the application reports compression detected whilst when the time difference is less than the threshold value, there is probably no compression link in the path and the application reports no compression is detected. The middle link data rate was modified within the range of 1Mbps up to 10Mbps to generate bottleneck of data on the link. Figure ? shows the timing reported on link capacity while two outer link on the node topology was set to 8Mbps consistently. 
+Client and server application where the senders send 6000 UDP packets and the receiver records the arrival time between the first and the last packet in the train . the first packet train consists of all packets of size 1100 bytes in their payload, filled with zeros while the second packet trains contains random sequence of bits. If the difference in arrival time between the first and last packets of the two trains is more than the fixed threshold of 100 ms, the application reports compression detected whilst when the time difference is less than the threshold value, there is probably no compression link in the path and the application reports no compression is detected. The middle link data rate was modified within the range of 1Mbps up to 10Mbps to generate bottleneck of data on the link. 
 
-Figure ?
-Figure?
+ \begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{timing}
+  \caption{High and low entropy train on the server node arrival time }
+  \label{t1}
+\end{figure} 
 
+Figure \ref{t1} shows the timing reported on link capacity with low entropy packet train and high entropy packet train while two outer link on the node topology was set to 8Mbps consistently. The compression capacity link was varied to realize the compression behavior in different data rate configuration. 
 
+ \begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{timing2}
+  \caption{Arrival time difference between high and low entropy packet train on the server node }
+  \label{t2}
+\end{figure} 
+
+The time difference between high and low entropy packet train was 
 
 
 Journals use one of three template styles. All but three ACM journals
