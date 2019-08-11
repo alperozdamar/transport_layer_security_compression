@@ -32,3 +32,5 @@ ns-3-allinone/\.vscode/
 *.aux
 
 *.gz
+
+*.tex alias

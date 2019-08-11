@@ -292,7 +292,7 @@ The network compression detection is implemented only in the cooperative environ
 
 The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency.
 
-\subsection{System Implementation and Verification}
+\section{System Implementation and Verification}
 As discussed earlier, the network topology was implemented in the Point-to-Point Protocol (PPP , RFC 1661) \cite{point1991autonet} model library. The native PPP link is assumed to be established and authenticated at all the time. 
 \begin{figure}[h]
   \centering
@@ -309,7 +309,8 @@ The proposed project was run under a 5-node topology in NS-3 environment as show
 \item Transmit high entropy data over a network topology with a compression link.
 \end{itemize}
 
-The middle capacity link (router A, router B) then varies and tuned with different capacity parameter from 1 to 10 Mbps, reporting each $\Delta$tH - $\Delta$tL . The link capacity of the two outer (non compression) links on the four node topology was set persistently to 5 Mbps.  Confounding variables across the four simulation nodes were controlled , as the timing between these four simulation types were ultimately comparing to detect the compression link. Proposed two senders in the topology supports low and high entropy respectively. Sender and receiver nodes are UDP server and clients. Receiver nodes records the arrival time between the first and last packet in the simulation. There are three main components designed and implemented in this architecture.  
+The control for confounding variables across the the simulations were defined precisely, as it ultimately be comparing time between the  simulation types to detect the compression link. The whole system is automated to run the first low entropy packet train followed by the high entropy packet train. 
+The middle capacity link (router A, router B) then varies and tuned with different capacity parameter from 1 to 10 Mbps, reporting each $\Delta$tH - $\Delta$tL . The link capacity of the two outer (non compression) links on the four node topology was set persistently to 5 Mbps. Proposed two senders in the topology supports low and high entropy respectively. Sender and receiver nodes are UDP server and clients. Receiver nodes records the arrival time between the first and last packet in the simulation. There are three main components designed and implemented in this architecture.
 
 \begin{itemize}
 \item Configuration Management System
@@ -381,6 +382,7 @@ Figure \ref{t1} shows the timing reported on link capacity with low entropy pack
 
 The time difference between high and low entropy packet train was shown in Figure \ref{t2} . While network bandwidth is steadily increasing, the arrival time of low entropy packet train does not show much timing difference in compression link while there is significant behavior change is observed when high entropy packet train is located in the high bandwidth capacity link that shows the compression affect in the bottle-neck of the capacity link. 
 
+\section{Conclusion}
 
 
 %%
