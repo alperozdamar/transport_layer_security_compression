@@ -276,7 +276,7 @@ In the other hand, decompression, at the other side of the compression link then
 
 The higher level of compression and decompression implementation model is shown in Figure ~\ref{comp}.
 \subsection{Compression Detection Algorithm}
-The network compression detection is implemented only in the cooperative environment as described. The proposed network application is implemented as a client/server application where the sender sends two sets of 6000 UDP packets as packet train one zero payload and the other random generated payload. The random sequence generator is implemented using /dev/random library in Linux. In order to detect compression, a threshold value is introduced. If the difference in arrival time between the first and last packets of the two trains is more than a fixed threshold 100 ms, the application reports Compression detected!, whereas when the time difference is less than 100 there was probably no compression link on the path and the application should display No compression was detected. 
+The network compression detection is implemented only in the cooperative environment as described. The proposed network application is implemented as a client/server application where the sender sends two sets of 6000 UDP packets as packet train one zero payload and the other random generated payload. The random sequence generator is implemented using /dev/random library in Linux. In order to detect compression, a threshold value is introduced. Although, there is no threshold for success for compression detection and the compression classification has never been attempted as a machine learning problem \cite{hahn2018detecting}, based on our research criteria we have select 100 ms threshold for the compression detection .  If the difference in arrival time between the first and last packets of the two trains is more than a fixed threshold of 100 ms, the application reports compression detection event, whereas when the time difference is less than 100 there was probably no compression link on the path and the application will report no compression event was detected. 
 
 \begin{displaymath}
 	\Delta tH_{HighEntropy}  = T_{FirstPktArrival} - T_{LastPktArrival} 
@@ -290,7 +290,46 @@ The network compression detection is implemented only in the cooperative environ
 \label{delta}
 
 
-The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency.
+The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency. The implementation of add-on feature in SEND() packet model in the ns-3 library is shown here:
+
+ \begin{lstlisting}
+/*
+* Compression Model Implementation
+*/
+ if(this -> doCompress){   
+    PppHeader header;
+    packet-> RemoveHeader(header);
+    if(header.GetProtocol()==this->compressProtocolNumber){      
+    /* Remove IPV4 Header */
+    Ipv4Header ipHeader;
+    packet-> RemoveHeader(ipHeader);
+    /* Remove UDP Header */
+    UdpHeader udpHeader;
+    packet-> RemoveHeader(udpHeader);
+    /* Add Data & protocol and copy to inData */
+    int protocolSize = 2;
+    int dataSize = packet-> GetSize();
+    uLongf size = dataSize + protocolSize; 
+    uint8_t *inData = new uint8_t[size];
+    inData[0]=0x00; 
+    inData[1]=0x21;
+    packet-> CopyData(&(inData[2]),size);
+    uint8_t *compressData = new uint8_t[size];
+    uLongf new_size;
+    int returnValue = compress2((uint8_t*)compressData, &new_size, (uint8_t*)inData  (uLongf)size,Z_BEST_COMPRESSION);     
+    size = new_size;
+    packet = new Packet(compressData,size); 
+    size = size + 8; 
+    udpHeader.ForcePayloadSize(size);
+    packet-> AddHeader(udpHeader);
+    ipHeader.SetPayloadSize(size); 
+    packet-> AddHeader(ipHeader);
+    header.SetProtocol(COMPRESSED_PROTOCOL_NUMBER); 
+    } 
+    packet->AddHeader(header);
+  } 
+
+\end{lstlisting}
 
 \section{System Implementation and Verification}
 As discussed earlier, the network topology was implemented in the Point-to-Point Protocol (PPP , RFC 1661) \cite{point1991autonet} model library. The native PPP link is assumed to be established and authenticated at all the time. 
@@ -383,8 +422,7 @@ Figure \ref{t1} shows the timing reported on link capacity with low entropy pack
 The time difference between high and low entropy packet train was shown in Figure \ref{t2} . While network bandwidth is steadily increasing, the arrival time of low entropy packet train does not show much timing difference in compression link while there is significant behavior change is observed when high entropy packet train is located in the high bandwidth capacity link that shows the compression affect in the bottle-neck of the capacity link. 
 
 \section{Conclusion}
-This research has concentrated on implementing embedded efficient compression, fast decompression model to enhance traffic network. The external zlib library was embed with the designed topology to perform compression. The packet trains with low and high entropy were generated to be transferred in compression capacity link for data evaluation and further investigation. Data analysis was performed and it was critical for analytic queries that repeatedly and synchronously read compressed packet data arrival time. The arrival time of the first packet trained and the last packet trained of each series were captured and plotted. The result shows the although data compression enhance the data transmission speed yet it is only effective the capacity link turns as bottle-neck. Compression has no effect on the capacity link bottle-neck does not exist due to low data rate. 
-
+This research has concentrated on design and implementation of  embedded efficient compression and fast decompression model to enhance data transferring speed in the network traffic. The external zlib library was embed with the designed topology to perform compression. The packet trains with low and high entropy were generated to be transferred in compression capacity link for data evaluation and further investigation. Data analysis was performed and it was critical for analytic queries that repeatedly and synchronously read compressed packet data arrival time. The arrival time of the first packet trained and the last packet trained of each series were captured and plotted. The result shows the although data compression enhance the data transmission speed yet it is only effective the capacity link turns as bottle-neck. Compression has no effect on data transmission speed if there is no bottle-neck exists in the capacity compression link. The Compression and decompression model was added to ns-3 library as a new feature. 
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
