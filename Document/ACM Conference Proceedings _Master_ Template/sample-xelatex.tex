@@ -100,7 +100,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{Compression Point to Point Traffic Control}
+\title{Smart Compression Point to Point Algorithm for  Traffic Control}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -159,13 +159,9 @@ A capsuled network data called packet is the main component for the
 traffic measurement and the network traffic shows a significant potential
 for the researchers to find a solution on the high speed communication 
 system \cite{campbell1974portable}\cite{bertsekas1987chapter}\cite{deng2012online}.  Several research works were conducted to transfer packets 
-in high speed rate possibles and yet it is a challenging task.  In this research project, implementation of a network level compression link is considered. A network application to detect whether network compression is presented implemented. To validate the functionality, simulated compression link is designed and presented. In this research 
-work, the focus was taken on the data compression approach to fully utilize 
-the network when point to point network is a bottle neck. The design defined 
-under under Microsoft  point to point protocol standard and network simulation 
-(NS-3) environment were used for system design and implementation. 
-A comprehensive data analysis and evaluation were conducted to observe 
-network efficiency when compression is activated 
+in high speed rate possibles and yet it is a challenging task.  In this research project, design and implementation of a smart network link with compression feature is considered. The designed topology is smart to detect if compression occurred in high traffic condition while the network when capacity link is the bottle-neck link. To validate the compression functionality, two set of packet trains were generated and transferred with the different data rate on the transfer path. In this research work, the focus was taken on the data compression approach to fully utilize 
+the bandwidth when point to point network is a bottle neck. The design was defined under Microsoft  point to point protocol standard and network simulation (NS-3) \cite{zorn1999point} were used for system design and implementation. 
+A comprehensive data analysis and evaluation were conducted to observe network efficiency when compression is activated 
 \end{abstract}
 
 %%
@@ -224,36 +220,30 @@ network efficiency when compression is activated
 \maketitle
 
 \section{Introduction}
-Historically, data compression \cite{lelewer1987data} topic has been in the research and the industry field for the past decades and attracted significant attention due to its efficiency capability on in the data transmission and storage. It has been widely used to minimize disk utilization, decrease bandwidth consumption on the networks and reduces energy consumption in the hardware \cite{welton2011improving}
-In the recent research work and in the field of the data transmission and networking area, Shimamura et al. (2010) proposed a compression strategy meant to reduce the packages lost between the network based on the hypothesis that the advanced relay nodes are located inside the network, and they have computational, storage and network resources nodes\cite{shimamura2010compressing}. 
+Historically, data compression \cite{lelewer1987data} topic has been in the research and the industry field for the past decades and has been attracted the significant attention due to its efficiency capability on the data transmission and storage. It has been widely used to minimize disk utilization, decrease bandwidth consumption on the networks and reduces energy consumption in the hardware \cite{welton2011improving}.
+In the recent research work and in the field of the data transmission and the networking area, Shimamura et al. (2010) proposed a compression strategy meant to reduce the packages lost between the network based on the hypothesis that the advanced relay nodes are located inside the network, and they have computational, storage and network resources nodes\cite{shimamura2010compressing}. 
 
-In 2013,  Songbin Liu et al. proposed a versatile compression method for floating point data. They claimed their design can achieve much better compression ratios than existing general purpose compression methods with promising throughputs and it can support a asymmetric decompression. \cite{liu2013versatile} 
+In 2013,  Songbin Liu et al. proposed a versatile compression method for floating point data. They claimed their design can achieve much higher compression ratios than existing general purpose compression methods with promising throughputs and it can support a asymmetric decompression. \cite{liu2013versatile} 
 
 Later, in 2016 Shamieh et al. \cite{shamieh2016adaptive} introduced  an adaptive and distributed compression/decompression scheme. The new adaptive scheme was needed because of the unexpected growth of the traffic which triggered a set of incentive/challenges such as: high congestion in the networks, high loss rates of the packets and latency. The previous mentioned challenges had a higher impact over the performance of the network and in the same time had a negative impact on Quality of Service (QoS) . The author suggested an adaptive and distributed compression/decompression model for reducing the congestion in the network and at the same time support/maintain the QoS.
 
-Dong Tian (2017) found the geometry distortion of point cloud measurement  a challenging task and proposed using point to plane distances as measure of geometric distortions on point cloud compression. the intrinsic resolution of the point clouds was proposed as a normalizer to convert the mean square error to PSNR numbers. \cite{tian2017geometric}
+Dong Tian (2017) found the geometry distortion of point cloud measurement  a challenging task and proposed using point to plane distances as measure of geometric distortions on point cloud compression. The intrinsic resolution of the point clouds was proposed as a normalizer to convert the mean square error to PSNR numbers. \cite{tian2017geometric}
 
-Although there is a lot of work related to compressing and sending data through a network \cite{serfozo1999little}\cite{shimamura2010compressing}\cite{tan2010enhanced} this become day by day a complex and a challenging topic as a result of traffic growth. 
-Hence, in this proposed research work the effort is taken to design and implement the embedded external compression library in a compression line capacity and analyze the behavior of data travelling when they placed in the bottle-neck of capacity link. 
+Although there is a lot of work related to compressing and sending data through a network \cite{serfozo1999little}\cite{shimamura2010compressing}\cite{tan2010enhanced} this becomes day by day a complex and a challenging topic as a result of traffic growth. 
+Hence, in this proposed research work the effort is taken to design and implement the embedded external compression library in a compression line capacity and analyze the behavior of data traveling when they placed in the bottle-neck of the capacity link. 
 
 \section{Design }
-High speed application become considerable especially when there is a high traffic in the network. In order to generate high traffic, a single topology 
-with 5 nodes was designed and implemented using point to point protocol standard library in the NS-3 environment. Figure ~\ref{fig:Topo} shows the topology designed in this project. 
-The middle link was used to generate bottleneck link. First node and the last 
-node act as client and server application where the sender sends two sets of 
-6000 user data-gram protocol (UDP) packets back-to-back as packet train, and the receiver records the 
-arrival time between the first and last packet in the train. The first packet train 
-consists of all  of size 1100 bytes in payload, filled with all zeros, while the 
-second packet train contains random sequence of bits. This configuration generates high traffic in the middle point to point link that makes it suitable environment to implement data compression on the top of the application.
+TODO: Add more detail and talk about the first configuration with one packet train
+A network topology was introduced and designed for high speed network application, which is the first step of detailed communication network design. Essentially, the topology design of a communication network determines the connections between the communication nodes and the network is designed in one batch, rather than in incremental manner. In addition, the proposed topology assumed that the physical infrastructure of the communication network already exists. The goal is to design the logical topology of the network. In this research work, high speed application becomes considerable especially when there is a high traffic in the network. In order to generate high traffic, a single topology with 5 nodes was designed and implemented using point to point protocol standard library in the NS-3 environment \cite{zorn1999point} . Figure ~\ref{fig:Topo} shows the topology designed in this project. 
+The middle link was used to generate bottleneck link. First two nodes and the last node act as client and server application where the senders send two sets of 6000 user data-gram protocol (UDP) packets back-to-back as packet train, and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all  of size 1100 bytes in payload, filled with all zeros, while the second packet train contains random sequence of bits. This configuration generates high traffic in the middle point to point link that makes it suitable environment to implement data compression on the top of the application.
+In the subsequent project, A brief introduction to compression is provided as the main methodology to design high speed network. Then the smart algorithm for optimizing the topology is designed. Finally, the statistical analysis is conducted to verify the functionality of the proposed design.
  
 
 \subsection{Data Compression}
 
- In order to fully utilize the network path especially in the bottleneck of the network data compression is introduced. In this project zLib external library was implemented to compress data in pre-link path. The zlib \cite{Deutsch:1996:ZCD:RFC1950} is a software library used for data compression 
- and is an abstraction of the DEFLATE compression algorithm used in their gzip file compression program. It is a lossless data compression algorithm based on the principle of dictionary based encoding scheme. The zlib library is also a crucial component of many software platform as the compressed data format is itself portable across platforms.
-The compression link application was embedded and built using NS-3. 
-The implemented Lempel-Ziv-Stac \cite{Deutsch:1996:ZCD:RFC1950} compression algorithm is  responsible for compression and decompression of incoming and outgoing packets and follows 
-RFC 1974 PPP Stac LZS Compression Protocol \cite{Deutsch:1996:ZCD:RFC1950} requirement.
+ In order to fully utilize the network path for high speed application, especially in the bottleneck of the network data compression is introduced. Compressing network data  is called deflating, and the algorithm is called DEFLATE.
+ In this project zLib external library was implemented to compress data in pre-link path. The zlib \cite{Deutsch:1996:ZCD:RFC1950} is a software library used for data compression and is an abstraction of the DEFLATE compression algorithm used in their gzip file compression program. It is a lossless data compression algorithm based on the principle of dictionary based encoding scheme. The zlib library is also a crucial component of many software platform as the compressed data format is itself portable across platforms. The side benefit of the compression algorithm are to reduce the memory footprint, speed up the packet transmission and the regularization. 
+The compression link application was embedded and built using NS-3 with Lempel-Ziv-Stac (LZS)  \cite{Deutsch:1996:ZCD:RFC1950} compression algorithm which is sliding-window compression algorithm and fixed Huffman coding and is  responsible for compression and decompression of incoming and outgoing packets. The LZS algorithm follows RFC 1974 PPP Stac LZS Compression Protocol \cite{Deutsch:1996:ZCD:RFC1950} requirement.
 For the purposes of this project, the entire packets are inspected upon the arrival for checking the protocol number.  Matched protocol packet then is pushed for compression process. The pre-processing  finds the matched packet to replace the original protocol number with the LZS protocol number, 0x4021. 
 
 \begin{figure}[h]
