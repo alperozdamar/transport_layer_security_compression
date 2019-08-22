@@ -158,7 +158,7 @@ the amount of data moving across a network at the given point of time.
 A capsuled network data called packet is the main component for the 
 traffic measurement and the network traffic shows a significant potential
 for the researchers to find a solution on the high speed communication 
-system \cite{campbell1974portable}\cite{bertsekas1987chapter}\cite{deng2012online}.  Several research works were conducted to transfer packets 
+system \cite{campbell1974portable}\cite{bertsekas1987chapter}\cite{deng2012online} for home automation \cite{teymourzadeh2013smart} and industry application.  Several research works were conducted to transfer packets 
 in high speed rate possibles and yet it is a challenging task.  In this research project, design and implementation of a smart network link with compression feature is considered. The designed topology is smart to detect if compression occurred in high traffic condition while the network when capacity link is the bottle-neck link. To validate the compression functionality, two set of packet trains were generated and transferred with the different data rate on the transfer path. In this research work, the focus was taken on the data compression approach to fully utilize 
 the bandwidth when point to point network is a bottle neck. The design was defined under Microsoft  point to point protocol standard and network simulation (NS-3) \cite{zorn1999point} were used for system design and implementation. 
 A comprehensive data analysis and evaluation were conducted to observe network efficiency when compression is activated 
@@ -233,8 +233,7 @@ Although there is a lot of work related to compressing and sending data through 
 Hence, in this proposed research work the effort is taken to design and implement the embedded external compression library in a compression line capacity and analyze the behavior of data traveling when they placed in the bottle-neck of the capacity link. 
 
 \section{Design }
-TODO: Add more detail and talk about the first configuration with one packet train
-A network topology was introduced and designed for high speed network application, which is the first step of detailed communication network design. Essentially, the topology design of a communication network determines the connections between the communication nodes and the network is designed in one batch, rather than in incremental manner. In addition, the proposed topology assumed that the physical infrastructure of the communication network already exists. The goal is to design the logical topology of the network. In this research work, high speed application becomes considerable especially when there is a high traffic in the network. In order to generate high traffic, a single topology with 5 nodes was designed and implemented using point to point protocol standard library in the NS-3 environment \cite{zorn1999point} . Figure ~\ref{fig:Topo} shows the topology designed in this project. 
+A network topology was introduced and designed for high speed network application, which is the first step of detailed communication network design. Essentially, the topology design of a communication network determines the connections between the communication nodes and the network is designed in one batch, rather than in incremental manner. In addition, the proposed topology assumed that the physical infrastructure of the communication network already exists. The goal is to design the logical topology of the network. In this research work, high speed application becomes considerable especially when there is a high traffic in the network. In order to generate high traffic, a single topology with 5 nodes was designed and implemented using point to point protocol \cite{pournaghshband2014end} standard library in the NS-3 environment \cite{zorn1999point} . Figure ~\ref{fig:Topo} shows the topology designed in this project. 
 The middle link was used to generate bottleneck link. First two nodes and the last node act as client and server application where the senders send two sets of 6000 user data-gram protocol (UDP) packets back-to-back as packet train, and the receiver records the arrival time between the first and last packet in the train. The first packet train consists of all  of size 1100 bytes in payload, filled with all zeros, while the second packet train contains random sequence of bits. This configuration generates high traffic in the middle point to point link that makes it suitable environment to implement data compression on the top of the application.
 In the subsequent project, A brief introduction to compression is provided as the main methodology to design high speed network. Then the smart algorithm for optimizing the topology is designed. Finally, the statistical analysis is conducted to verify the functionality of the proposed design.
  
@@ -387,7 +386,7 @@ Second UDP client is in-charge to generate high entropy trained packet and run i
 \end{equation}
 
 
-The same process will take place for high entropy trained packet. In the other hand, UDP server counts the incoming packets and calculates the delta high entropy and the delta low entropy based on the equation \ref{eq:2}.\\
+The same process took place for high entropy trained packet. In the other hand, UDP server counts the incoming packets and calculates the delta high entropy and the delta low entropy based on the equation \ref{eq:2}.\\
 To detect the compression threshold value of 100 ms was defined.  The delta time difference more than the threshold value triggers the detection flag and vice a versa. Timing report of the delta is logged and store in the repository.  
  
 Client and server application where the senders send 6000 UDP packets and the receiver records the arrival time between the first and the last packet in the train . the first packet train consists of all packets of size 1100 (Figure \ref{length}) bytes in their payload, filled with zeros while the second packet trains contains random sequence of bits.
@@ -399,11 +398,20 @@ Client and server application where the senders send 6000 UDP packets and the re
   \label{length}
 \end{figure} 
 
+ \begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{2}
+  \caption{Compression effect on the network}
+  \label{f2}
+\end{figure} 
+
+
+The arrival time of the first packet and the last packet (packet number 6000) were captured and plotted whilst the capacity link data rate was increase from 1Mbps to 10 Mbps. Figure \ref{f2} shows the the difference timing between the first and the last packet when the compression is applied. It clearly shows the compression is affective only and only if the bottleneck exist in the capacity compression link. 
 If the difference in arrival time between the first and last packets of the two trains is more than the fixed threshold of 100 ms, the application reports compression detected whilst when the time difference is less than the threshold value, there is probably no compression link in the path and the application reports no compression is detected. The middle link data rate was modified within the range of 1 Mbps up to 10 Mbps to generate bottleneck of data on the link. 
 
  \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{timing}
+  \includegraphics[width=\linewidth]{3}
   \caption{High and low entropy train on the server node arrival time }
   \label{t1}
 \end{figure} 
@@ -412,7 +420,7 @@ Figure \ref{t1} shows the timing reported on link capacity with low entropy pack
 
  \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{timing2}
+  \includegraphics[width=\linewidth]{4}
   \caption{Arrival time difference between high and low entropy packet train on the server node }
   \label{t2}
 \end{figure} 
