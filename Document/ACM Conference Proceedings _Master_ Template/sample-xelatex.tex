@@ -320,7 +320,8 @@ The proposed compression algorithm is configured with one command-line argument,
 \end{lstlisting}
 
 \section{System Implementation and Verification}
-As discussed earlier, the network topology was implemented in the Point-to-Point Protocol (PPP , RFC 1661) \cite{point1991autonet} model library. The native PPP link is assumed to be established and authenticated at all the time. 
+As discussed earlier, the network topology was implemented in the Point-to-Point Protocol (PPP , RFC 1661) \cite{point1991autonet} model library. The native PPP link is assumed to be established and authenticated at all the time. At first,4 nodes topology was designed that failed to send high entropy and low entropy packet trains concurrently for measurement purpose and automation. Hence, the 5 nodes topology with 2 senders were replaced with the original design. 
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{topoImp}
@@ -328,7 +329,7 @@ As discussed earlier, the network topology was implemented in the Point-to-Point
   \label{topoImp}
 \end{figure}
 
-The proposed project was run under a 5-node topology in NS-3 environment as shown in Figure ~\ref{fig:topoImp}. Nodes sender and receiver are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. The project topology was built under NS-3 environment using point to point link library. It includes four logically separate simulations, each doing one of the following: 
+The proposed project was run under a 5-node topology in NS-3 environment as shown in Figure ~\ref{topoImp}. Nodes sender and receiver are the end-hosts running the network application. Nodes R1 and R2 are the intermediate routers where the link between them is compression-enabled. The project topology was built under NS-3 environment using point to point link library. It includes four logically separate simulations, each doing one of the following: 
 \begin{itemize}
 \item Transmit low entropy data over a network topology without a compression link.
 \item Transmit high entropy data over a network topology without a compression link. 
@@ -428,7 +429,7 @@ Figure \ref{t1} shows the timing reported on link capacity with low entropy pack
 The time difference between high and low entropy packet train was shown in Figure \ref{t2} . While network bandwidth is steadily increasing, the arrival time of low entropy packet train does not show much timing difference in compression link while there is significant behavior change is observed when high entropy packet train is located in the high bandwidth capacity link that shows the compression affect in the bottle-neck of the capacity link. 
 
 \section{Conclusion}
-This research has concentrated on design and implementation of  embedded efficient compression and fast decompression model to enhance data transferring speed in the network traffic. The external zlib library was embed with the designed topology to perform compression. The packet trains with low and high entropy were generated to be transferred in compression capacity link for data evaluation and further investigation. Data analysis was performed and it was critical for analytic queries that repeatedly and synchronously read compressed packet data arrival time. The arrival time of the first packet trained and the last packet trained of each series were captured and plotted. The result shows the although data compression enhance the data transmission speed yet it is only effective the capacity link turns as bottle-neck. Compression has no effect on data transmission speed if there is no bottle-neck exists in the capacity compression link. The Compression and decompression model was added to ns-3 library as a new feature. 
+This research has concentrated on design and implementation of  embedded efficient compression and fast decompression model to enhance data transferring speed in the network traffic. The external zlib library was embed with the designed topology to perform compression. The packet trains with low and high entropy were generated to be transferred in compression capacity link for data evaluation and further investigation. Data analysis was performed and it was critical for analytic queries that repeatedly and synchronously read compressed packet data arrival time. The arrival time of the first packet trained and the last packet trained of each series were captured and plotted. The result shows the although data compression enhance the data transmission speed yet it is only effective the capacity link turns as bottle-neck. Compression has no effect on the data transmission speed if there is no bottle-neck exists in the capacity compression link. The Compression and decompression model was added to NS-3 library as a new feature. 
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
