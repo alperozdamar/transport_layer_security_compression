@@ -278,7 +278,7 @@ The network compression detection is implemented only in the cooperative environ
 \label{delta}
 
 
-The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency. The implementation of add-on feature in SEND() packet model in the ns-3 library is shown here:
+The proposed compression algorithm is configured with one command-line argument, Compression Link Capacity, which specifies the maximum bandwidth across the link between the two routers. compression link capacity is tuned to find the compression efficiency. The implementation of add-on feature in SEND() packet model in the NS-3 library is shown here:
 
  \begin{lstlisting}
 /*
@@ -406,7 +406,7 @@ Client and server application where the senders send 6000 UDP packets and the re
 \end{figure} 
 
 
-The arrival time of the first packet and the last packet (packet number 6000) were captured and plotted whilst the capacity link data rate was increase from 1Mbps to 10 Mbps. Figure \ref{f2} shows the the difference timing between the first and the last packet when the compression is applied. It clearly shows the compression is affective only and only if the bottleneck exist in the capacity compression link. 
+The arrival time of the first packet and the last packet (packet number 6000) were captured and plotted whilst the capacity link data rate was increase from 1Mbps to 10 Mbps. Figure \ref{f2} shows the the difference timing between the first and the last packet when the compression is applied. It clearly shows the compression is effective only and only if the bottleneck exist in the capacity compression link. 
 If the difference in arrival time between the first and last packets of the two trains is more than the fixed threshold of 100 ms, the application reports compression detected whilst when the time difference is less than the threshold value, there is probably no compression link in the path and the application reports no compression is detected. The middle link data rate was modified within the range of 1 Mbps up to 10 Mbps to generate bottleneck of data on the link. 
 
  \begin{figure}[h]
